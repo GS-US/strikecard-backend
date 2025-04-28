@@ -1,0 +1,11 @@
+ipython
+black
+isort
+flake8
+mypy
+python-decouple
+django-extensions
+pip-tools
+pytest
+coverage
+pre-commit

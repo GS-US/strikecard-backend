@@ -1,0 +1,4 @@
+gunicorn
+django
+django-rest-framework
+django-model-utils
