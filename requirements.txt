@@ -1,3 +1,4 @@
+wheel
 gunicorn
 django
 django-rest-framework
