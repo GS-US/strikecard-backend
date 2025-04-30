@@ -1,0 +1,284 @@
+# Comprehensive Technical Specification
+
+## System Purpose
+The system manages the collection, validation, management, and public reporting of signups for a decentralized organization.  
+It handles public signup forms, partner organization tracking, chapter-based organization, privacy-respecting storage, and cumulative public reporting.
+
+The system must:
+- Accept public signups tied to zip code and chapter
+- Validate signups by email
+- Track partners and referrals
+- Allow chapter leaders and partners to manage their respective contacts
+- Provide cumulative public totals
+- Maintain strict privacy and integrity of contact information
+
+---
+
+# High-Level System Structure
+
+### Apps
+- `contacts`: Manages signup records and inactive records
+- `campaigns`: Manages partner campaigns and external signup tracking
+- `chapters`: Manages chapters and geographic coverage
+- `regions`: Provides U.S. zip-to-state mapping
+- `users`: Manages admin and chapter leader accounts
+
+---
+
+# Data Models
+
+## Contact
+Represents an individual who signed up.
+
+Fields:
+- `id` (UUID, primary key)
+- `name`
+- `email` (optional but functionally required)
+- `phone` (optional)
+- `zip_code`
+- `chapter` (ForeignKey to Chapter)
+- `partner_campaign` (ForeignKey to PartnerCampaign, nullable)
+- `referer_full` (raw HTTP referer, nullable)
+- `referer_host` (parsed host, nullable)
+- `email_hash` (always generated from email)
+- `phone_hash` (always generated if phone provided)
+- `is_validated` (boolean)
+- `validated_at` (datetime when validated)
+- `validation_token` (for email validation)
+- `validation_expires_at` (datetime)
+
+Behaviors:
+- Hash email and phone on save
+- Parse and store referer host on creation
+- Validate via token
+- Remove or expunge via methods
+
+Audit Trail:
+- `HistoricalRecords` tracks all changes
+
+---
+
+## RemovedContact
+Represents a contact that was unsubscribed, deleted, or bounced.
+
+Fields:
+- Same as BaseContactRecord (hashes)
+- `status` (unsubscribed, deleted, bounced)
+- `removed_at`
+- `removed_by` (admin user)
+- `notes`
+
+No audit logging (static after creation).
+
+---
+
+## ExpungedContact
+Represents a fully expunged contact (privacy-purged but still counted).
+
+Fields:
+- Same as BaseContactRecord (hashes)
+- `chapter`
+- `partner_campaign`
+- `validated_at` (when originally validated)
+- `expunged_at`
+
+No audit logging (static after creation).
+
+---
+
+## PartnerCampaign
+Tracks external partners embedding signup forms or sending pledges.
+
+Fields:
+- `id` (UUID, primary key)
+- `name`
+- `email`
+- `url` (optional)
+- `key_string` (unique API key, hashed)
+- `legacy_source` (for matching old imported data)
+- `description`
+- `is_enabled` (soft-deletable)
+- `last_used_at`
+
+Behaviors:
+- Can generate key_string on create
+- Can auto-create from a `legacy_source`
+
+Audit Trail:
+- `HistoricalRecords` tracks all changes
+
+---
+
+## Chapter
+Represents a local organizational chapter.
+
+Fields:
+- `id` (UUID, primary key)
+- `name`
+- `slug`
+- Associated zip codes or states
+
+Behaviors:
+- Soft-deletable (inactive instead of hard delete)
+
+Audit Trail:
+- `HistoricalRecords` tracks all changes
+
+---
+
+## PaperTotal
+Tracks counts of paper signups manually entered by admins.
+
+Fields:
+- `chapter` (ForeignKey)
+- `count`
+- `notes`
+- `created`
+
+---
+
+## AffiliatedPledge
+Tracks external organizations pledging their member counts.
+
+Fields:
+- `organization_name`
+- `count`
+- `submitted_by_user` (admin user)
+- `notes`
+- `created`
+
+---
+
+## StateZip
+Maps zip codes to state codes.
+
+Fields:
+- `zip_code`
+- `state_code`
+
+---
+
+# Core System Flows
+
+## Public Signup Flow
+1. User fills out public form (name, email, zip, optional phone).
+2. System captures HTTP referer.
+3. System creates Contact record with `is_validated = False`.
+4. Validation email is immediately sent with tokenized link.
+
+## Validation Flow
+1. User clicks email link with token.
+2. System validates token and expiration.
+3. If valid:
+   - Sets `is_validated = True`
+   - Sets `validated_at`
+4. If expired:
+   - User must resubmit signup to generate a new token.
+
+## Partner Tracking
+- Public forms can be embedded with a partner's `key_string`.
+- Contacts are automatically tied to a PartnerCampaign.
+- Legacy imported data matches on `legacy_source`.
+
+## Chapter Mapping
+- Zip codes are mapped to chapters directly.
+- If no zip mapping, chapters may be mapped by state.
+- Each zip code is associated with exactly one chapter.
+
+## Removal and Expungement
+- Admins or users can trigger unsubscribe, bounce, or delete.
+- Contact is moved to RemovedContact with status and notes.
+- Contacts can be fully expunged to ExpungedContact if necessary.
+- Expunged contacts retain chapter, partner, and validated timestamp.
+- Expunged contacts still count toward totals.
+
+## Data Exports
+- Partners can request a secure CSV export of their contacts.
+- Admins and chapter leaders can export their validated contacts.
+- Only validated contacts are exported.
+- Optionally, webhook-based exports for partners can be enabled.
+
+---
+
+# Counting Rules
+
+- **Public totals include:**
+  - Validated contacts
+  - PaperTotal counts
+  - AffiliatedPledge counts
+  - Expunged contacts
+- **Public totals exclude:**
+  - Pending (unvalidated) contacts
+  - Removed contacts (unsubscribed, deleted, bounced)
+
+---
+
+# Privacy and Security
+
+- No individual contact information is exposed publicly.
+- All email and phone numbers are hashed internally for deduplication.
+- Validation tokens expire after a configured time.
+- Admin actions are fully audit-logged.
+- Soft deletion is used wherever applicable to preserve historical integrity.
+
+---
+
+# Administrative Features
+
+- Full Django Admin support for:
+  - Contacts
+  - Chapters
+  - PartnerCampaigns
+  - Exports and import tools
+- Chapter leaders see only their chapter’s contacts.
+- Partners can manage their own contact exports.
+
+---
+
+# Public-Facing Features
+
+- Public-facing signup forms
+- Live counter of total signups
+- Optional chapter breakdown of counts
+- Public-facing list of chapters (no contact data)
+
+---
+
+# API and Webhooks
+
+- Endpoints (planned or optional):
+  - Generate partner signup embed form
+  - Secure CSV download for partners
+  - Optional webhook push of new validated signups
+
+---
+
+# Additional System Details
+
+- PartnerCampaign `legacy_source` allows matching to old imported datasets.
+- New PartnerCampaigns are created automatically if missing on import.
+- Simple-History tracks changes across major models.
+- Soft-deletion is used instead of hard-deletion for chapters and partners.
+- Validation is enforced strictly — no unvalidated contacts appear in exports or totals.
+- Default email for automatically created PartnerCampaigns is set via settings.
+
+---
+
+# Technical Notes
+
+- System uses Django’s ORM with PostgreSQL recommended.
+- Password hashing for emails/phones uses system-wide salt configured in settings.
+- Management commands can be created for:
+  - Expiring old pending contacts
+  - Bulk exports
+  - Bulk imports
+- Heavy use of UUIDs across all models for ID consistency.
+
+---
+
+# Summary
+
+This system maintains a strict, validated, partner-aware signup list while protecting user privacy and supporting decentralized organizing.  
+It supports partner referrals, paper-based pledges, and mass organizational pledges, rolling all counts into a clear public display and offering flexible admin control.
+
+
