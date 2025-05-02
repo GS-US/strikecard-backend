@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.views.generic import DetailView
 
-# Create your views here.
+from .models import Chapter
+
+
+class ChapterDetailView(DetailView):
+    model = Chapter
+    template_name = 'chapters/chapter_detail.html'
