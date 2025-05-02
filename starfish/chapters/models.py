@@ -20,6 +20,19 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     def __str__(self):
         return self.title
 
+    def __str__(self):
+        return f"{self.user} - {self.role} of {self.chapter}"
+
+
+class Chapter(TimeStampedModel, SoftDeletableModel):
+    # ... existing fields ...
+
+    class Meta:
+        permissions = [
+            ('view_chapter', 'Can view chapter'),
+            ('change_chapter', 'Can change chapter'),
+        ]
+
     def get_validated_contacts(self):
         return self.contacts.filter(is_validated=True)
 
@@ -39,13 +52,18 @@ class ChapterState(models.Model):
     state_code = models.CharField(max_length=2)
 
 
-class ChapterLeader(models.Model):
+class ChapterRole(models.Model):
+    ROLE_CHOICES = [
+        ('facilitator', 'Facilitator'),
+        ('assistant', 'Assistant'),
+    ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey('users.User', on_delete=models.PROTECT)
-    added_by_user = models.ForeignKey('users.User', on_delete=models.PROTECT)
-    chapter = models.ForeignKey(
-        Chapter, on_delete=models.PROTECT, related_name='leaders'
+    added_by_user = models.ForeignKey(
+        'users.User', on_delete=models.PROTECT, related_name='added_roles'
     )
+    chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='roles')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='assistant')
     title = models.CharField(
         max_length=255, blank=True, null=True, default="Facilitator"
     )

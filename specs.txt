@@ -276,9 +276,7 @@ Fields:
 
 ---
 
-# Summary
+# specific notes:
 
-This system maintains a strict, validated, partner-aware signup list while protecting user privacy and supporting decentralized organizing.  
-It supports partner referrals, paper-based pledges, and mass organizational pledges, rolling all counts into a clear public display and offering flexible admin control.
-
-
+- no public views for modifying records of any kind
+- all public interaction through REST API

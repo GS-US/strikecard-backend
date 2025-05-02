@@ -45,7 +45,12 @@ class Contact(BaseContactRecord):
     tracker = FieldTracker(fields=['email', 'phone'])
     history = HistoricalRecords()
 
-    def update_hashes(self):
+    class Meta:
+        permissions = [
+            ('view_contact', 'Can view contact'),
+            ('change_contact', 'Can change contact'),
+            ('delete_contact', 'Can delete contact'),
+        ]
         salt = settings.CONTACT_HASH_SALT
 
         if not self.pk or self.tracker.has_changed('email'):
