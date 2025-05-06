@@ -58,7 +58,11 @@ class ChapterRole(models.Model):
         ('assistant', 'Assistant'),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey('users.User', on_delete=models.PROTECT)
+    user = models.ForeignKey(
+        'users.User',
+        on_delete=models.PROTECT,
+        related_name='chapter_roles'  # Add this related_name
+    )
     added_by_user = models.ForeignKey(
         'users.User', on_delete=models.PROTECT, related_name='added_roles'
     )
