@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rules',
+    'chapters',
+    'contacts',
+    'partners',
 ]
 
 AUTHENTICATION_BACKENDS = (
