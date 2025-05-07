@@ -51,13 +51,17 @@ class Contact(BaseContactRecord):
             ('change_contact', 'Can change contact'),
             ('delete_contact', 'Can delete contact'),
         ]
-        salt = settings.CONTACT_HASH_SALT
 
-        if not self.pk or self.tracker.has_changed('email'):
-            self.email_hash = hashlib.sha256((self.email + salt).encode()).hexdigest()
+    def update_hashes(self):
+
+        def _hash(s):
+            return hashlib.sha256((s + settings.CONTACT_HASH_SALT).encode()).hexdigest()
+
+        if self.email and (not self.pk or self.tracker.has_changed('email')):
+            self.email_hash = _hash(s)
 
         if self.phone and (not self.pk or self.tracker.has_changed('phone')):
-            self.phone_hash = hashlib.sha256((self.phone + salt).encode()).hexdigest()
+            self.phone_hash = _hash(s)
 
     def update_referer_host(self):
         if self.referer_full and not self.referer_host:
