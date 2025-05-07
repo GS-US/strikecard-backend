@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.db import models
 from model_utils.managers import SoftDeletableManager
 from model_utils.models import SoftDeletableModel, TimeStampedModel
@@ -43,10 +44,10 @@ class ChapterRole(models.Model):
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
-        'users.User', on_delete=models.PROTECT, related_name='chapter_roles'
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='chapter_roles'
     )
     added_by_user = models.ForeignKey(
-        'users.User', on_delete=models.PROTECT, related_name='added_roles'
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='added_roles'
     )
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='roles')
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='assistant')
@@ -72,7 +73,9 @@ class PaperTotal(models.Model):
         Chapter, on_delete=models.PROTECT, related_name='paper_totals'
     )
     count = models.PositiveIntegerField()
-    submitted_by_user = models.ForeignKey('users.User', on_delete=models.PROTECT)
+    submitted_by_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT
+    )
     notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

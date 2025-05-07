@@ -46,3 +46,6 @@ class ContactAdmin(ObjectPermissionsModelAdmin):
             'chapter', flat=True
         )
         return qs.filter(chapter__in=user_chapters)
+
+
+admin.site.register(Contact, ContactAdmin)

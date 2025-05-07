@@ -51,10 +51,10 @@ class Contact(BaseContactRecord):
             return hashlib.sha256((s + settings.CONTACT_HASH_SALT).encode()).hexdigest()
 
         if self.email and (not self.pk or self.tracker.has_changed('email')):
-            self.email_hash = _hash(s)
+            self.email_hash = _hash(self.email)
 
         if self.phone and (not self.pk or self.tracker.has_changed('phone')):
-            self.phone_hash = _hash(s)
+            self.phone_hash = _hash(self.phone)
 
     def update_referer_host(self):
         if self.referer_full and not self.referer_host:
@@ -128,7 +128,7 @@ class RemovedContact(BaseContactRecord):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     removed_at = models.DateTimeField(auto_now_add=True)
     removed_by = models.ForeignKey(
-        'users.User', on_delete=models.SET_NULL, null=True, blank=True
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
     )
     notes = models.TextField(blank=True, null=True)
 
