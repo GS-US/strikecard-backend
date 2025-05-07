@@ -1,20 +1,10 @@
 import uuid
 
-from django.contrib.auth.models import AbstractBaseUser, AbstractUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class User(AbstractBaseUser):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.EmailField(unique=True)
-    name = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    last_login_at = models.DateTimeField(null=True, blank=True)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+class User(AbstractUser):
 
     def is_chapter_facilitator(self, chapter):
         return self.chapter_roles.filter(chapter=chapter, role='facilitator').exists()
