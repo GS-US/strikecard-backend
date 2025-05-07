@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rules',
+    'users',
     'chapters',
     'contacts',
     'partners',
@@ -119,6 +120,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEBUG = False
+
+AUTH_USER_MODEL = 'users.User'
 
 try:
     from .local_settings import *

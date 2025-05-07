@@ -1,4 +1,6 @@
+import rules
 from django.contrib import admin
+from rules.contrib.admin import ObjectPermissionsModelAdmin
 
 from chapters.models import (
     Chapter,
@@ -8,7 +10,6 @@ from chapters.models import (
     ChapterZip,
     PaperTotal,
 )
-from rules.contrib.admin import ObjectPermissionsModelAdmin
 
 
 class ChapterZipInline(admin.TabularInline):
@@ -21,7 +22,9 @@ class ChapterStateInline(admin.TabularInline):
     extra = 1
 
 
-import rules
+class ChapterRoleInline(admin.TabularInline):
+    model = ChapterRole
+    extra = 1
 
 
 class ChapterSocialLinkInline(admin.TabularInline):
@@ -52,7 +55,7 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
             return True
         if obj:
             return rules.test_perm('chapters.view_chapter', request.user, obj)
-        return True  # Allow viewing the list
+        return False
 
     def has_change_permission(self, request, obj=None):
         if request.user.is_superuser:
@@ -60,6 +63,8 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
         if obj:
             return rules.test_perm('chapters.change_chapter', request.user, obj)
         return False
+
+    def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs

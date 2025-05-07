@@ -24,11 +24,8 @@ def is_chapter_member(user, chapter):
     return user.is_chapter_member(chapter)
 
 
-# Permissions for Chapters
 rules.add_perm('chapters.view_chapter', is_chapter_member)
 rules.add_perm('chapters.change_chapter', is_chapter_facilitator)
-
-# Predicates for Contact Permissions
 
 
 @rules.predicate
@@ -38,7 +35,6 @@ def can_access_contact(user, contact):
     return user.is_chapter_member(contact.chapter)
 
 
-# Permissions for Contacts
 rules.add_perm('contacts.view_contact', can_access_contact)
 rules.add_perm('contacts.add_contact', is_chapter_member)
 rules.add_perm('contacts.change_contact', can_access_contact)

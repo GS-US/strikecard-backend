@@ -1,9 +1,9 @@
-from django.contrib import admin
-
 import rules
+from django.contrib import admin
+from rules.contrib.admin import ObjectPermissionsModelAdmin
+
 from chapters.models import ChapterRole
 from contacts.models import Contact
-from rules.contrib.admin import ObjectPermissionsModelAdmin
 
 
 class ContactAdmin(ObjectPermissionsModelAdmin):
@@ -36,9 +36,12 @@ class ContactAdmin(ObjectPermissionsModelAdmin):
         if obj:
             return rules.test_perm('contacts.delete_contact', request.user, obj)
         return False
+
+    def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
+
         user_chapters = ChapterRole.objects.filter(user=request.user).values_list(
             'chapter', flat=True
         )

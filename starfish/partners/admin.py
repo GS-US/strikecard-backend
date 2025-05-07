@@ -9,7 +9,3 @@ class PartnerCampaignAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email', 'url', 'legacy_source')
     list_filter = ('created', 'modified', 'is_removed')
     readonly_fields = ('key_string', 'created', 'modified', 'last_used_at')
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.all_with_deleted()

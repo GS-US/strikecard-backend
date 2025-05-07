@@ -32,7 +32,7 @@ class Contact(BaseContactRecord):
         'chapters.Chapter', on_delete=models.PROTECT, related_name='contacts'
     )
     partner_campaign = models.ForeignKey(
-        'campaigns.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
+        'partners.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
     )
     referer_full = models.TextField(blank=True, null=True)
     referer_host = models.CharField(max_length=255, blank=True, null=True)
@@ -44,13 +44,6 @@ class Contact(BaseContactRecord):
 
     tracker = FieldTracker(fields=['email', 'phone'])
     history = HistoricalRecords()
-
-    class Meta:
-        permissions = [
-            ('view_contact', 'Can view contact'),
-            ('change_contact', 'Can change contact'),
-            ('delete_contact', 'Can delete contact'),
-        ]
 
     def update_hashes(self):
 
@@ -103,7 +96,7 @@ class Contact(BaseContactRecord):
             fail_silently=False,
         )
 
-    def remove(self, status, removed_by=None, notes=""):
+    def remove(self, status, removed_by=None, notes=''):
         RemovedContact.objects.create(
             id=self.id,
             email_hash=self.email_hash,
@@ -128,9 +121,9 @@ class Contact(BaseContactRecord):
 
 class RemovedContact(BaseContactRecord):
     STATUS_CHOICES = [
-        ("unsubscribed", "Unsubscribed"),
-        ("deleted", "Deleted"),
-        ("bounced", "Bounced"),
+        ('unsubscribed', 'Unsubscribed'),
+        ('deleted', 'Deleted'),
+        ('bounced', 'Bounced'),
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     removed_at = models.DateTimeField(auto_now_add=True)
@@ -140,7 +133,7 @@ class RemovedContact(BaseContactRecord):
     notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.status}: {self.email_hash}"
+        return f'{self.status}: {self.email_hash}'
 
 
 class ExpungedContact(BaseContactRecord):
@@ -148,10 +141,10 @@ class ExpungedContact(BaseContactRecord):
         'chapters.Chapter', on_delete=models.PROTECT, related_name='expunged_contacts'
     )
     partner_campaign = models.ForeignKey(
-        'campaigns.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
+        'partners.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
     )
     validated_at = models.DateTimeField()
     expunged_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"expunged: {self.email_hash}"
+        return f'expunged: {self.email_hash}'
