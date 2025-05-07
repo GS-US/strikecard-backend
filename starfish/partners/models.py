@@ -41,8 +41,8 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
         partner, created = cls.objects.get_or_create(
             legacy_source=clean_source,
             defaults={
-                "name": clean_source,
-                "email": settings.DEFAULT_PARTNER_EMAIL,
+                'name': clean_source,
+                'email': settings.DEFAULT_PARTNER_EMAIL,
             },
         )
         return partner

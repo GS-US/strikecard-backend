@@ -6,4 +6,4 @@ class ChaptersConfig(AppConfig):
     name = 'chapters'
 
     def ready(self):
-        import starfish.rules  # Adjust the import path based on your project structure
+        import chapters.rules
