@@ -1,5 +1,4 @@
-import uuid
-
+from model_utils.fields import UUIDField
 from django.conf import settings
 from django.db import models
 from model_utils.managers import SoftDeletableManager
@@ -8,7 +7,7 @@ from simple_history.models import HistoricalRecords
 
 
 class Chapter(TimeStampedModel, SoftDeletableModel):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = UUIDField(primary_key=True, editable=False)
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)

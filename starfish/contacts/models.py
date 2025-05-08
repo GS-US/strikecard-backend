@@ -1,5 +1,5 @@
+from model_utils.fields import UUIDField, UrlSafeTokenField
 import hashlib
-import uuid
 from datetime import timedelta
 from urllib.parse import urlparse
 
@@ -16,7 +16,7 @@ from simple_history.models import HistoricalRecords
 
 
 class BaseContactRecord(TimeStampedModel):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = UUIDField(primary_key=True)
     email_hash = models.CharField(max_length=128, db_index=True, editable=False)
     phone_hash = models.CharField(
         max_length=128, blank=True, null=True, db_index=True, editable=False
@@ -39,7 +39,7 @@ class Contact(BaseContactRecord):
 
     is_validated = models.BooleanField(default=False)
     validated_at = models.DateTimeField(null=True, blank=True)
-    validation_token = models.CharField(max_length=64)
+    validation_token = UrlSafeTokenField()
     validation_expires_at = models.DateTimeField()
 
     tracker = FieldTracker(fields=['email', 'phone'])
@@ -80,7 +80,6 @@ class Contact(BaseContactRecord):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.validation_token = uuid.uuid4().hex
             self.validation_expires_at = now() + timedelta(days=7)
             self.update_referer_host()
         self.update_hashes()
