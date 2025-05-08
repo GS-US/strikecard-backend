@@ -1,4 +1,3 @@
-from model_utils.fields import UUIDField, UrlSafeTokenField
 import hashlib
 from datetime import timedelta
 from urllib.parse import urlparse
@@ -10,13 +9,13 @@ from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from model_utils import FieldTracker
+from model_utils.fields import UrlsafeTokenField
 from model_utils.managers import SoftDeletableManager
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
 
 
 class BaseContactRecord(TimeStampedModel):
-    id = UUIDField(primary_key=True)
     email_hash = models.CharField(max_length=128, db_index=True, editable=False)
     phone_hash = models.CharField(
         max_length=128, blank=True, null=True, db_index=True, editable=False
@@ -39,8 +38,8 @@ class Contact(BaseContactRecord):
 
     is_validated = models.BooleanField(default=False)
     validated_at = models.DateTimeField(null=True, blank=True)
-    validation_token = UrlSafeTokenField()
-    validation_expires_at = models.DateTimeField()
+    validation_token = UrlsafeTokenField(null=True, blank=True)
+    validation_expires_at = models.DateTimeField(null=True, blank=True)
 
     tracker = FieldTracker(fields=['email', 'phone'])
     history = HistoricalRecords()

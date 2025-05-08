@@ -1,4 +1,3 @@
-from model_utils.fields import UUIDField
 from django.conf import settings
 from django.db import models
 from model_utils.managers import SoftDeletableManager
@@ -7,7 +6,6 @@ from simple_history.models import HistoricalRecords
 
 
 class Chapter(TimeStampedModel, SoftDeletableModel):
-    id = UUIDField(primary_key=True, editable=False)
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
@@ -22,14 +20,12 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
 
 
 class ChapterZip(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='zips')
     zip_code = models.CharField(max_length=10, unique=True)
     state_code = models.CharField(max_length=2)
 
 
 class ChapterState(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chapter = models.ForeignKey(
         Chapter, on_delete=models.PROTECT, related_name='states'
     )
@@ -41,7 +37,6 @@ class ChapterRole(models.Model):
         ('facilitator', 'Facilitator'),
         ('assistant', 'Assistant'),
     ]
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='chapter_roles'
     )
@@ -56,7 +51,6 @@ class ChapterRole(models.Model):
 
 
 class ChapterSocialLink(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chapter = models.ForeignKey(
         Chapter, on_delete=models.PROTECT, related_name='social_links'
     )
@@ -67,7 +61,6 @@ class ChapterSocialLink(models.Model):
 
 
 class PaperTotal(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chapter = models.ForeignKey(
         Chapter, on_delete=models.PROTECT, related_name='paper_totals'
     )
