@@ -3,21 +3,22 @@ import datetime
 from django.conf import settings
 from django.db import models
 from model_utils.fields import UrlsafeTokenField
-from model_utils.managers import SoftDeletableManager
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
+
+from starfish.models import SoftDeletablePermissionManager
 
 
 class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     url = models.URLField('URL', blank=True, null=True)
-    key_string = UrlsafeTokenField(unique=True)
+    key_string = UrlsafeTokenField(unique=True, max_length=16)
     legacy_source = models.CharField(max_length=255, blank=True, null=True, unique=True)
     notes = models.CharField(max_length=255, blank=True, null=True)
     last_used_at = models.DateTimeField(blank=True, null=True)
 
-    objects = SoftDeletableManager()
+    objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
 
     def __str__(self):
