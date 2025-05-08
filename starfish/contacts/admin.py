@@ -6,6 +6,7 @@ from chapters.models import ChapterRole
 from contacts.models import Contact
 
 
+@admin.register(Contact)
 class ContactAdmin(ObjectPermissionsModelAdmin):
     list_display = ('name', 'email', 'chapter', 'is_validated')
     search_fields = ('name', 'email')
@@ -46,6 +47,3 @@ class ContactAdmin(ObjectPermissionsModelAdmin):
             'chapter', flat=True
         )
         return qs.filter(chapter__in=user_chapters)
-
-
-admin.site.register(Contact, ContactAdmin)

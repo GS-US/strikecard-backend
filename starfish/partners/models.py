@@ -1,3 +1,4 @@
+import datetime
 import hashlib
 import uuid
 
@@ -11,10 +12,10 @@ from simple_history.models import HistoricalRecords
 class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
     name = models.CharField(max_length=255)
     email = models.EmailField()
-    url = models.URLField(blank=True, null=True)
+    url = models.URLField('URL', blank=True, null=True)
     key_string = models.CharField(max_length=64, unique=True)
     legacy_source = models.CharField(max_length=255, blank=True, null=True, unique=True)
-    description = models.TextField(blank=True, null=True)
+    notes = models.CharField(max_length=255, blank=True, null=True)
     last_used_at = models.DateTimeField(blank=True, null=True)
 
     objects = SoftDeletableManager()
@@ -25,12 +26,16 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
 
     def generate_key_string(self):
         # TODO: use name, etc?
-        self.key_string = hashlib.sha256(uuid.uuid4().hex.encode()).hexdigest()
+        self.key_string = hashlib.sha256(uuid.uuid4().hex.encode()).hexdigest()[:16]
 
     def save(self, *args, **kwargs):
         if not self.key_string:
             self.generate_key_string()
         super().save(*args, **kwargs)
+
+    def use(self):
+        self.last_used_at = datetime.now()
+        self.save()
 
     @classmethod
     def get_or_create_from_source(cls, source):
