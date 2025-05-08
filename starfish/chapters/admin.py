@@ -37,6 +37,7 @@ class PaperTotalInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Chapter)
 class ChapterAdmin(ObjectPermissionsModelAdmin):
     list_display = ('title', 'slug', 'contact_email')
     search_fields = ('title', 'slug')
@@ -72,6 +73,3 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
             'chapter', flat=True
         )
         return qs.filter(id__in=user_chapters)
-
-
-admin.site.register(Chapter, ChapterAdmin)
