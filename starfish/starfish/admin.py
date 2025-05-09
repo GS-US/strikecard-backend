@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+# TODO: turn into mixin to be used w/ other Admin classes?
+
 
 class SoftDeletableAdmin(admin.ModelAdmin):
 
