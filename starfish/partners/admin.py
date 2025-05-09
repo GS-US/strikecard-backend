@@ -1,12 +1,12 @@
 from django.contrib import admin
 
-from starfish.admin import SoftDeletableAdmin
+from starfish.admin import SoftDeletableAdminMixin
 
 from .models import AffiliatedPledge, PartnerCampaign
 
 
 @admin.register(PartnerCampaign)
-class PartnerCampaignAdmin(SoftDeletableAdmin):
+class PartnerCampaignAdmin(SoftDeletableAdminMixin, admin.ModelAdmin):
     list_display = (
         'name',
         'email',

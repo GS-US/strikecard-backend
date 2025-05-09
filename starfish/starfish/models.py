@@ -2,7 +2,7 @@ from django.contrib.auth import get_permission_codename
 from django.db import models
 
 
-class SoftDeletablePermissionManager(models.Manager):
+class SoftDeletablePermissionManagerMixin:
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -19,3 +19,9 @@ class SoftDeletablePermissionManager(models.Manager):
     def with_user(self, user):
         self._request_user = user
         return self
+
+
+class SoftDeletablePermissionManager(
+    SoftDeletablePermissionManagerMixin, models.Manager
+):
+    pass
