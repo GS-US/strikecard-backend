@@ -44,8 +44,18 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
         return partner
 
 
-class AffiliatedPledge(models.Model):
+class Affiliate(models.Model):
     organization_name = models.CharField(max_length=255)
+    notes = models.CharField(max_length=255, blank=True)  # New notes field
+
+    def __str__(self):
+        return self.organization_name
+
+
+class Pledge(models.Model):
+    affiliate = models.ForeignKey(
+        Affiliate, on_delete=models.PROTECT, related_name='pledges'
+    )
     count = models.PositiveIntegerField()
     submitted_by_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT
@@ -54,4 +64,4 @@ class AffiliatedPledge(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.organization_name} ({self.count})"
+        return f"{self.affiliate.organization_name} ({self.count})"
