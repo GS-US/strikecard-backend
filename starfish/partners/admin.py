@@ -22,6 +22,7 @@ class PledgeInline(admin.TabularInline):
     model = Pledge
     extra = 1
     readonly_fields = ('created',)
+    exclude = ('submitted_by_user',)
 
 
 @admin.register(Affiliate)
@@ -29,3 +30,11 @@ class AffiliateAdmin(admin.ModelAdmin):
     list_display = ('organization_name',)
     search_fields = ('organization_name', 'notes')
     inlines = [PledgeInline]
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in instances:
+            if isinstance(obj, Pledge) and not obj.submitted_by_user_id:
+                obj.submitted_by_user = request.user
+            obj.save()
+        formset.save_m2m()
