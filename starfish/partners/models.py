@@ -46,7 +46,10 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
 
 class Affiliate(models.Model):
     organization_name = models.CharField(max_length=255)
-    notes = models.CharField(max_length=255, blank=True)  # New notes field
+    contact_email = models.EmailField(max_length=255, blank=True)
+    notes = models.CharField(max_length=255, blank=True)
+
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.organization_name
@@ -64,4 +67,4 @@ class Pledge(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.affiliate.organization_name} ({self.count})"
+        return f"{self.created} ({self.count})"
