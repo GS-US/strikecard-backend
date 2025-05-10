@@ -39,15 +39,15 @@ class PaperTotalInline(admin.TabularInline):
 
 @admin.register(Chapter)
 class ChapterAdmin(ObjectPermissionsModelAdmin):
-    list_display = ('title', 'slug', 'contact_email')
+    list_display = ('title', 'created')
     search_fields = ('title', 'slug')
-    list_filter = ('created', 'modified')
+    prepopulated_fields = {'slug': ['title']}
 
     inlines = [
-        ChapterZipInline,
-        ChapterStateInline,
         ChapterRoleInline,
         ChapterSocialLinkInline,
+        ChapterStateInline,
+        ChapterZipInline,
         PaperTotalInline,
     ]
 

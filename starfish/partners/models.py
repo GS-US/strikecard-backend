@@ -61,7 +61,7 @@ class Pledge(models.Model):
     )
     count = models.PositiveIntegerField()
     submitted_by_user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT
+        settings.AUTH_USER_MODEL, verbose_name='Submitted by', on_delete=models.PROTECT
     )
     notes = models.CharField(blank=True, max_length=255)
     created = models.DateTimeField(auto_now_add=True)
