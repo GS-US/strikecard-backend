@@ -22,15 +22,10 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, admin.ModelAdmin):
 class AffiliateAdmin(admin.ModelAdmin):
     list_display = ('organization_name',)
     search_fields = ('organization_name', 'notes')
+    inlines = [PledgeInline]
 
 
-@admin.register(Pledge)
-class PledgeAdmin(admin.ModelAdmin):
-    list_display = ('affiliate', 'count', 'submitted_by_user', 'created')
-    list_filter = ('created', 'affiliate')
-    search_fields = (
-        'affiliate__organization_name',
-        'notes',
-        'submitted_by_user__username',
-    )
+class PledgeInline(admin.TabularInline):
+    model = Pledge
+    extra = 0  # Number of empty forms to display
     readonly_fields = ('created',)
