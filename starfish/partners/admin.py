@@ -21,8 +21,10 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, admin.ModelAdmin):
 class PledgeInline(admin.TabularInline):
     model = Pledge
     extra = 1
-    readonly_fields = ('created',)
-    exclude = ('submitted_by_user',)
+    readonly_fields = (
+        'created',
+        'submitted_by_user',
+    )
 
 
 @admin.register(Affiliate)

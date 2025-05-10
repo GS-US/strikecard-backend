@@ -1,3 +1,8 @@
+from django.contrib import admin
+
+admin.site.disable_action('delete_selected')
+
+
 class SoftDeletableAdminMixin:
 
     def get_queryset(self, request):
