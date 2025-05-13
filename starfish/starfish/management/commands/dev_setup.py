@@ -1,5 +1,17 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from chapters.models import (
+    Chapter,
+    ChapterZip,
+    ChapterState,
+    ChapterRole,
+    ChapterSocialLink,
+    PaperTotal,
+)
+from contacts.models import PendingContact, Contact
+from partners.models import PartnerCampaign, Affiliate, Pledge
 
 
 class Command(BaseCommand):
