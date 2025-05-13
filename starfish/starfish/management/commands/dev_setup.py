@@ -23,29 +23,56 @@ class Command(BaseCommand):
         if not User.objects.filter(username="admin").exists():
             User.objects.create_superuser("admin", "admin@example.com", "admin")
 
-        # Create example chapters
-        chapter1 = Chapter.objects.create(
-            title="Chapter One",
-            slug="chapter-one",
-            description="The first chapter.",
-            contact_email="contact@chapterone.com",
-            website_url="https://chapterone.com",
+        # Create example chapters representing U.S. states
+        chapter_ca = Chapter.objects.create(
+            title="California",
+            slug="california",
+            description="Chapter for California.",
+            contact_email="contact@california.com",
+            website_url="https://california.com",
         )
-        chapter2 = Chapter.objects.create(
-            title="Chapter Two",
-            slug="chapter-two",
-            description="The second chapter.",
-            contact_email="contact@chaptertwo.com",
-            website_url="https://chaptertwo.com",
+        chapter_ny = Chapter.objects.create(
+            title="New York",
+            slug="new-york",
+            description="Chapter for New York.",
+            contact_email="contact@newyork.com",
+            website_url="https://newyork.com",
+        )
+        chapter_tx = Chapter.objects.create(
+            title="Texas",
+            slug="texas",
+            description="Chapter for Texas.",
+            contact_email="contact@texas.com",
+            website_url="https://texas.com",
+        )
+        chapter_fl = Chapter.objects.create(
+            title="Florida",
+            slug="florida",
+            description="Chapter for Florida.",
+            contact_email="contact@florida.com",
+            website_url="https://florida.com",
+        )
+        chapter_il = Chapter.objects.create(
+            title="Illinois",
+            slug="illinois",
+            description="Chapter for Illinois.",
+            contact_email="contact@illinois.com",
+            website_url="https://illinois.com",
         )
 
         # Create example chapter zips
-        ChapterZip.objects.create(chapter=chapter1, zip_code="12345", state_code="CA")
-        ChapterZip.objects.create(chapter=chapter2, zip_code="67890", state_code="NY")
+        ChapterZip.objects.create(chapter=chapter_ca, zip_code="90001", state_code="CA")
+        ChapterZip.objects.create(chapter=chapter_ny, zip_code="10001", state_code="NY")
+        ChapterZip.objects.create(chapter=chapter_tx, zip_code="73301", state_code="TX")
+        ChapterZip.objects.create(chapter=chapter_fl, zip_code="32004", state_code="FL")
+        ChapterZip.objects.create(chapter=chapter_il, zip_code="60007", state_code="IL")
 
         # Create example chapter states
-        ChapterState.objects.create(chapter=chapter1, state_code="CA")
-        ChapterState.objects.create(chapter=chapter2, state_code="NY")
+        ChapterState.objects.create(chapter=chapter_ca, state_code="CA")
+        ChapterState.objects.create(chapter=chapter_ny, state_code="NY")
+        ChapterState.objects.create(chapter=chapter_tx, state_code="TX")
+        ChapterState.objects.create(chapter=chapter_fl, state_code="FL")
+        ChapterState.objects.create(chapter=chapter_il, state_code="IL")
 
         # Ensure additional users exist
         if not User.objects.filter(username="user1").exists():
@@ -62,49 +89,96 @@ class Command(BaseCommand):
         ChapterRole.objects.create(
             user=user1,
             added_by_user=user1,
-            chapter=chapter1,
+            chapter=chapter_ca,
             role='facilitator',
             title='Lead Facilitator'
         )
         ChapterRole.objects.create(
             user=user2,
             added_by_user=user1,
-            chapter=chapter1,
+            chapter=chapter_tx,
             role='assistant',
             title='Assistant Facilitator'
         )
         ChapterRole.objects.create(
             user=user2,
             added_by_user=user2,
-            chapter=chapter2,
+            chapter=chapter_ny,
+            role='facilitator',
+            title='Lead Facilitator'
+        )
+        ChapterRole.objects.create(
+            user=user1,
+            added_by_user=user2,
+            chapter=chapter_fl,
+            role='assistant',
+            title='Assistant Facilitator'
+        )
+        ChapterRole.objects.create(
+            user=user2,
+            added_by_user=user1,
+            chapter=chapter_il,
             role='facilitator',
             title='Lead Facilitator'
         )
 
         # Create example social links for chapters
         ChapterSocialLink.objects.create(
-            chapter=chapter1,
+            chapter=chapter_ca,
             platform="Twitter",
-            url="https://twitter.com/chapter_one"
+            url="https://twitter.com/chapter_california"
         )
         ChapterSocialLink.objects.create(
-            chapter=chapter2,
+            chapter=chapter_ny,
             platform="Facebook",
-            url="https://facebook.com/chapter_two"
+            url="https://facebook.com/chapter_newyork"
+        )
+        ChapterSocialLink.objects.create(
+            chapter=chapter_tx,
+            platform="Instagram",
+            url="https://instagram.com/chapter_texas"
+        )
+        ChapterSocialLink.objects.create(
+            chapter=chapter_fl,
+            platform="LinkedIn",
+            url="https://linkedin.com/company/chapter_florida"
+        )
+        ChapterSocialLink.objects.create(
+            chapter=chapter_il,
+            platform="YouTube",
+            url="https://youtube.com/chapter_illinois"
         )
 
         # Create example paper totals
         PaperTotal.objects.create(
-            chapter=chapter1,
-            count=100,
+            chapter=chapter_ca,
+            count=150,
             submitted_by_user=user1,
-            notes="Initial paper total."
+            notes="Paper total for California."
         )
         PaperTotal.objects.create(
-            chapter=chapter2,
-            count=200,
+            chapter=chapter_ny,
+            count=250,
             submitted_by_user=user2,
-            notes="Second paper total."
+            notes="Paper total for New York."
+        )
+        PaperTotal.objects.create(
+            chapter=chapter_tx,
+            count=300,
+            submitted_by_user=user1,
+            notes="Paper total for Texas."
+        )
+        PaperTotal.objects.create(
+            chapter=chapter_fl,
+            count=120,
+            submitted_by_user=user2,
+            notes="Paper total for Florida."
+        )
+        PaperTotal.objects.create(
+            chapter=chapter_il,
+            count=180,
+            submitted_by_user=user1,
+            notes="Paper total for Illinois."
         )
 
         # Create example partner campaigns
@@ -149,36 +223,53 @@ class Command(BaseCommand):
 
         # Create example pending contacts
         pending_contact1 = PendingContact.objects.create(
-            name="John Doe",
-            email="john.doe@example.com",
-            phone="123-456-7890",
-            zip_code="12345",
-            chapter=chapter1,
-            referer_full="https://referrerone.com",
+            name="Michael Johnson",
+            email="michael.johnson@example.com",
+            phone="555-123-4567",
+            zip_code="94105",
+            chapter=chapter_ca,
+            referer_full="https://referrer_california.com",
         )
         pending_contact2 = PendingContact.objects.create(
-            name="Jane Smith",
-            email="jane.smith@example.com",
-            phone="987-654-3210",
-            zip_code="67890",
-            chapter=chapter2,
-            referer_full="https://referrertwo.com",
+            name="Laura Williams",
+            email="laura.williams@example.com",
+            phone="555-987-6543",
+            zip_code="10001",
+            chapter=chapter_ny,
+            referer_full="https://referrer_newyork.com",
+        )
+        # Add more pending contacts for other chapters as needed
+        pending_contact3 = PendingContact.objects.create(
+            name="David Brown",
+            email="david.brown@example.com",
+            phone="555-555-5555",
+            zip_code="73301",
+            chapter=chapter_tx,
+            referer_full="https://referrer_texas.com",
         )
 
         # Create example validated contacts
         contact1 = Contact.objects.create(
-            name="Alice Brown",
-            email="alice.brown@example.com",
-            phone="555-555-5555",
-            zip_code="54321",
-            chapter=chapter1,
+            name="Emma Davis",
+            email="emma.davis@example.com",
+            phone="555-222-3333",
+            zip_code="90001",
+            chapter=chapter_ca,
             validated=timezone.now(),
         )
         contact2 = Contact.objects.create(
-            name="Bob Johnson",
-            email="bob.johnson@example.com",
-            phone="444-444-4444",
-            zip_code="98765",
-            chapter=chapter2,
+            name="Liam Wilson",
+            email="liam.wilson@example.com",
+            phone="555-444-5555",
+            zip_code="10001",
+            chapter=chapter_ny,
+            validated=timezone.now(),
+        )
+        contact3 = Contact.objects.create(
+            name="Olivia Martinez",
+            email="olivia.martinez@example.com",
+            phone="555-666-7777",
+            zip_code="73301",
+            chapter=chapter_tx,
             validated=timezone.now(),
         )
