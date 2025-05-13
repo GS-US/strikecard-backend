@@ -12,3 +12,15 @@ class Command(BaseCommand):
         if not User.objects.filter(username="admin").exists():
             User.objects.create_superuser("admin", "admin@example.com", "admin")
 
+        # Create sample chapters using factories
+        chapter_titles = [
+            "Oregon",
+            "New York",
+            "No California",
+            "So California",
+            "Northeastern States",
+        ]
+
+        for title in chapter_titles:
+            ChapterFactory(title=title)
+
