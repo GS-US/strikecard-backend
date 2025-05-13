@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from chapters.tests.factories import ChapterFactory
 
 class Command(BaseCommand):
     help = "Setup default dev data"
