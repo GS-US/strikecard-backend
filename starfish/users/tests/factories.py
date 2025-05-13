@@ -1,5 +1,7 @@
 import factory
-from starfish.users.models import User
+
+from users.models import User
+
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:

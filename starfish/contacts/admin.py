@@ -12,6 +12,7 @@ class ContactAdmin(ObjectPermissionsModelAdmin):
         'name',
         'email',
         'chapter',
+        'partner_campaign',
     )
     search_fields = ('name', 'email')
     list_filter = ('created',)

@@ -1,6 +1,8 @@
 import factory
-from starfish.partners.models import PartnerCampaign, Affiliate, Pledge
-from starfish.users.models import User
+
+from partners.models import Affiliate, PartnerCampaign, Pledge
+from users.models import User
+
 
 class PartnerCampaignFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -13,6 +15,7 @@ class PartnerCampaignFactory(factory.django.DjangoModelFactory):
     legacy_source = factory.Faker('word')
     notes = factory.Faker('sentence')
 
+
 class AffiliateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Affiliate
@@ -21,11 +24,12 @@ class AffiliateFactory(factory.django.DjangoModelFactory):
     contact_email = factory.Faker('email')
     notes = factory.Faker('sentence')
 
+
 class PledgeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Pledge
 
     affiliate = factory.SubFactory(AffiliateFactory)
-    count = factory.Faker('random_int', min=1, max=100)
-    submitted_by_user = factory.SubFactory('starfish.users.tests.factories.UserFactory')
+    count = factory.Faker('random_int', min=100, max=100000)
+    submitted_by_user = factory.SubFactory('users.tests.factories.UserFactory')
     notes = factory.Faker('sentence')

@@ -9,3 +9,4 @@ pip-tools
 pytest
 coverage
 pre-commit
+factory_boy
