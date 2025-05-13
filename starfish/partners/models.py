@@ -16,7 +16,7 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
     key_string = UrlsafeTokenField(unique=True, max_length=16)
     legacy_source = models.CharField(max_length=255, blank=True, null=True, unique=True)
     notes = models.CharField(max_length=255, blank=True, null=True)
-    last_used_at = models.DateTimeField(blank=True, null=True)
+    last_used = models.DateTimeField(blank=True, null=True)
 
     objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
@@ -25,7 +25,7 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
         return self.name
 
     def use(self):
-        self.last_used_at = datetime.now()
+        self.last_used = datetime.now()
         self.save()
 
     @classmethod

@@ -15,14 +15,14 @@ from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
 
 
-class BaseContactRecord(TimeStampedModel):
+class HashedContactRecord(TimeStampedModel):
     email_hash = models.CharField(max_length=128, db_index=True, editable=False)
     phone_hash = models.CharField(
         max_length=128, blank=True, null=True, db_index=True, editable=False
     )
 
 
-class Contact(BaseContactRecord):
+class BaseContact(HashedContactRecord):
     name = models.CharField(max_length=255)
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
@@ -35,14 +35,11 @@ class Contact(BaseContactRecord):
     )
     referer_full = models.TextField(blank=True, null=True)
     referer_host = models.CharField(max_length=255, blank=True, null=True)
-
-    is_validated = models.BooleanField(default=False)
-    validated_at = models.DateTimeField(null=True, blank=True)
     validation_token = UrlsafeTokenField(null=True, blank=True)
-    validation_expires_at = models.DateTimeField(null=True, blank=True)
+    validation_expires = models.DateTimeField(null=True, blank=True)
 
-    tracker = FieldTracker(fields=['email', 'phone'])
-    history = HistoricalRecords()
+    class Meta:
+        abstract: True
 
     def update_hashes(self):
 
@@ -62,6 +59,10 @@ class Contact(BaseContactRecord):
             except Exception:
                 self.referer_host = None
 
+
+class PendingContact(BaseContact):
+    tracker = FieldTracker(fields=['email', 'phone'])
+
     def validate_token(self, token):
         if self.validation_token != token:
             return False
@@ -70,16 +71,16 @@ class Contact(BaseContactRecord):
             return False
 
         self.is_validated = True
-        self.validated_at = now()
+        self.validated = now()
         self.save()
         return True
 
     def token_is_expired(self):
-        return now() > self.validation_expires_at
+        return now() > self.validation_expires
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.validation_expires_at = now() + timedelta(days=7)
+            self.validation_expires = now() + timedelta(days=7)
             self.update_referer_host()
         self.update_hashes()
         super().save(*args, **kwargs)
@@ -93,6 +94,17 @@ class Contact(BaseContactRecord):
             [self.email],
             fail_silently=False,
         )
+
+
+class Contact(BaseContact):
+    validated = models.DateTimeField(null=True, blank=True)
+
+    tracker = FieldTracker(fields=['email', 'phone'])
+    history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        self.update_hashes()
+        super().save(*args, **kwargs)
 
     def remove(self, status, removed_by=None, notes=''):
         RemovedContact.objects.create(
@@ -112,19 +124,19 @@ class Contact(BaseContactRecord):
             phone_hash=self.phone_hash,
             chapter=self.chapter,
             partner_campaign=self.partner_campaign,
-            validated_at=self.validated_at,
+            validated=self.validated,
         )
         self.delete()
 
 
-class RemovedContact(BaseContactRecord):
+class RemovedContact(HashedContactRecord):
     STATUS_CHOICES = [
         ('unsubscribed', 'Unsubscribed'),
         ('deleted', 'Deleted'),
         ('bounced', 'Bounced'),
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    removed_at = models.DateTimeField(auto_now_add=True)
+    removed = models.DateTimeField(auto_now_add=True)
     removed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -134,15 +146,15 @@ class RemovedContact(BaseContactRecord):
         return f'{self.status}: {self.email_hash}'
 
 
-class ExpungedContact(BaseContactRecord):
+class ExpungedContact(HashedContactRecord):
     chapter = models.ForeignKey(
         'chapters.Chapter', on_delete=models.PROTECT, related_name='expunged_contacts'
     )
     partner_campaign = models.ForeignKey(
         'partners.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
     )
-    validated_at = models.DateTimeField()
-    expunged_at = models.DateTimeField(auto_now_add=True)
+    validated = models.DateTimeField()
+    expunged = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'expunged: {self.email_hash}'

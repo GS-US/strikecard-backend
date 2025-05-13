@@ -72,6 +72,6 @@ class PaperTotal(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT
     )
     notes = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     history = HistoricalRecords()
