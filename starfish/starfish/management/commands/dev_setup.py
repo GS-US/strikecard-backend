@@ -1,27 +1,30 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-import random
+
 from chapters.tests.factories import (
     ChapterFactory,
     ChapterRoleFactory,
-    ChapterZipFactory,
-    ChapterStateFactory,
     ChapterSocialLinkFactory,
+    ChapterStateFactory,
+    ChapterZipFactory,
     PaperTotalFactory,
 )
 from contacts.tests.factories import (
     ContactFactory,
+    ExpungedContactFactory,
     PendingContactFactory,
     RemovedContactFactory,
-    ExpungedContactFactory,
 )
 from partners.tests.factories import (
-    PartnerCampaignFactory,
     AffiliateFactory,
+    PartnerCampaignFactory,
     PledgeFactory,
 )
 from users.tests.factories import UserFactory
+
 
 class Command(BaseCommand):
     help = 'Setup default dev data'
@@ -29,52 +32,19 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         User = get_user_model()
 
-        if not User.objects.filter(username='admin').exists():
-            User.objects.create_superuser('admin', 'admin@example.com', 'admin')
+        admin = User.objects.filter(username='admin')
+        if not admin:
+            admin = User.objects.create_superuser('admin', 'admin@example.com', 'admin')
 
-        # Create multiple PendingContact instances
-        for _ in range(5):
-            PendingContactFactory()
-
-        # Create multiple RemovedContact instances
-        for _ in range(5):
-            RemovedContactFactory()
-
-        # Create multiple ExpungedContact instances
-        for _ in range(5):
-            ExpungedContactFactory()
-
-        # Create multiple PartnerCampaign instances
         partner_campaigns = []
         for _ in range(3):
             pc = PartnerCampaignFactory()
             partner_campaigns.append(pc)
 
-        # Create multiple Affiliate instances
-        affiliates = []
         for _ in range(3):
             affiliate = AffiliateFactory()
-            affiliates.append(affiliate)
-
-        # For each affiliate, create multiple Pledge instances
-        for affiliate in affiliates:
             for _ in range(2):
-                PledgeFactory(affiliate=affiliate)
-
-        # Assign PartnerCampaigns to some Contacts
-        for contact in ContactFactory.create_batch(5):
-            contact.partner_campaign = random.choice(partner_campaigns)
-            contact.save()
-
-        # Assign PartnerCampaigns to some PendingContacts
-        for pending_contact in PendingContactFactory.create_batch(5):
-            pending_contact.partner_campaign = random.choice(partner_campaigns)
-            pending_contact.save()
-
-        # Create additional users and assign ChapterRoles
-        for _ in range(5):
-            user = UserFactory()
-            ChapterRoleFactory(user=user, chapter=random.choice(chapters), role='assistant')
+                PledgeFactory(affiliate=affiliate, submitted_by_user=admin)
 
         chapter_titles = [
             'Oregon',
@@ -84,33 +54,41 @@ class Command(BaseCommand):
             'Northeastern States',
         ]
 
-        chapters = []
         for title in chapter_titles:
             chapter = ChapterFactory(title=title)
-            chapters.append(chapter)
 
-        for chapter in chapters:
-            # Existing code to create users and contacts...
+            users = []
+            for _ in range(2):
+                user = UserFactory(is_staff=True)
+                users.append(user)
+                ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
 
-            # Create multiple ChapterZip instances
+            if random.random() < 0.8:
+                for _ in range(random.randint(1, 3)):
+                    ChapterStateFactory(chapter=chapter)
+            else:
+                for _ in range(random.randint(20, 50)):
+                    ChapterZipFactory(chapter=chapter)
+
             for _ in range(3):
-                ChapterZipFactory(chapter=chapter)
-
-            # Create multiple ChapterState instances
-            for _ in range(2):
-                ChapterStateFactory(chapter=chapter)
-
-            # Create multiple ChapterSocialLink instances
-            for _ in range(2):
                 ChapterSocialLinkFactory(chapter=chapter)
 
-            # Create multiple PaperTotal instances
-            for _ in range(5):
-                PaperTotalFactory(chapter=chapter)
-            for _ in range(2):
-                user = UserFactory()
-                ChapterRoleFactory(chapter=chapter, user=user)
+            for _ in range(3):
+                PaperTotalFactory(
+                    chapter=chapter, submitted_by_user=random.choice(users)
+                )
 
-            # Create 10 contacts for the chapter
             for _ in range(10):
-                ContactFactory(chapter=chapter)
+                partner_campaign = None
+                if random.random() < 0.2:
+                    partner_campaign = random.choice(partner_campaigns)
+                ContactFactory(chapter=chapter, partner_campaign=partner_campaign)
+
+            for _ in range(random.randint(1, 3)):
+                PendingContactFactory(chapter=chapter)
+
+            for _ in range(random.randint(1, 3)):
+                RemovedContactFactory(removed_by=random.choice(users))
+
+            for _ in range(random.randint(1, 3)):
+                ExpungedContactFactory(chapter=chapter)

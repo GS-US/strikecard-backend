@@ -1,9 +1,9 @@
 import factory
-from factory.django import DjangoModelFactory
 from django.utils import timezone
+from factory.django import DjangoModelFactory
 
-from contacts.models import PendingContact, Contact, RemovedContact, ExpungedContact
 from chapters.tests.factories import ChapterFactory
+from contacts.models import Contact, ExpungedContact, PendingContact, RemovedContact
 from partners.tests.factories import PartnerCampaignFactory
 from users.tests.factories import UserFactory
 
@@ -33,7 +33,6 @@ class PendingContactFactory(DjangoModelFactory):
     chapter = factory.SubFactory(ChapterFactory)
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)
     referer_full = factory.Faker('url')
-    validation_token = factory.PostGenerationMethodCall('generate_token')
     validation_expires = factory.LazyFunction(
         lambda: timezone.now() + timezone.timedelta(days=7)
     )
