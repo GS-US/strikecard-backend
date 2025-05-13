@@ -28,10 +28,9 @@ class Command(BaseCommand):
             chapters.append(chapter)
 
         for chapter in chapters:
-            # Create 3 users and assign them roles in the chapter
-            for _ in range(3):
+            for _ in range(2):
                 user = UserFactory()
-                ChapterRoleFactory(chapter=chapter, user=user, role='assistant')
+                ChapterRoleFactory(chapter=chapter, user=user)
 
             # Create 10 contacts for the chapter
             for _ in range(10):
