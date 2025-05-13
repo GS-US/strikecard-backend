@@ -8,9 +8,13 @@ from contacts.models import Contact
 
 @admin.register(Contact)
 class ContactAdmin(ObjectPermissionsModelAdmin):
-    list_display = ('name', 'email', 'chapter', 'is_validated')
+    list_display = (
+        'name',
+        'email',
+        'chapter',
+    )
     search_fields = ('name', 'email')
-    list_filter = ('is_validated', 'created')
+    list_filter = ('created',)
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:

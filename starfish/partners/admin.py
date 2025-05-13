@@ -11,11 +11,11 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, admin.ModelAdmin):
         'name',
         'email',
         'url',
-        'last_used_at',
+        'last_used',
     )
     search_fields = ('name', 'email', 'url', 'legacy_source')
     list_filter = ('created', 'modified')
-    readonly_fields = ('key_string', 'created', 'modified', 'last_used_at')
+    readonly_fields = ('key_string', 'created', 'modified', 'last_used')
 
 
 class PledgeInline(admin.TabularInline):
