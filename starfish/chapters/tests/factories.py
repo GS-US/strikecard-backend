@@ -2,14 +2,8 @@ import factory
 from django.utils.text import slugify
 from factory.django import DjangoModelFactory
 
-from chapters.models import (
-    Chapter,
-    ChapterRole,
-    ChapterSocialLink,
-    ChapterState,
-    ChapterZip,
-    PaperTotal,
-)
+from chapters.models import Chapter, ChapterRole, ChapterSocialLink, PaperTotal
+from regions.models import State, Zip
 from users.tests.factories import UserFactory
 
 
@@ -22,23 +16,6 @@ class ChapterFactory(DjangoModelFactory):
     description = factory.Faker('catch_phrase')
     contact_email = factory.Faker('email')
     website_url = factory.Faker('url')
-
-
-class ChapterZipFactory(DjangoModelFactory):
-    class Meta:
-        model = ChapterZip
-
-    chapter = factory.SubFactory(ChapterFactory)
-    zip_code = factory.Faker('postcode')
-    state_code = factory.Faker('state_abbr')
-
-
-class ChapterStateFactory(DjangoModelFactory):
-    class Meta:
-        model = ChapterState
-
-    chapter = factory.SubFactory(ChapterFactory)
-    state_code = factory.Faker('state_abbr')
 
 
 class ChapterRoleFactory(DjangoModelFactory):

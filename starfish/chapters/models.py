@@ -6,6 +6,7 @@ from simple_history.models import HistoricalRecords
 
 from regions.models import State, Zip
 
+
 class Chapter(TimeStampedModel, SoftDeletableModel):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
@@ -13,8 +14,12 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     contact_email = models.EmailField(blank=True, null=True)
     website_url = models.URLField(blank=True, null=True)
 
-    zips = models.ManyToManyField('regions.Zip', related_name='chapters')
-    states = models.ManyToManyField('regions.State', related_name='chapters')
+    zips = models.ManyToManyField(
+        'regions.Zip', related_name='chapters', null=True, blank=True
+    )
+    states = models.ManyToManyField(
+        'regions.State', related_name='chapters', null=True, blank=True
+    )
 
     objects = SoftDeletableManager()
     history = HistoricalRecords()
@@ -24,8 +29,6 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
 
     def __str__(self):
         return self.title
-
-
 
 
 class ChapterRole(models.Model):
@@ -41,9 +44,10 @@ class ChapterRole(models.Model):
     )
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='roles')
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='assistant')
-    title = models.CharField(
-        max_length=255, blank=True, null=True, default='Facilitator'
-    )
+    title = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.get_role_display()
 
 
 class ChapterSocialLink(models.Model):
@@ -54,6 +58,9 @@ class ChapterSocialLink(models.Model):
     url = models.URLField()
 
     history = HistoricalRecords()
+
+    def __str__(self):
+        return self.platform
 
 
 class PaperTotal(models.Model):
@@ -68,3 +75,6 @@ class PaperTotal(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     history = HistoricalRecords()
+
+    def __str__(self):
+        return self.created.strftime('%b %d, %Y')

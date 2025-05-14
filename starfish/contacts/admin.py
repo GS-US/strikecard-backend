@@ -16,6 +16,7 @@ class ContactAdmin(ObjectPermissionsModelAdmin):
     )
     search_fields = ('name', 'email')
     list_filter = ('created',)
+    autocomplete_fields = ['zip_code']
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:

@@ -13,5 +13,8 @@ class Zip(models.Model):
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     code = models.CharField(max_length=10, unique=True)
 
+    class Meta:
+        ordering = ('code',)
+
     def __str__(self):
         return self.code

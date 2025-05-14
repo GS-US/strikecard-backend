@@ -2,16 +2,7 @@ import rules
 from django.contrib import admin
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 
-from chapters.models import (
-    Chapter,
-    ChapterRole,
-    ChapterSocialLink,
-    ChapterState,
-    ChapterZip,
-    PaperTotal,
-)
-
-
+from chapters.models import Chapter, ChapterRole, ChapterSocialLink, PaperTotal
 
 
 class ChapterRoleInline(admin.TabularInline):
@@ -26,6 +17,7 @@ class ChapterSocialLinkInline(admin.TabularInline):
 
 class PaperTotalInline(admin.TabularInline):
     model = PaperTotal
+    readonly_fields = ['submitted_by_user']
     extra = 1
 
 
@@ -34,7 +26,8 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
     list_display = ('title', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
-    filter_horizontal = ['zips', 'states']
+    filter_horizontal = ['states']
+    autocomplete_fields = ['zips']
 
     inlines = [
         ChapterRoleInline,
@@ -64,3 +57,11 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
             'chapter', flat=True
         )
         return qs.filter(id__in=user_chapters)
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in instances:
+            if isinstance(obj, PaperTotal) and not obj.submitted_by_user_id:
+                obj.submitted_by_user = request.user
+            obj.save()
+        formset.save_m2m()
