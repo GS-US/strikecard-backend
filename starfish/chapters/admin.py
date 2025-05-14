@@ -15,6 +15,7 @@ from chapters.models import (
 class ChapterZipInline(admin.TabularInline):
     model = ChapterZip
     extra = 1
+    autocomplete_fields = ['zip_code']
 
 
 class ChapterStateInline(admin.TabularInline):
@@ -42,6 +43,7 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
     list_display = ('title', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
+    filter_horizontal = ['zips']
 
     inlines = [
         ChapterRoleInline,
