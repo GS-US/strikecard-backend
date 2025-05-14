@@ -1,8 +1,15 @@
 import factory
-from factory.django import DjangoModelFactory
 from django.utils.text import slugify
+from factory.django import DjangoModelFactory
 
-from chapters.models import Chapter, ChapterZip, ChapterState, ChapterRole, ChapterSocialLink, PaperTotal
+from chapters.models import (
+    Chapter,
+    ChapterRole,
+    ChapterSocialLink,
+    ChapterState,
+    ChapterZip,
+    PaperTotal,
+)
 from users.tests.factories import UserFactory
 
 
@@ -10,9 +17,9 @@ class ChapterFactory(DjangoModelFactory):
     class Meta:
         model = Chapter
 
-    title = factory.Faker('sentence', nb_words=4)
+    title = factory.Faker('state', nb_words=4)
     slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
-    description = factory.Faker('paragraph')
+    description = factory.Faker('catch_phrase')
     contact_email = factory.Faker('email')
     website_url = factory.Faker('url')
 
@@ -42,7 +49,7 @@ class ChapterRoleFactory(DjangoModelFactory):
     added_by_user = factory.SubFactory(UserFactory)
     chapter = factory.SubFactory(ChapterFactory)
     role = factory.Iterator(['facilitator', 'assistant'])
-    title = factory.Faker('job')
+    title = factory.Iterator(['facilitator', 'assistant'])
 
 
 class ChapterSocialLinkFactory(DjangoModelFactory):
@@ -50,7 +57,7 @@ class ChapterSocialLinkFactory(DjangoModelFactory):
         model = ChapterSocialLink
 
     chapter = factory.SubFactory(ChapterFactory)
-    platform = factory.Faker('domain_word')
+    platform = factory.Iterator(['Discord', 'Bluesky', 'Substack'])
     url = factory.Faker('url')
 
 
@@ -61,4 +68,4 @@ class PaperTotalFactory(DjangoModelFactory):
     chapter = factory.SubFactory(ChapterFactory)
     count = factory.Faker('random_int', min=1, max=1000)
     submitted_by_user = factory.SubFactory(UserFactory)
-    notes = factory.Faker('sentence')
+    notes = factory.Faker('catch_phrase')

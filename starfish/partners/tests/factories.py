@@ -11,7 +11,6 @@ class PartnerCampaignFactory(factory.django.DjangoModelFactory):
     name = factory.Faker('company')
     email = factory.Faker('email')
     url = factory.Faker('url')
-    key_string = factory.Faker('uuid4')
     legacy_source = factory.Faker('word')
     notes = factory.Faker('sentence')
 
@@ -22,7 +21,7 @@ class AffiliateFactory(factory.django.DjangoModelFactory):
 
     organization_name = factory.Faker('company')
     contact_email = factory.Faker('email')
-    notes = factory.Faker('sentence')
+    notes = factory.Faker('catch_phrase')
 
 
 class PledgeFactory(factory.django.DjangoModelFactory):
