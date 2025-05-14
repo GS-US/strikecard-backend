@@ -26,7 +26,9 @@ class BaseContact(HashedContactRecord):
     name = models.CharField(max_length=255)
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
-    zip_code = models.CharField(max_length=10)
+    zip_code = models.ForeignKey(
+        'regions.Zip', on_delete=models.PROTECT, related_name='contacts'
+    )
     chapter = models.ForeignKey(
         'chapters.Chapter', on_delete=models.PROTECT, related_name='contacts'
     )

@@ -5,8 +5,8 @@ python manage.py flush --no-input
 
 python manage.py migrate
 
-python manage.py dev_setup
-
 python manage.py loaddata regions/fixtures/regions.json
+
+python manage.py dev_setup
 
 python manage.py runserver 0.0.0.0:8000

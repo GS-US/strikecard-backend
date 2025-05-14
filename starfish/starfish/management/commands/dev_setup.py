@@ -8,8 +8,6 @@ from chapters.tests.factories import (
     ChapterFactory,
     ChapterRoleFactory,
     ChapterSocialLinkFactory,
-    ChapterStateFactory,
-    ChapterZipFactory,
     PaperTotalFactory,
 )
 from contacts.tests.factories import (
@@ -23,6 +21,7 @@ from partners.tests.factories import (
     PartnerCampaignFactory,
     PledgeFactory,
 )
+from regions.models import State, Zip
 from users.tests.factories import UserFactory
 
 
@@ -37,9 +36,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         User = get_user_model()
 
-        admin = User.objects.filter(username='admin')
+        admin = User.objects.filter(username='admin').first()
         if not admin:
-            admin = User.objects.create_superuser('admin', 'admin@example.com', 'admin')
+            admin = User.objects.create_superuser('admin', 'admin@example.com', 'a')
 
         self.partner_campaigns = []
         for _ in range(3):
@@ -68,12 +67,12 @@ class Command(BaseCommand):
                 users.append(user)
                 ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
 
-            if random.random() < 0.8:
+            if random.random() < 0.6:
                 for _ in range(random.randint(1, 3)):
-                    ChapterStateFactory(chapter=chapter)
+                    chapter.states.add(State.objects.order_by('?').first())
             else:
                 for _ in range(random.randint(20, 50)):
-                    ChapterZipFactory(chapter=chapter)
+                    chapter.zips.add(Zip.objects.order_by('?').first())
 
             for _ in range(3):
                 ChapterSocialLinkFactory(chapter=chapter)

@@ -125,7 +125,16 @@ DEBUG = False
 
 AUTH_USER_MODEL = 'users.User'
 
-try:
-    from .local_settings import *
-except:
-    pass
+from .local_settings import *
+
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
+
+    MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
+
+    try:
+        INTERNAL_IPS.append("127.0.0.1")
+    except NameError:
+        INTERNAL_IPS = ["127.0.0.1"]
+
+    MIDDLEWARE.insert(0, 'starfish.middleware.ipdb_exception.IPDBExceptionMiddleware')
