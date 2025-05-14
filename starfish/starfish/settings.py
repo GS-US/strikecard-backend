@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'users',
     'django.contrib.admin',
     'rules',
+    'regions',
     'chapters',
     'contacts',
     'partners',
