@@ -33,17 +33,12 @@ class PendingContactFactory(DjangoModelFactory):
     chapter = factory.SubFactory(ChapterFactory)
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)
     referer_full = factory.Faker('url')
-    validation_expires = factory.LazyFunction(
-        lambda: timezone.now() + timezone.timedelta(days=7)
-    )
 
 
 class RemovedContactFactory(DjangoModelFactory):
     class Meta:
         model = RemovedContact
 
-    email_hash = factory.Faker('sha256')
-    phone_hash = factory.Faker('sha256')
     status = factory.Iterator(['unsubscribed', 'deleted', 'bounced'])
     removed_by = factory.SubFactory(UserFactory)
     notes = factory.Faker('sentence')
@@ -53,8 +48,6 @@ class ExpungedContactFactory(DjangoModelFactory):
     class Meta:
         model = ExpungedContact
 
-    email_hash = factory.Faker('sha256')
-    phone_hash = factory.Faker('sha256')
     chapter = factory.SubFactory(ChapterFactory)
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)
     validated = factory.LazyFunction(timezone.now)

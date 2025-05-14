@@ -29,6 +29,11 @@ from users.tests.factories import UserFactory
 class Command(BaseCommand):
     help = 'Setup default dev data'
 
+    def get_partner_campaign(self, threshold=0.2):
+        if random.random() < threshold:
+            return random.choice(self.partner_campaigns)
+        return None
+
     def handle(self, *args, **kwargs):
         User = get_user_model()
 
@@ -36,10 +41,10 @@ class Command(BaseCommand):
         if not admin:
             admin = User.objects.create_superuser('admin', 'admin@example.com', 'admin')
 
-        partner_campaigns = []
+        self.partner_campaigns = []
         for _ in range(3):
             pc = PartnerCampaignFactory()
-            partner_campaigns.append(pc)
+            self.partner_campaigns.append(pc)
 
         for _ in range(3):
             affiliate = AffiliateFactory()
@@ -59,7 +64,7 @@ class Command(BaseCommand):
 
             users = []
             for _ in range(2):
-                user = UserFactory(is_staff=True)
+                user = UserFactory()
                 users.append(user)
                 ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
 
@@ -79,16 +84,19 @@ class Command(BaseCommand):
                 )
 
             for _ in range(10):
-                partner_campaign = None
-                if random.random() < 0.2:
-                    partner_campaign = random.choice(partner_campaigns)
-                ContactFactory(chapter=chapter, partner_campaign=partner_campaign)
+                ContactFactory(
+                    chapter=chapter, partner_campaign=self.get_partner_campaign()
+                )
 
             for _ in range(random.randint(1, 3)):
-                PendingContactFactory(chapter=chapter)
+                PendingContactFactory(
+                    chapter=chapter, partner_campaign=self.get_partner_campaign()
+                )
 
             for _ in range(random.randint(1, 3)):
                 RemovedContactFactory(removed_by=random.choice(users))
 
             for _ in range(random.randint(1, 3)):
-                ExpungedContactFactory(chapter=chapter)
+                ExpungedContactFactory(
+                    chapter=chapter, partner_campaign=self.get_partner_campaign()
+                )
