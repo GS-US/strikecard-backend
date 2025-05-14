@@ -13,6 +13,9 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     contact_email = models.EmailField(blank=True, null=True)
     website_url = models.URLField(blank=True, null=True)
 
+    zips = models.ManyToManyField('regions.Zip', related_name='chapters')
+    states = models.ManyToManyField('regions.State', related_name='chapters')
+
     objects = SoftDeletableManager()
     history = HistoricalRecords()
 
@@ -23,16 +26,6 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
         return self.title
 
 
-class ChapterZip(models.Model):
-    chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='zips')
-    zip_code = models.ForeignKey(Zip, on_delete=models.PROTECT, related_name='chapters')
-
-
-class ChapterState(models.Model):
-    chapter = models.ForeignKey(
-        Chapter, on_delete=models.PROTECT, related_name='states'
-    )
-    state_code = models.ForeignKey(State, on_delete=models.PROTECT, related_name='chapters')
 
 
 class ChapterRole(models.Model):
