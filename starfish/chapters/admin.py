@@ -26,8 +26,7 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
     list_display = ('title', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
-    filter_horizontal = ['states']
-    autocomplete_fields = ['zips']
+    filter_horizontal = ['states', 'zips']
 
     inlines = [
         ChapterRoleInline,
