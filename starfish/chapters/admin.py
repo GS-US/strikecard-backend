@@ -5,6 +5,12 @@ from rules.contrib.admin import ObjectPermissionsModelAdmin
 from chapters.models import Chapter, ChapterRole, ChapterSocialLink, PaperTotal
 
 
+class ChapterZipInline(admin.TabularInline):
+    model = ChapterZip
+    autocomplete_fields = ['zip_code']  # Enable autocomplete for zip_code
+    extra = 1  # Number of extra forms to display
+
+
 class ChapterRoleInline(admin.TabularInline):
     model = ChapterRole
     extra = 1
@@ -26,9 +32,10 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
     list_display = ('title', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
-    filter_horizontal = ['states', 'zips']
+    filter_horizontal = ['states']
 
     inlines = [
+        ChapterZipInline,
         ChapterRoleInline,
         ChapterSocialLinkInline,
         PaperTotalInline,
