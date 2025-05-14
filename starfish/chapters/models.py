@@ -4,6 +4,7 @@ from model_utils.managers import SoftDeletableManager
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
 
+from regions.models import State, Zip
 
 class Chapter(TimeStampedModel, SoftDeletableModel):
     title = models.CharField(max_length=255)
@@ -24,15 +25,14 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
 
 class ChapterZip(models.Model):
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='zips')
-    zip_code = models.CharField(max_length=10, unique=True)
-    state_code = models.CharField(max_length=2)
+    zip_code = models.ForeignKey(Zip, on_delete=models.PROTECT, related_name='chapters')
 
 
 class ChapterState(models.Model):
     chapter = models.ForeignKey(
         Chapter, on_delete=models.PROTECT, related_name='states'
     )
-    state_code = models.CharField(max_length=2)
+    state_code = models.ForeignKey(State, on_delete=models.PROTECT, related_name='chapters')
 
 
 class ChapterRole(models.Model):
