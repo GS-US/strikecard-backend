@@ -83,7 +83,7 @@ class PendingContact(BaseContact):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.validation_expires = now() + timedelta(days=7)
-            self.update_referer_host()
+        self.update_referer_host()
         self.update_hashes()
         super().save(*args, **kwargs)
 
@@ -105,6 +105,7 @@ class Contact(BaseContact):
     history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
+        self.update_referer_host()
         self.update_hashes()
         super().save(*args, **kwargs)
 
