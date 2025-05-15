@@ -2,17 +2,24 @@ import rules
 from django.contrib import admin
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 
-from chapters.models import Chapter, ChapterRole, ChapterSocialLink, PaperTotal
+from chapters.models import (
+    Chapter,
+    ChapterRole,
+    ChapterSocialLink,
+    ChapterZip,
+    PaperTotal,
+)
 
 
 class ChapterZipInline(admin.TabularInline):
     model = ChapterZip
-    autocomplete_fields = ['zip_code']  # Enable autocomplete for zip_code
-    extra = 1  # Number of extra forms to display
+    autocomplete_fields = ['zip_code']
+    extra = 1
 
 
 class ChapterRoleInline(admin.TabularInline):
     model = ChapterRole
+    readonly_fields = ['added_by_user']
     extra = 1
 
 
@@ -32,13 +39,13 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
     list_display = ('title', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
-    filter_horizontal = ['states']
+    autocomplete_fields = ['states']
 
     inlines = [
-        ChapterZipInline,
         ChapterRoleInline,
         ChapterSocialLinkInline,
         PaperTotalInline,
+        ChapterZipInline,
     ]
 
     def has_view_permission(self, request, obj=None):
@@ -71,3 +78,9 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
                 obj.submitted_by_user = request.user
             obj.save()
         formset.save_m2m()
+
+
+@admin.register(ChapterZip)
+class ChapterZipAdmin(admin.ModelAdmin):
+    list_display = ('chapter', 'zip_code')
+    autocomplete_fields = ['chapter', 'zip_code']

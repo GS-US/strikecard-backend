@@ -2,6 +2,7 @@ import factory
 from django.utils import timezone
 from factory.django import DjangoModelFactory
 
+from chapters.models import Chapter
 from chapters.tests.factories import ChapterFactory
 from contacts.models import Contact, ExpungedContact, PendingContact, RemovedContact
 from partners.tests.factories import PartnerCampaignFactory
@@ -17,7 +18,7 @@ class ContactFactory(DjangoModelFactory):
     email = factory.Faker('email')
     phone = factory.Faker('phone_number')
     zip_code = factory.Iterator(Zip.objects.all())
-    chapter = factory.SubFactory(ChapterFactory)
+    chapter = factory.Iterator(Chapter.objects.all())
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)
     referer_full = factory.Faker('url')
     validated = factory.LazyFunction(timezone.now)
@@ -31,7 +32,7 @@ class PendingContactFactory(DjangoModelFactory):
     email = factory.Faker('email')
     phone = factory.Faker('phone_number')
     zip_code = factory.Iterator(Zip.objects.all())
-    chapter = factory.SubFactory(ChapterFactory)
+    chapter = factory.Iterator(Chapter.objects.all())
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)
     referer_full = factory.Faker('url')
 

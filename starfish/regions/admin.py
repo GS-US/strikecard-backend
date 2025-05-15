@@ -5,7 +5,7 @@ from .models import State, Zip
 
 @admin.register(State)
 class StateAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['code', 'name']
 
 
 @admin.register(Zip)
