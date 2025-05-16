@@ -14,7 +14,7 @@ from model_utils.managers import SoftDeletableManager
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
 
-from chapters.models import Chapter, ChapterZip
+from chapters.models import Chapter, ChapterZip, get_chapter_for_zip
 
 
 class HashedContactRecord(TimeStampedModel):

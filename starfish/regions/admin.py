@@ -10,4 +10,8 @@ class StateAdmin(admin.ModelAdmin):
 
 @admin.register(Zip)
 class ZipAdmin(admin.ModelAdmin):
-    search_fields = ['code']
+    search_fields = [
+        'code',
+        'state__code',
+        'state__name',
+    ]
