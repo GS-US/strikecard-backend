@@ -4,4 +4,4 @@ from .models import PendingContact
 class PendingContactForm(forms.ModelForm):
     class Meta:
         model = PendingContact
-        fields = ['name', 'email', 'phone', 'zip_code', 'partner_campaign']
+        fields = ['name', 'email', 'phone', 'zip_code',]
