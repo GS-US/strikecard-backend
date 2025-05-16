@@ -1,9 +1,41 @@
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.shortcuts import get_object_or_404, redirect
+from .models import PendingContact, Contact
+from .forms import PendingContactForm
 
 from chapters.models import ChapterRole
 from rules.contrib.views import PermissionRequiredMixin
 
-from .models import Contact
+from django.urls import reverse
+
+def validate_contact(request, token):
+    pending_contact = get_object_or_404(PendingContact, validation_token=token)
+    if not pending_contact.token_is_expired():
+        contact = Contact.objects.create(
+            name=pending_contact.name,
+            email=pending_contact.email,
+            phone=pending_contact.phone,
+            zip_code=pending_contact.zip_code,
+            chapter=pending_contact.chapter,
+            partner_campaign=pending_contact.partner_campaign,
+        )
+        pending_contact.delete()
+        return redirect('validation_success')
+    else:
+        return redirect('validation_failed')
+
+
+class PendingContactCreateView(CreateView):
+    model = PendingContact
+    form_class = PendingContactForm
+    template_name = 'contacts/pending_contact_form.html'
+    success_url = reverse_lazy('pending_contact_thank_you')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.send_validation_email(self.request)
+        return super().form_valid(form)
 
 
 class ContactListView(PermissionRequiredMixin, ListView):
