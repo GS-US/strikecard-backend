@@ -10,12 +10,13 @@ from .models import State, Zip
 class StateAdmin(admin.ModelAdmin):
     list_display = ['code', 'name']
     list_display_links = list_display
-    search_fields = ['code', 'name']
+    search_fields = list_display
+    fields = list_display + ['zip_codes']
 
 
 @admin.register(Zip)
 class ZipAdmin(admin.ModelAdmin):
-    list_display = ['state', 'code', 'associated_chapter']
+    list_display = ['state', 'code']
     list_display_links = list_display
     search_fields = [
         'code',
@@ -23,6 +24,8 @@ class ZipAdmin(admin.ModelAdmin):
         'state__name',
     ]
     list_filter = ['state']
+    fields = ['state', 'code', 'associated_chapter']
+    readonly_fields = fields
 
     def associated_chapter(self, obj):
         chapter = get_chapter_for_zip(obj)
