@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.urls import reverse
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
@@ -87,8 +88,10 @@ class PendingContact(BaseContact):
         self.update_hashes()
         super().save(*args, **kwargs)
 
-    def send_validation_email(self):
-        validation_link = reverse('validate_contact', args=[self.validation_token])
+    def send_validation_email(self, request):
+        validation_link = request.build_absolute_uri(
+            reverse('validate_contact', args=[self.validation_token])
+        )
         send_mail(
             'Please validate your email',
             f'Click the link to validate your email: {validation_link}',
