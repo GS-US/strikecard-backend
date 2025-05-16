@@ -66,18 +66,6 @@ class BaseContact(HashedContactRecord):
 class PendingContact(BaseContact):
     tracker = FieldTracker(fields=['email', 'phone'])
 
-    def validate_token(self, token):
-        if self.validation_token != token:
-            return False
-
-        if self.token_is_expired():
-            return False
-
-        self.is_validated = True
-        self.validated = now()
-        self.save()
-        return True
-
     def token_is_expired(self):
         return now() > self.validation_expires
 
