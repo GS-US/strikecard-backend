@@ -5,16 +5,16 @@ from urllib.parse import urlparse
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.urls import reverse
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
-from chapters.models import ChapterZip
 from model_utils import FieldTracker
 from model_utils.fields import UrlsafeTokenField
 from model_utils.managers import SoftDeletableManager
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
+
+from chapters.models import ChapterZip
 
 
 class HashedContactRecord(TimeStampedModel):
@@ -32,7 +32,11 @@ class BaseContact(HashedContactRecord):
         'regions.Zip', on_delete=models.PROTECT, related_name='contacts'
     )
     chapter = models.ForeignKey(
-        'chapters.Chapter', on_delete=models.PROTECT, related_name='contacts', null=True, blank=True
+        'chapters.Chapter',
+        on_delete=models.PROTECT,
+        related_name='contacts',
+        null=True,
+        blank=True,
     )
     partner_campaign = models.ForeignKey(
         'partners.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
@@ -73,7 +77,6 @@ class PendingContact(BaseContact):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.validation_expires = now() + timedelta(days=7)
-        # Set the chapter based on the zip code
         if self.zip_code and not self.chapter:
             try:
                 chapter_zip = ChapterZip.objects.get(zip_code=self.zip_code)
@@ -84,6 +87,9 @@ class PendingContact(BaseContact):
         super().save(*args, **kwargs)
 
     def validate_contact(self):
+        if self.token_is_expired():
+            return None
+
         contact = Contact.objects.create(
             name=self.name,
             email=self.email,
@@ -94,6 +100,8 @@ class PendingContact(BaseContact):
         )
         self.delete()
         return contact
+
+    def send_validation_email(self, request):
         validation_link = request.build_absolute_uri(
             reverse('validate_contact', args=[self.validation_token])
         )
