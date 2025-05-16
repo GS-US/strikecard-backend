@@ -82,7 +82,7 @@ class PendingContact(BaseContact):
                 chapter_zip = ChapterZip.objects.get(zip_code=self.zip_code)
                 self.chapter = chapter_zip.chapter
             except ChapterZip.DoesNotExist:
-                raise ValidationError('No chapter found for the provided zip code.')
+                raise ValidationError('No chapter found for the provided zip code')
         self.update_hashes()
         super().save(*args, **kwargs)
 
