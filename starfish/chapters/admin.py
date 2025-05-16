@@ -82,5 +82,13 @@ class ChapterAdmin(ObjectPermissionsModelAdmin):
 
 @admin.register(ChapterZip)
 class ChapterZipAdmin(admin.ModelAdmin):
-    list_display = ('chapter', 'zip_code')
+    list_display = ['zip_code', 'chapter', 'state']
     autocomplete_fields = ['chapter', 'zip_code']
+    list_filter = ['chapter']
+    fields = ['chapter', 'zip_code']
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [field.name for field in obj._meta.fields]
+        else:
+            return []
