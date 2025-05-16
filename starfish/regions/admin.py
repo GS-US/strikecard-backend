@@ -1,5 +1,8 @@
 from django.contrib import admin
 
+from django.urls import reverse
+from django.utils.html import format_html
+from chapters.models import get_chapter_for_zip
 from .models import State, Zip
 
 
@@ -12,7 +15,7 @@ class StateAdmin(admin.ModelAdmin):
 
 @admin.register(Zip)
 class ZipAdmin(admin.ModelAdmin):
-    list_display = ['state', 'code']
+    list_display = ['state', 'code', 'associated_chapter']
     list_display_links = list_display
     search_fields = [
         'code',
@@ -20,3 +23,12 @@ class ZipAdmin(admin.ModelAdmin):
         'state__name',
     ]
     list_filter = ['state']
+
+    def associated_chapter(self, obj):
+        chapter = get_chapter_for_zip(obj)
+        if chapter:
+            url = reverse('admin:chapters_chapter_change', args=[chapter.id])
+            return format_html('<a href="{}">{}</a>', url, chapter.title)
+        else:
+            return 'No Chapter'
+    associated_chapter.short_description = 'Chapter'
