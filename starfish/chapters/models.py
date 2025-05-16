@@ -7,6 +7,22 @@ from simple_history.models import HistoricalRecords
 from regions.models import State, Zip
 
 
+def get_chapter_for_zip(zip_code):
+    if not zip_code:
+        return None
+
+    try:
+        return Chapter.objects.get(zips=zip_code)
+    except ChapterZip.DoesNotExist:
+        try:
+            return Chapter.objects.get(states=zip_code.state)
+        except Chapter.DoesNotExist:
+            try:
+                return Chapter.objects.get(slug='national')
+            except Chapter.DoesNotExist:
+                return None
+
+
 class Chapter(TimeStampedModel, SoftDeletableModel):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
