@@ -18,6 +18,7 @@ class Zip(models.Model):
 
     class Meta:
         ordering = ('code',)
+        verbose_name = 'ZIP Code'
 
     def __str__(self):
         return self.code

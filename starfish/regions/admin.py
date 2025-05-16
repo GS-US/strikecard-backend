@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+
 from chapters.models import get_chapter_for_zip
+
 from .models import State, Zip
 
 
@@ -10,18 +12,22 @@ class StateAdmin(admin.ModelAdmin):
     list_display = ['code', 'name']
     list_display_links = list_display
     search_fields = list_display
-    def zip_codes(self, obj):
-        url = reverse('admin:regions_zip_changelist') + f'?state__code__exact={obj.code}'
-        return format_html('<a href="{}">View Zip Codes</a>', url)
-    zip_codes.short_description = 'Zip Codes'
-
     fields = list_display + ['zip_codes']
+    readonly_fields = fields
+
+    def zip_codes(self, obj):
+        url = (
+            reverse('admin:regions_zip_changelist') + f'?state__code__exact={obj.code}'
+        )
+        return format_html('<a href="{}">View Zip Codes</a>', url)
+
+    zip_codes.short_description = 'ZIP Codes'
 
 
 @admin.register(Zip)
 class ZipAdmin(admin.ModelAdmin):
     list_display = ['state', 'code']
-    list_display_links = list_display
+    list_display_links = ['code']
     search_fields = [
         'code',
         'state__code',
@@ -38,4 +44,5 @@ class ZipAdmin(admin.ModelAdmin):
             return format_html('<a href="{}">{}</a>', url, chapter.title)
         else:
             return 'No Chapter'
+
     associated_chapter.short_description = 'Chapter'
