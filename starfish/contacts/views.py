@@ -12,15 +12,7 @@ from django.urls import reverse
 def validate_contact(request, token):
     pending_contact = get_object_or_404(PendingContact, validation_token=token)
     if not pending_contact.token_is_expired():
-        contact = Contact.objects.create(
-            name=pending_contact.name,
-            email=pending_contact.email,
-            phone=pending_contact.phone,
-            zip_code=pending_contact.zip_code,
-            chapter=pending_contact.chapter,
-            partner_campaign=pending_contact.partner_campaign,
-        )
-        pending_contact.delete()
+        pending_contact.validate_contact()
         return redirect('validation_success')
     else:
         return redirect('validation_failed')
