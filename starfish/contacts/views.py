@@ -25,5 +25,6 @@ class PendingContactCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        self.object.send_validation_email(self.request)
+        # self.object.send_validation_email(self.request)
+        print(self.object.__dict__)
         return super().form_valid(form)
