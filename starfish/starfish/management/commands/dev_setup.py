@@ -51,6 +51,7 @@ class Command(BaseCommand):
                 PledgeFactory(affiliate=affiliate, submitted_by_user=admin)
 
         chapter_titles = [
+            'National',
             'Oregon',
             'New York',
             'Northern California',

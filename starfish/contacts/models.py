@@ -76,21 +76,9 @@ class PendingContact(BaseContact):
 
     def assign_chapter(self):
         if self.zip_code and not self.chapter:
-            try:
-                # Try to assign chapter based on zip code
-                chapter_zip = ChapterZip.objects.get(zip_code=self.zip_code)
-                self.chapter = chapter_zip.chapter
-            except ChapterZip.DoesNotExist:
-                # Fallback to assigning chapter based on state
-                state_chapters = Chapter.objects.filter(states=self.zip_code.state)
-                if state_chapters.exists():
-                    self.chapter = state_chapters.first()
-                else:
-                    # Fallback to the chapter with slug 'national'
-                    try:
-                        self.chapter = Chapter.objects.get(slug='national')
-                    except Chapter.DoesNotExist:
-                        raise ValidationError('No chapter found for the provided zip code, state, or national chapter')
+            self.chapter = get_chapter_for_zip(self.zip_code)
+
+    def save(self, *args, **kwargs):
         if not self.pk:
             self.validation_expires = now() + timedelta(days=7)
         self.assign_chapter()
