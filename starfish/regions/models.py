@@ -13,8 +13,8 @@ class State(models.Model):
 
 
 class Zip(models.Model):
+    code = models.CharField(max_length=5, primary_key=True)
     state = models.ForeignKey(State, on_delete=models.PROTECT)
-    code = models.CharField(max_length=10, unique=True)
 
     class Meta:
         ordering = ('code',)
