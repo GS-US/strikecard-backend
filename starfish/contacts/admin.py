@@ -13,10 +13,13 @@ class ContactAdmin(ObjectPermissionsModelAdmin):
         'email',
         'chapter',
         'partner_campaign',
+        'validated',
     )
     search_fields = ('name', 'email')
-    list_filter = ('created',)
+    list_filter = ('validated', 'chapter')
     autocomplete_fields = ['zip_code']
+    readonly_fields = ['validated']
+    date_hierarchy = 'validated'
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:

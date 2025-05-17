@@ -43,11 +43,28 @@ class BaseContact(HashedContactRecord):
     )
     referer_full = models.TextField(blank=True, null=True)
     referer_host = models.CharField(max_length=255, blank=True, null=True)
-    validation_token = UrlsafeTokenField(null=True, blank=True)
-    validation_expires = models.DateTimeField(null=True, blank=True)
+
+    tracker = FieldTracker(fields=['email', 'phone', 'partner_campaign'])
 
     class Meta:
         abstract: True
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.update_referer_host()
+        self.assign_chapter()
+        self.update_hashes()
+        if self.partner_campaign and (
+            not self.pk or self.tracker.has_changed('partner_campaign')
+        ):
+            self.partner_campaign.use()
+        super().save(*args, **kwargs)
+
+    def assign_chapter(self):
+        if self.zip_code and not self.chapter:
+            self.chapter = get_chapter_for_zip(self.zip_code)
 
     def update_hashes(self):
 
@@ -68,22 +85,18 @@ class BaseContact(HashedContactRecord):
                 self.referer_host = None
 
 
+def _get_validation_expires():
+    return now() + timedelta(days=7)
+
+
 class PendingContact(BaseContact):
-    tracker = FieldTracker(fields=['email', 'phone'])
+    validation_token = UrlsafeTokenField(null=True, blank=True)
+    validation_expires = models.DateTimeField(
+        null=True, blank=True, default=_get_validation_expires
+    )
 
     def token_is_expired(self):
         return now() > self.validation_expires
-
-    def assign_chapter(self):
-        if self.zip_code and not self.chapter:
-            self.chapter = get_chapter_for_zip(self.zip_code)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.validation_expires = now() + timedelta(days=7)
-        self.assign_chapter()
-        self.update_hashes()
-        super().save(*args, **kwargs)
 
     def validate_contact(self):
         if self.token_is_expired():
@@ -116,13 +129,7 @@ class PendingContact(BaseContact):
 class Contact(BaseContact):
     validated = models.DateTimeField(null=True, blank=True)
 
-    tracker = FieldTracker(fields=['email', 'phone'])
     history = HistoricalRecords()
-
-    def save(self, *args, **kwargs):
-        self.update_referer_host()
-        self.update_hashes()
-        super().save(*args, **kwargs)
 
     def remove(self, status, removed_by=None, notes=''):
         RemovedContact.objects.create(

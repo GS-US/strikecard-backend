@@ -1,6 +1,7 @@
 import factory
 from django.utils import timezone
 from factory.django import DjangoModelFactory
+from faker import Faker
 
 from chapters.models import Chapter
 from chapters.tests.factories import ChapterFactory
@@ -8,6 +9,8 @@ from contacts.models import Contact, ExpungedContact, PendingContact, RemovedCon
 from partners.tests.factories import PartnerCampaignFactory
 from regions.models import Zip
 from users.tests.factories import UserFactory
+
+fake = Faker()
 
 
 class ContactFactory(DjangoModelFactory):
@@ -21,7 +24,11 @@ class ContactFactory(DjangoModelFactory):
     chapter = factory.Iterator(Chapter.objects.all())
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)
     referer_full = factory.Faker('url')
-    validated = factory.LazyFunction(timezone.now)
+    validated = factory.LazyFunction(
+        lambda: timezone.make_aware(
+            fake.date_time_between(start_date="-3y"), timezone.get_current_timezone()
+        )
+    )
 
 
 class PendingContactFactory(DjangoModelFactory):
