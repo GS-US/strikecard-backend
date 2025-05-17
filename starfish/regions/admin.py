@@ -19,7 +19,7 @@ class StateAdmin(admin.ModelAdmin):
         url = (
             reverse('admin:regions_zip_changelist') + f'?state__code__exact={obj.code}'
         )
-        return format_html('<a href="{}">View Zip Codes</a>', url)
+        return format_html('<a href="{}">View ZIP Codes</a>', url)
 
     zip_codes.short_description = 'ZIP Codes'
 

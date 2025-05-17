@@ -1,7 +1,6 @@
-import datetime
-
 from django.conf import settings
 from django.db import models
+from django.utils.timezone import now
 from model_utils.fields import UrlsafeTokenField
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
@@ -25,7 +24,7 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
         return self.name
 
     def use(self):
-        self.last_used = datetime.now()
+        self.last_used = now()
         self.save()
 
     @classmethod
