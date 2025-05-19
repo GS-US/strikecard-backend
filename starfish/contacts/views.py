@@ -25,4 +25,5 @@ class PendingContactCreateView(CreateView):
     model = PendingContact
     form_class = PendingContactForm
     template_name = 'contacts/pending_contact_form.html'
-    success_url = reverse_lazy('pending_contact_detail')
+    def get_success_url(self):
+        return reverse('pending_contact_detail', kwargs={'pk': self.object.pk})
