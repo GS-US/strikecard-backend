@@ -113,10 +113,14 @@ class PendingContact(BaseContact):
         self.delete()
         return contact
 
-    def send_validation_email(self, request):
-        validation_link = request.build_absolute_uri(
+    def get_validation_link(self, request):
+        return request.build_absolute_uri(
             reverse('validate_contact', args=[self.validation_token])
         )
+
+    def send_validation_email(self, request):
+        # Unused for now
+        validation_link = self.get_validation_link(request)
         send_mail(
             'Please validate your email',
             f'Click the link to validate your email: {validation_link}',
