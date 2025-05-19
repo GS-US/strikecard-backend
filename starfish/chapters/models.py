@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.db import models
-from model_utils.managers import SoftDeletableManager
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
 
 from regions.models import State, Zip
+from starfish.models import SoftDeletablePermissionManager
 
 
 def get_chapter_for_zip(zip_code):
@@ -33,7 +33,7 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
         'regions.State', related_name='chapters', blank=True
     )
 
-    objects = SoftDeletableManager()
+    objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
 
     class Meta:
