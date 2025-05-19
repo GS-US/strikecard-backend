@@ -11,6 +11,8 @@ pytest
 coverage
 pre-commit
 factory_boy
-sqlalchemy_mate>=1.4.28.3,<2.0.0.0
-uszipcode
 django-debug-toolbar
+
+# only needed for initial zip code table population
+#sqlalchemy_mate>=1.4.28.3,<2.0.0.0
+#uszipcode
