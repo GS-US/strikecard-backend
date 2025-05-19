@@ -20,10 +20,16 @@ def validate_contact(request, token):
 class PendingContactDetailView(DetailView):
     model = PendingContact
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['validation_link'] = context['object'].get_validation_link(self.request)
+        return context
+
 
 class PendingContactCreateView(CreateView):
     model = PendingContact
     form_class = PendingContactForm
-    template_name = 'contacts/pending_contact_form.html'
+    template_name = 'contacts/pendingcontact_form.html'
+
     def get_success_url(self):
         return reverse('pending_contact_detail', kwargs={'pk': self.object.pk})

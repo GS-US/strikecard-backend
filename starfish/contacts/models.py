@@ -109,6 +109,7 @@ class PendingContact(BaseContact):
             zip_code=self.zip_code,
             chapter=self.chapter,
             partner_campaign=self.partner_campaign,
+            validated=now(),
         )
         self.delete()
         return contact
