@@ -6,5 +6,5 @@
 <p>Your sign-up has been received. Please check your email to validate your contact information.</p>
 <h3>But for testing purposes, here's what the email would look like:</h3>
 {{ object }}
-{{ object.get_validation_link }}
+<a href="{{ validation_link }}">Click here to validate your email and be counted!</a>
 {% endblock %}

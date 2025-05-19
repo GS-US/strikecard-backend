@@ -17,7 +17,7 @@ urlpatterns = [
         name='validation_failed',
     ),
     path(
-        'contact/<int:id>/',
+        'contact/<int:pk>/',
         PendingContactDetailView.as_view(),
         name='pending_contact_detail',
     ),
