@@ -2,5 +2,9 @@
 
 {% block content %}
 <h2>Thank You!</h2>
+<h3>Here's where it <strong>should</strong> say:</h3>
 <p>Your sign-up has been received. Please check your email to validate your contact information.</p>
+<h3>But for testing purposes, here's what the email would look like:</h3>
+{{ object }}
+{{ object.get_validation_link }}
 {% endblock %}
