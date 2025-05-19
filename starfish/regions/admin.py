@@ -3,12 +3,13 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from chapters.models import get_chapter_for_zip
+from starfish.admin import ReadOnlyAdminMixin
 
 from .models import State, Zip
 
 
 @admin.register(State)
-class StateAdmin(admin.ModelAdmin):
+class StateAdmin(ReadOnlyAdminMixin, admin.ModelAdmin):
     list_display = ['code', 'name']
     list_display_links = list_display
     search_fields = list_display
@@ -25,7 +26,7 @@ class StateAdmin(admin.ModelAdmin):
 
 
 @admin.register(Zip)
-class ZipAdmin(admin.ModelAdmin):
+class ZipAdmin(ReadOnlyAdminMixin, admin.ModelAdmin):
     list_display = ['state', 'code']
     list_display_links = ['code']
     search_fields = [

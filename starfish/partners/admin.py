@@ -28,9 +28,10 @@ class PledgeInline(admin.TabularInline):
 
 
 @admin.register(Affiliate)
-class AffiliateAdmin(admin.ModelAdmin):
+class AffiliateAdmin(SoftDeletableAdminMixin, admin.ModelAdmin):
     list_display = ('organization_name',)
-    search_fields = ('organization_name', 'notes')
+    search_fields = ('organization_name', 'email', 'notes')
+    readonly_fields = ('created', 'modified')
     inlines = [PledgeInline]
 
     def save_formset(self, request, form, formset, change):

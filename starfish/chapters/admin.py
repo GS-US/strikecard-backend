@@ -9,6 +9,7 @@ from chapters.models import (
     ChapterZip,
     PaperTotal,
 )
+from starfish.admin import SoftDeletableAdminMixin
 
 
 class ChapterZipInline(admin.TabularInline):
@@ -35,7 +36,7 @@ class PaperTotalInline(admin.TabularInline):
 
 
 @admin.register(Chapter)
-class ChapterAdmin(ObjectPermissionsModelAdmin):
+class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin):
     list_display = ('title', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}

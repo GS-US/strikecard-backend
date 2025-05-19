@@ -43,11 +43,12 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
         return partner
 
 
-class Affiliate(models.Model):
+class Affiliate(TimeStampedModel, SoftDeletableModel):
     organization_name = models.CharField(max_length=255)
     contact_email = models.EmailField(max_length=255, blank=True)
     notes = models.CharField(max_length=255, blank=True)
 
+    objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
 
     def __str__(self):
