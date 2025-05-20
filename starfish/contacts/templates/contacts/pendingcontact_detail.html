@@ -5,6 +5,6 @@
 <h3>Here's where it <strong>should</strong> say:</h3>
 <p>Your sign-up has been received. Please check your email to validate your contact information.</p>
 <h3>But for testing purposes, here's what the email would look like:</h3>
-{{ object }}
-<a href="{{ validation_link }}">Click here to validate your email and be counted!</a>
+<h4>Hey {{ object.name }}! Welcome to the {{ object.chapter }} chapter of the General Strike!</h4>
+<h4><a href="{{ validation_link }}">Click here to validate your email and be counted!</a></h4>
 {% endblock %}
