@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Chapters</h1>
+<ul>
+    {% for chapter in object_list %}
+    <li><a href="{% url 'chapter_detail' chapter.pk %}">{{ chapter.title }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
