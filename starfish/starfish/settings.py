@@ -126,6 +126,8 @@ DEBUG = False
 
 AUTH_USER_MODEL = 'users.User'
 
+FINAL_COUNT = 11000000
+
 from .local_settings import *
 
 if DEBUG:
