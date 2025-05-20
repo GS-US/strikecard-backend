@@ -4,15 +4,7 @@
 <h1>{{ object.title }}</h1>
 <p>{{ object.description }}</p>
 
-<h2>States</h2>
-<ul>
-    {% for state in object.states.all %}
-    <li>{{ state.name }}</li>
-    {% endfor %}
-</ul>
-
 {% if object.social_links.exists %}
-<h2>Social Links</h2>
 <ul>
     {% for link in object.social_links.all %}
     <li><a href="{{ link.url }}">{{ link.platform }}</a></li>

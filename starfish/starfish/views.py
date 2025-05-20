@@ -1,6 +1,8 @@
 from django.urls import reverse
 from django.views.generic.edit import FormView
+
 from contacts.forms import PendingContactForm
+
 
 class IndexView(FormView):
     template_name = 'index.html'

@@ -1,7 +1,9 @@
 <html>
-    <body>
-    <h1>The Count: {{ totals.total }}</h1>
+<body>
+    <h1>The General Strike<h1>
+    <h2>{{ totals.total }} committed | {{ totals.needed }} needed</h2>
+    <p><a href="{% url 'index' %}">Join!</a> | <a href="{% url 'chapter_list' %}">Chapter list</a></p>
 {% block content %}
 {% endblock %}
-    </body>
+</body>
 </html>
