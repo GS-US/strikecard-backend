@@ -1,6 +1,13 @@
 <html>
     <body>
 {% block content %}
+    <div>
+        <p>Active contacts: {{ totals.active }}</p>
+        <p>Expunged contacts: {{ totals.expunged }}</p>
+        <p>Pledged count: {{ totals.pledged }}</p>
+        <p>Paper count: {{ totals.paper }}</p>
+        <p>Total: {{ totals.total }}</p>
+    </div>
 {% endblock %}
     </body>
 </html>
