@@ -16,10 +16,12 @@ Including another URLconf
 """
 
 from debug_toolbar.toolbar import debug_toolbar_urls
+from starfish.views import IndexView
 from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path('', IndexView.as_view(), name='index'),
     path('admin/', admin.site.urls),
     path('contacts/', include('contacts.urls')),
     path('chapters/', include('chapters.urls')),
