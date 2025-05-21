@@ -1,3 +1,5 @@
+import csv
+from django.http import HttpResponse
 import rules
 from django.contrib import admin
 from rules.contrib.admin import ObjectPermissionsModelAdmin
@@ -21,7 +23,29 @@ class ContactAdmin(ObjectPermissionsModelAdmin):
     readonly_fields = ['validated']
     date_hierarchy = 'validated'
 
-    def has_view_permission(self, request, obj=None):
+    def export_as_csv(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=contacts.csv'
+        writer = csv.writer(response)
+        writer.writerow([
+            'Name',
+            'Email',
+            'Phone',
+            'Chapter',
+            'Partner Campaign',
+            'Validated Date',
+        ])
+        for obj in queryset:
+            writer.writerow([
+                obj.name,
+                obj.email,
+                obj.phone,
+                obj.chapter.title if obj.chapter else '',
+                obj.partner_campaign.name if obj.partner_campaign else '',
+                obj.validated.strftime('%Y-%m-%d %H:%M:%S') if obj.validated else '',
+            ])
+        return response
+    export_as_csv.short_description = 'Export selected contacts as CSV'
         if request.user.is_superuser:
             return True
         if obj:
