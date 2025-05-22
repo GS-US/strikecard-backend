@@ -37,7 +37,10 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     history = HistoricalRecords()
 
     class Meta:
-        ordering = ('title',)
+        ordering = (
+            'states__name',
+            'title',
+        )
 
     def __str__(self):
         return self.title
