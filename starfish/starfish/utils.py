@@ -9,8 +9,8 @@ from partners.models import Pledge
 def get_totals():
     active = Contact.objects.count()
     expunged = ExpungedContact.objects.count()
-    pledged = Pledge.objects.aggregate(Sum('count'))['count__sum']
-    paper = PaperTotal.objects.aggregate(Sum('count'))['count__sum']
+    pledged = Pledge.objects.aggregate(Sum('count'))['count__sum'] or 0
+    paper = PaperTotal.objects.aggregate(Sum('count'))['count__sum'] or 0
     total = active + expunged + pledged + paper
 
     return {
