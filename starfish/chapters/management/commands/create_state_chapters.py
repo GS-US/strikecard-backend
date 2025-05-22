@@ -1,21 +1,49 @@
+import random
+
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
-from regions.models import State
+
 from chapters.models import Chapter
+from regions.models import State, Zip
+
+chapter_exceptions = {
+    'New York': ['Greater NY', 'New York City'],
+    'California': ['Northern California', 'Southern California'],
+}
+
 
 class Command(BaseCommand):
     help = 'Creates chapters for every state'
 
-    def handle(self, *args, **kwargs):
-        for state in State.objects.all():
-            chapter_title = f'{state.name} Chapter'
-            chapter_slug = slugify(state.name)
-            chapter, created = Chapter.objects.get_or_create(
-                slug=chapter_slug,
-                defaults={'title': chapter_title}
-            )
-            if created:
+    def _new_chapter(self, state=None, name=None):
+        if not name:
+            name = state.name
+
+        chapter_slug = slugify(name)
+        chapter, created = Chapter.objects.get_or_create(
+            slug=chapter_slug,
+            defaults={
+                'title': name,
+                'description': f'{name} Chapter of the General Strike',
+            },
+        )
+        if created:
+            if state:
                 chapter.states.add(state)
-                self.stdout.write(self.style.SUCCESS(f'Created chapter: {chapter_title}'))
-            else:
-                self.stdout.write(self.style.WARNING(f'Chapter for {state.name} already exists'))
+            self.stdout.write(self.style.SUCCESS(f'Created chapter: {chapter.title}'))
+        else:
+            self.stdout.write(self.style.WARNING(f'Chapter for {name} already exists'))
+        return chapter
+
+    def handle(self, *args, **kwargs):
+        for state in State.objects.exclude(name__in=chapter_exceptions.keys()):
+            self._new_chapter(state)
+
+        for state, titles in chapter_exceptions.items():
+            for title in titles:
+                chapter = self._new_chapter(name=title)
+                zips = Zip.objects.filter(state__name=state).order_by('?')[
+                    : random.randint(20, 50)
+                ]
+                for z in zips:
+                    chapter.zips.create(zip_code=z)

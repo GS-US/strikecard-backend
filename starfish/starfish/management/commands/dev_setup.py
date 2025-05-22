@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from chapters.models import Chapter
 from chapters.tests.factories import (
     ChapterFactory,
     ChapterRoleFactory,
@@ -50,31 +51,12 @@ class Command(BaseCommand):
             for _ in range(2):
                 PledgeFactory(affiliate=affiliate, submitted_by_user=admin)
 
-        chapter_titles = [
-            'National',
-            'Oregon',
-            'New York',
-            'Northern California',
-            'Southern California',
-            'Northeastern States',
-        ]
-
-        for title in chapter_titles:
-            chapter = ChapterFactory(title=title)
-
+        for chapter in Chapter.objects.all():
             users = []
             for _ in range(2):
                 user = UserFactory()
                 users.append(user)
                 ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
-
-            if random.random() < 0.2:
-                for _ in range(random.randint(1, 3)):
-                    chapter.states.add(State.objects.order_by('?').first())
-            else:
-                zips = Zip.objects.order_by('?')[: random.randint(20, 50)]
-                for z in zips:
-                    chapter.zips.create(zip_code=z)
 
             for _ in range(3):
                 ChapterSocialLinkFactory(chapter=chapter)
