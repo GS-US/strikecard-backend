@@ -85,7 +85,7 @@ class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin):
 class ChapterZipAdmin(admin.ModelAdmin):
     list_display = ['zip_code', 'chapter', 'state']
     autocomplete_fields = ['chapter', 'zip_code']
-    list_filter = ['chapter']
+    list_filter = ['chapter', 'state']
     fields = ['chapter', 'zip_code']
 
     def get_readonly_fields(self, request, obj=None):

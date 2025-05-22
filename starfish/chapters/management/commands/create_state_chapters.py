@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from chapters.models import Chapter
 from regions.models import State, Zip
 
-minor_chapters = {
+chapter_exceptions = {
     'NY': ['Greater NY', 'New York City'],
     'CA': ['Northern California', 'Southern California'],
 }
@@ -36,13 +36,14 @@ class Command(BaseCommand):
         return chapter
 
     def handle(self, *args, **kwargs):
-        for state in State.objects.all():
+        for state in State.objects.exclude(code__in=chapter_exceptions.keys()):
             self._new_chapter(state)
 
-        for state, titles in minor_chapters.items():
+        for state_code, titles in chapter_exceptions.items():
+            state = State.objects.get(code=state_code)
             for title in titles:
-                chapter = self._new_chapter(name=title)
-                zips = Zip.objects.filter(state__code=state).order_by('?')[
+                chapter = self._new_chapter(state=state, name=title)
+                zips = Zip.objects.filter(state__name=state).order_by('?')[
                     : random.randint(20, 50)
                 ]
                 for z in zips:
