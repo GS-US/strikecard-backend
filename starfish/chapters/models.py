@@ -88,6 +88,7 @@ class ChapterZip(models.Model):
 
     class Meta:
         verbose_name = 'Chapter ZIP'
+        ordering = ('zip_code',)
 
     def __str__(self):
         return str(self.zip_code)
