@@ -4,6 +4,10 @@ from django.contrib.auth.models import Group
 
 from .models import User
 
+admin.site.unregister(Group)
+Group._meta.app_label = 'users'
+admin.site.register(Group)
+
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
