@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'starfish',
     'users',
-    'jazzmin',
+    'unfold',
     'django.contrib.admin',
     'rules',
     'regions',
@@ -129,25 +129,6 @@ AUTH_USER_MODEL = 'users.User'
 
 FINAL_COUNT = 11000000
 
-JAZZMIN_SETTINGS = {
-    'site_title': 'Strikecard Admin',
-    'site_header': 'Strikecard Admin',
-    'site_brand': 'Strikecard Admin',
-    'search_model': ['chapters.Chapter', 'regions.Zip'],
-    'order_with_respect_to': [
-        'chapters',
-        'chapters.Chapter',
-        'chapters.ChapterZip',
-        'partners',
-        'contacts',
-        'regions',
-        'users',
-        'auth',
-    ],
-    'topmenu_links': [
-        {'model': 'contacts.Contact'},
-    ],
-}
 
 from .local_settings import *
 

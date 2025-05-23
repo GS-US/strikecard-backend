@@ -5,4 +5,4 @@ django-rest-framework
 django-model-utils
 django-simple-history
 rules
-django-jazzmin
+unfold
