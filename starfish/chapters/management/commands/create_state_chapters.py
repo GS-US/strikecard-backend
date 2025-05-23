@@ -27,12 +27,8 @@ class Command(BaseCommand):
                 'description': f'{name} Chapter of the General Strike',
             },
         )
-        if created:
-            if state:
-                chapter.states.add(state)
-            self.stdout.write(self.style.SUCCESS(f'Created chapter: {chapter.title}'))
-        else:
-            self.stdout.write(self.style.WARNING(f'Chapter for {name} already exists'))
+        if created and state:
+            chapter.states.add(state)
         return chapter
 
     def handle(self, *args, **kwargs):
