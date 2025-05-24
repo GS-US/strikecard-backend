@@ -12,7 +12,7 @@ admin.site.unregister(Group)
 
 @admin.register(Group)
 class GroupAdmin(BaseGroupAdmin, ModelAdmin):
-    pass
+    compressed_fields = True
 
 
 @admin.register(User)
@@ -41,3 +41,4 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('username',)
+    compressed_fields = True

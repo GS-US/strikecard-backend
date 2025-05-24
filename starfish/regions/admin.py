@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+from unfold.admin import ModelAdmin
 
 from chapters.models import get_chapter_for_zip
 from starfish.admin import ReadOnlyAdminMixin
@@ -9,12 +10,13 @@ from .models import State, Zip
 
 
 @admin.register(State)
-class StateAdmin(ReadOnlyAdminMixin, admin.ModelAdmin):
+class StateAdmin(ReadOnlyAdminMixin, ModelAdmin):
     list_display = ['code', 'name']
     list_display_links = list_display
     search_fields = list_display
     fields = list_display + ['zip_codes']
     readonly_fields = fields
+    compressed_fields = True
 
     def zip_codes(self, obj):
         url = (
@@ -26,7 +28,7 @@ class StateAdmin(ReadOnlyAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Zip)
-class ZipAdmin(ReadOnlyAdminMixin, admin.ModelAdmin):
+class ZipAdmin(ReadOnlyAdminMixin, ModelAdmin):
     list_display = ['state', 'code']
     list_display_links = ['code']
     search_fields = [
@@ -37,6 +39,7 @@ class ZipAdmin(ReadOnlyAdminMixin, admin.ModelAdmin):
     list_filter = ['state']
     fields = ['state', 'code', 'associated_chapter']
     readonly_fields = fields
+    compressed_fields = True
 
     def associated_chapter(self, obj):
         chapter = get_chapter_for_zip(obj)

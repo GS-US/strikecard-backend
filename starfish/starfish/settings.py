@@ -137,6 +137,18 @@ AUTH_USER_MODEL = 'users.User'
 FINAL_COUNT = 11000000
 
 UNFOLD = {
+    'SITE_TITLE': 'Strikecard Admin',
+    'SITE_HEADER': 'Strikecard Admin',
+    'SITE_SUBHEADER': 'Operation Starfish 2.0',
+    'SITE_SYMBOL': 'flare',
+    'ENVIRONMENT': lambda r: ['Dev', 'primary'],
+    'SITE_DROPDOWN': [
+        {
+            'title': 'Public site',
+            'link': '/',
+            'target': '_blank',
+        },
+    ],
     'SIDEBAR': {
         'navigation': [
             {

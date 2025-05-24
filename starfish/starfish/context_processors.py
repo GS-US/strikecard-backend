@@ -1,4 +1,4 @@
-from .utils import get_totals
+from .utils import get_the_totals
 
 
 def the_totals(request):

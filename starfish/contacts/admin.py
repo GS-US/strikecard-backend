@@ -1,16 +1,36 @@
 import csv
 
 import rules
+from django import forms
 from django.contrib import admin
 from django.http import HttpResponse
 from rules.contrib.admin import ObjectPermissionsModelAdmin
+from unfold.admin import ModelAdmin
+from unfold.widgets import UnfoldAdminTextInputWidget
 
 from chapters.models import ChapterRole
 from contacts.models import Contact
 
 
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['referer_full'].widget = UnfoldAdminTextInputWidget()
+        for f in ('chapter', 'partner_campaign'):
+            if f in self.fields:
+                widget = self.fields[f].widget
+                widget.can_add_related = False
+                widget.can_change_related = False
+                widget.can_delete_related = False
+
+
 @admin.register(Contact)
-class ContactAdmin(ObjectPermissionsModelAdmin):
+class ContactAdmin(ObjectPermissionsModelAdmin, ModelAdmin):
     list_display = (
         'name',
         'email',
@@ -24,6 +44,8 @@ class ContactAdmin(ObjectPermissionsModelAdmin):
     readonly_fields = ['validated']
     date_hierarchy = 'validated'
     actions = ['export_as_csv']
+    form = ContactForm
+    compressed_fields = True
 
     def export_as_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')

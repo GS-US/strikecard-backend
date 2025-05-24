@@ -17,6 +17,7 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, ModelAdmin):
     search_fields = ('name', 'email', 'url', 'legacy_source')
     list_filter = ('created', 'modified')
     readonly_fields = ('key_string', 'created', 'modified', 'last_used')
+    compressed_fields = True
 
 
 class PledgeInline(TabularInline):
@@ -34,6 +35,7 @@ class AffiliateAdmin(SoftDeletableAdminMixin, ModelAdmin):
     search_fields = ('organization_name', 'email', 'notes')
     readonly_fields = ('created', 'modified')
     inlines = [PledgeInline]
+    compressed_fields = True
 
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
