@@ -69,7 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'starfish.context_processors.totals',
+                'starfish.context_processors.the_totals',
             ],
         },
     },

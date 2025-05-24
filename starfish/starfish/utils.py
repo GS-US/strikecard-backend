@@ -6,7 +6,7 @@ from contacts.models import Contact, ExpungedContact
 from partners.models import Pledge
 
 
-def get_totals():
+def get_the_totals():
     active = Contact.objects.count()
     expunged = ExpungedContact.objects.count()
     pledged = Pledge.objects.aggregate(Sum('count'))['count__sum'] or 0
