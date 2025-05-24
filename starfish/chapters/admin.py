@@ -56,7 +56,7 @@ class PaperTotalInline(TabularInline):
 
 @admin.register(Chapter)
 class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, ModelAdmin):
-    list_display = ('title', 'created')
+    list_display = ('title', 'created', 'total_contacts')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
     autocomplete_fields = ['states']
@@ -69,7 +69,10 @@ class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, ModelAd
         ChapterZipInline,
     ]
 
-    def has_view_permission(self, request, obj=None):
+    def total_contacts(self, obj):
+        contacts_count = obj.contacts.count()
+        expunged_contacts_count = obj.expunged_contacts.count()
+        return contacts_count + expunged_contacts_count
         if request.user.is_superuser:
             return True
         if obj:
