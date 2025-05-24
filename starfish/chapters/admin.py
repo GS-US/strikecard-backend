@@ -28,7 +28,7 @@ class ChapterRoleInlineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if "user" in self.fields:
+        if 'user' in self.fields:
             widget = self.fields['user'].widget
             widget.can_add_related = False
             widget.can_change_related = False
@@ -55,7 +55,7 @@ class PaperTotalInline(TabularInline):
 
 
 @admin.register(Chapter)
-class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin):
+class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, ModelAdmin):
     list_display = ('title', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
