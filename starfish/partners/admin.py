@@ -41,6 +41,8 @@ class AffiliateAdmin(SoftDeletableAdminMixin, ModelAdmin):
     def total_pledged(self, obj):
         total = obj.pledges.aggregate(total=Sum('count'))['total']
         return total or 0
+
+    def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
         for obj in instances:
             if isinstance(obj, Pledge) and not obj.submitted_by_user_id:
