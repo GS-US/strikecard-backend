@@ -39,8 +39,7 @@ class AffiliateAdmin(SoftDeletableAdminMixin, ModelAdmin):
     compressed_fields = True
 
     def total_pledged(self, obj):
-        total = obj.pledges.aggregate(total=Sum('count'))['total']
-        return total or 0
+        return obj.pledges.aggregate(total=Sum('count'))['total'] or 0
 
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
