@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Sum
 from unfold.admin import ModelAdmin, TabularInline
 
 from starfish.admin import SoftDeletableAdminMixin
@@ -31,13 +32,15 @@ class PledgeInline(TabularInline):
 
 @admin.register(Affiliate)
 class AffiliateAdmin(SoftDeletableAdminMixin, ModelAdmin):
-    list_display = ('organization_name',)
+    list_display = ('organization_name', 'total_pledged')
     search_fields = ('organization_name', 'email', 'notes')
     readonly_fields = ('created', 'modified')
     inlines = [PledgeInline]
     compressed_fields = True
 
-    def save_formset(self, request, form, formset, change):
+    def total_pledged(self, obj):
+        total = obj.pledges.aggregate(total=Sum('count'))['total']
+        return total or 0
         instances = formset.save(commit=False)
         for obj in instances:
             if isinstance(obj, Pledge) and not obj.submitted_by_user_id:
