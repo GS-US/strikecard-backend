@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,6 +29,11 @@ INSTALLED_APPS = [
     'starfish',
     'users',
     'unfold',
+    'unfold.contrib.filters',
+    'unfold.contrib.forms',
+    'unfold.contrib.inlines',
+    'unfold.contrib.import_export',
+    'unfold.contrib.simple_history',
     'django.contrib.admin',
     'rules',
     'regions',
@@ -129,6 +136,77 @@ AUTH_USER_MODEL = 'users.User'
 
 FINAL_COUNT = 11000000
 
+UNFOLD = {
+    'SIDEBAR': {
+        'navigation': [
+            {
+                'title': 'Navigation',
+                'collapsible': False,
+                'items': [
+                    {
+                        'title': 'Contacts',
+                        'icon': 'person',
+                        'link': reverse_lazy('admin:contacts_contact_changelist'),
+                    },
+                    {
+                        'title': 'Chapters',
+                        'icon': 'groups',
+                        'link': reverse_lazy('admin:chapters_chapter_changelist'),
+                    },
+                    {
+                        'title': 'Partners',
+                        'icon': 'group',
+                        'link': reverse_lazy(
+                            'admin:partners_partnercampaign_changelist'
+                        ),
+                    },
+                    {
+                        'title': 'Affiliates',
+                        'icon': 'group',
+                        'link': reverse_lazy('admin:partners_affiliate_changelist'),
+                    },
+                ],
+            },
+            {
+                'title': 'Regions',
+                'collapsible': True,
+                'items': [
+                    {
+                        'title': 'States',
+                        'icon': 'map',
+                        'link': reverse_lazy('admin:regions_state_changelist'),
+                    },
+                    {
+                        'title': 'ZIP Codes',
+                        'icon': 'map',
+                        'link': reverse_lazy('admin:regions_zip_changelist'),
+                    },
+                    {
+                        'title': 'Chapter ZIPs',
+                        'icon': 'map',
+                        'link': reverse_lazy('admin:chapters_chapterzip_changelist'),
+                    },
+                ],
+            },
+            {
+                'title': 'Access',
+                'collapsible': True,
+                'items': [
+                    {
+                        'title': 'Users',
+                        'icon': 'person',
+                        'link': reverse_lazy('admin:users_user_changelist'),
+                    },
+                    {
+                        'title': 'Groups',
+                        'icon': 'group',
+                        'link': reverse_lazy('admin:auth_group_changelist'),
+                    },
+                ],
+            },
+        ],
+    },
+}
 
 from .local_settings import *
 

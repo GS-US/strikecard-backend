@@ -1,6 +1,7 @@
 import rules
 from django.contrib import admin
 from rules.contrib.admin import ObjectPermissionsModelAdmin
+from unfold.admin import ModelAdmin, TabularInline
 
 from chapters.models import (
     Chapter,
@@ -12,24 +13,24 @@ from chapters.models import (
 from starfish.admin import SoftDeletableAdminMixin
 
 
-class ChapterZipInline(admin.TabularInline):
+class ChapterZipInline(TabularInline):
     model = ChapterZip
     autocomplete_fields = ['zip_code']
     extra = 1
 
 
-class ChapterRoleInline(admin.TabularInline):
+class ChapterRoleInline(TabularInline):
     model = ChapterRole
     readonly_fields = ['added_by_user']
     extra = 1
 
 
-class ChapterSocialLinkInline(admin.TabularInline):
+class ChapterSocialLinkInline(TabularInline):
     model = ChapterSocialLink
     extra = 1
 
 
-class PaperTotalInline(admin.TabularInline):
+class PaperTotalInline(TabularInline):
     model = PaperTotal
     readonly_fields = ['submitted_by_user']
     extra = 1
@@ -82,7 +83,7 @@ class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin):
 
 
 @admin.register(ChapterZip)
-class ChapterZipAdmin(admin.ModelAdmin):
+class ChapterZipAdmin(ModelAdmin):
     list_display = ['zip_code', 'chapter', 'state']
     autocomplete_fields = ['chapter', 'zip_code']
     list_filter = [
