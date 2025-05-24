@@ -1,4 +1,5 @@
 import rules
+from django import forms
 from django.contrib import admin
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from unfold.admin import ModelAdmin, TabularInline
@@ -19,10 +20,27 @@ class ChapterZipInline(TabularInline):
     extra = 1
 
 
+class ChapterRoleInlineForm(forms.ModelForm):
+    class Meta:
+        model = ChapterRole
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if "user" in self.fields:
+            widget = self.fields['user'].widget
+            widget.can_add_related = False
+            widget.can_change_related = False
+            widget.can_delete_related = False
+
+
 class ChapterRoleInline(TabularInline):
     model = ChapterRole
     readonly_fields = ['added_by_user']
+    autocomplete_fields = ['user']
     extra = 1
+    form = ChapterRoleInlineForm
 
 
 class ChapterSocialLinkInline(TabularInline):
@@ -42,6 +60,7 @@ class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin):
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
     autocomplete_fields = ['states']
+    compressed_fields = True
 
     inlines = [
         ChapterRoleInline,
