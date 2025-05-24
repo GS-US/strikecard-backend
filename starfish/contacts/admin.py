@@ -5,6 +5,7 @@ from django import forms
 from django.contrib import admin
 from django.http import HttpResponse
 from rules.contrib.admin import ObjectPermissionsModelAdmin
+from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
 from unfold.widgets import UnfoldAdminTextInputWidget
 
@@ -20,7 +21,6 @@ class ContactForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['referer_full'].widget = UnfoldAdminTextInputWidget()
         for f in ('chapter', 'partner_campaign'):
             if f in self.fields:
                 widget = self.fields[f].widget
@@ -30,7 +30,7 @@ class ContactForm(forms.ModelForm):
 
 
 @admin.register(Contact)
-class ContactAdmin(ObjectPermissionsModelAdmin, ModelAdmin):
+class ContactAdmin(ObjectPermissionsModelAdmin, SimpleHistoryAdmin, ModelAdmin):
     list_display = (
         'name',
         'email',
@@ -41,7 +41,8 @@ class ContactAdmin(ObjectPermissionsModelAdmin, ModelAdmin):
     search_fields = ('name', 'email')
     list_filter = ('validated', 'chapter')
     autocomplete_fields = ['zip_code']
-    readonly_fields = ['validated']
+    readonly_fields = ['referer_full', 'validated']
+    exclude = ['referer_host']
     date_hierarchy = 'validated'
     actions = ['export_as_csv']
     form = ContactForm
