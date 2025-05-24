@@ -66,5 +66,7 @@ class Pledge(models.Model):
     notes = models.CharField(blank=True, max_length=255)
     created = models.DateTimeField(auto_now_add=True)
 
+    history = HistoricalRecords()
+
     def __str__(self):
         return f"{self.created} ({self.count})"

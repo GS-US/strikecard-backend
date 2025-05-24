@@ -3,6 +3,7 @@ from django import forms
 from django.contrib import admin
 from django.db.models import Sum
 from rules.contrib.admin import ObjectPermissionsModelAdmin
+from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
 
 from chapters.models import (
@@ -56,7 +57,9 @@ class PaperTotalInline(TabularInline):
 
 
 @admin.register(Chapter)
-class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, ModelAdmin):
+class ChapterAdmin(
+    SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, SimpleHistoryAdmin, ModelAdmin
+):
     list_display = ('title', 'total_contacts', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}

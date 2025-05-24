@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models import Sum
+from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
 
 from starfish.admin import SoftDeletableAdminMixin
@@ -8,7 +9,7 @@ from .models import Affiliate, PartnerCampaign, Pledge
 
 
 @admin.register(PartnerCampaign)
-class PartnerCampaignAdmin(SoftDeletableAdminMixin, ModelAdmin):
+class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
     list_display = (
         'name',
         'email',
@@ -31,7 +32,7 @@ class PledgeInline(TabularInline):
 
 
 @admin.register(Affiliate)
-class AffiliateAdmin(SoftDeletableAdminMixin, ModelAdmin):
+class AffiliateAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
     list_display = ('organization_name', 'total_pledged')
     search_fields = ('organization_name', 'email', 'notes')
     readonly_fields = ('created', 'modified')

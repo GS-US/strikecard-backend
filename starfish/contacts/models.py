@@ -41,7 +41,7 @@ class BaseContact(HashedContactRecord):
     partner_campaign = models.ForeignKey(
         'partners.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
     )
-    referer_full = models.TextField(blank=True, null=True)
+    referer_full = models.TextField('Referrer', blank=True, null=True)
     referer_host = models.CharField(max_length=255, blank=True, null=True)
 
     tracker = FieldTracker(fields=['email', 'phone', 'partner_campaign'])

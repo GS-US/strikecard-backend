@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'unfold.contrib.inlines',
     'unfold.contrib.import_export',
     'unfold.contrib.simple_history',
+    'simple_history',
     'django.contrib.admin',
     'rules',
     'regions',
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'starfish.urls'
@@ -133,6 +135,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DEBUG = False
 
 AUTH_USER_MODEL = 'users.User'
+
+SIMPLE_HISTORY_REVERT_DISABLED = True
 
 FINAL_COUNT = 11000000
 
