@@ -1,6 +1,7 @@
 import rules
 from django import forms
 from django.contrib import admin
+from django.db.models import Sum
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from unfold.admin import ModelAdmin, TabularInline
 
@@ -72,7 +73,8 @@ class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, ModelAd
     def total_contacts(self, obj):
         contacts_count = obj.contacts.count()
         expunged_contacts_count = obj.expunged_contacts.count()
-        return contacts_count + expunged_contacts_count
+        paper_total_count = obj.paper_totals.aggregate(Sum('count'))['count__sum'] or 0
+        return contacts_count + expunged_contacts_count + paper_total_count
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:
