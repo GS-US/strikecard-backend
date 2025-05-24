@@ -57,7 +57,7 @@ class PaperTotalInline(TabularInline):
 
 @admin.register(Chapter)
 class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, ModelAdmin):
-    list_display = ('title', 'created', 'total_contacts')
+    list_display = ('title', 'total_contacts', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
     autocomplete_fields = ['states']
