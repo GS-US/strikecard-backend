@@ -73,6 +73,8 @@ class ChapterAdmin(SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, ModelAd
         contacts_count = obj.contacts.count()
         expunged_contacts_count = obj.expunged_contacts.count()
         return contacts_count + expunged_contacts_count
+
+    def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:
             return True
         if obj:
