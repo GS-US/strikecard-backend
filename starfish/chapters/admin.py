@@ -20,9 +20,12 @@ class ChapterZipInline(TabularInline):
     model = ChapterZip
     autocomplete_fields = ['zip_code']
     extra = 1
+    tab = True
+    verbose_name = 'ZIP'
 
 
 class ChapterRoleInlineForm(forms.ModelForm):
+
     class Meta:
         model = ChapterRole
         fields = '__all__'
@@ -43,17 +46,22 @@ class ChapterRoleInline(TabularInline):
     autocomplete_fields = ['user']
     extra = 1
     form = ChapterRoleInlineForm
+    tab = True
+    verbose_name = 'Role'
 
 
 class ChapterSocialLinkInline(TabularInline):
     model = ChapterSocialLink
     extra = 1
+    tab = True
+    verbose_name = 'Link'
 
 
 class PaperTotalInline(TabularInline):
     model = PaperTotal
     readonly_fields = ['submitted_by_user']
     extra = 1
+    tab = True
 
 
 @admin.register(Chapter)
