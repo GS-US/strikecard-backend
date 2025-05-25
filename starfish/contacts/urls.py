@@ -9,7 +9,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('signup/', PendingContactCreateView.as_view(), name='pending_contact_signup'),
+    path('signup/', PendingContactCreateView.as_view(), name='pending_contact_create'),
     path('validate/<str:token>/', validate_contact, name='validate_contact'),
     path(
         'success/<str:slug>/',

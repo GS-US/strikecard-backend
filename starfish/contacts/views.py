@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView
-from rules.contrib.views import PermissionRequiredMixin
+from partners.models import PartnerCampaign
 
 from chapters.models import Chapter, ChapterRole
 
@@ -31,6 +31,16 @@ class PendingContactCreateView(CreateView):
     model = PendingContact
     form_class = PendingContactForm
     template_name = 'contacts/pendingcontact_form.html'
+
+    def form_valid(self, form):
+        partner_key = form.cleaned_data.get('partner_key')
+        if partner_key:
+            try:
+                partner_campaign = PartnerCampaign.objects.get(key_string=partner_key)
+                form.instance.partner_campaign = partner_campaign
+            except PartnerCampaign.DoesNotExist:
+                pass  # Optionally handle invalid partner_key
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('pending_contact_detail', kwargs={'pk': self.object.pk})
