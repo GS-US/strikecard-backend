@@ -91,6 +91,9 @@ def _get_validation_expires():
 
 class PendingContact(BaseContact):
     validation_token = UrlsafeTokenField(null=True, blank=True)
+    partner_campaign = models.ForeignKey(
+        'partners.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
+    )
     validation_expires = models.DateTimeField(
         null=True, blank=True, default=_get_validation_expires
     )
