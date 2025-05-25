@@ -5,6 +5,7 @@
   <h1>Join the<br />General Strike!</h1>
   <form method="post">
       {% csrf_token %}
+      {{ form.hidden_fields }}
       {{ form.as_p }}
       <button type="submit">Join!</button>
   </form>
