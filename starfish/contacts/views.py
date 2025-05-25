@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView
 from partners.models import PartnerCampaign
 
@@ -31,6 +33,10 @@ class PendingContactCreateView(CreateView):
     model = PendingContact
     form_class = PendingContactForm
     template_name = 'contacts/pendingcontact_form.html'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
     def form_valid(self, form):
         partner_key = form.cleaned_data.get('partner_key')
