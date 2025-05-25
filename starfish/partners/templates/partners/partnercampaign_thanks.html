@@ -7,7 +7,6 @@
     <p>You can embed the following HTML code into your website to include a signup form that will submit directly to our system:</p>
 
     <textarea rows="15" cols="80" readonly>
-    <!-- Copy this code into your website -->
     <form action="{{ request.scheme }}://{{ request.get_host }}{% url 'pending_contact_create' %}" method="post">
         <input type="hidden" name="partner_key" value="{{ object.key_string }}">
         <label>Name: <input type="text" name="name" required></label><br>
