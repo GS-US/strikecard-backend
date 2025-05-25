@@ -36,10 +36,10 @@ class PendingContactCreateView(CreateView):
         partner_key = form.cleaned_data.get('partner_key')
         if partner_key:
             try:
-                partner_campaign = PartnerCampaign.objects.get(key_string=partner_key)
-                form.instance.partner_campaign = partner_campaign
+                form.instance.partner_campaign = PartnerCampaign.objects.get(
+                    key_string=partner_key)
             except PartnerCampaign.DoesNotExist:
-                pass  # Optionally handle invalid partner_key
+                pass
         return super().form_valid(form)
 
     def get_success_url(self):
