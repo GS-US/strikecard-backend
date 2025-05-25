@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div id="join-form">
+    <div class="user-form">
         <h1>Create a Partner Campaign</h1>
         <form method="post">
             {% csrf_token %}
-            <table>
-                {{ form.as_table }}
-            </table>
+            {{ form.as_p }}
             <button type="submit">Submit</button>
         </form>
     </div>
