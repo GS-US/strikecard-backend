@@ -3,7 +3,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView
 from rules.contrib.views import PermissionRequiredMixin
 
-from chapters.models import ChapterRole
+from chapters.models import Chapter, ChapterRole
 
 from .forms import PendingContactForm
 from .models import Contact, PendingContact
@@ -11,8 +11,9 @@ from .models import Contact, PendingContact
 
 def validate_contact(request, token):
     pending_contact = get_object_or_404(PendingContact, validation_token=token)
-    if pending_contact.validate_contact():
-        return redirect('validation_success')
+    contact = pending_contact.validate_contact()
+    if contact:
+        return redirect('validation_success', slug=contact.chapter.slug)
     else:
         return redirect('validation_failed')
 
@@ -33,3 +34,9 @@ class PendingContactCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('pending_contact_detail', kwargs={'pk': self.object.pk})
+
+
+class SuccessView(DetailView):
+    model = Chapter
+    template_name = 'contacts/validation_success.html'
+    slug_url_kw_arg = 'slug'
