@@ -8,7 +8,12 @@ class IndexView(FormView):
     template_name = 'index.html'
     form_class = PendingContactForm
 
-    def form_valid(self, form):
+    def get_initial(self):
+        initial = super().get_initial()
+        partner_key = self.request.GET.get('partner_key')
+        if partner_key:
+            initial['partner_key'] = partner_key
+        return initial
         self.object = form.save()
         return super().form_valid(form)
 

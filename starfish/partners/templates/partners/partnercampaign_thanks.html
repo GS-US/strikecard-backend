@@ -15,4 +15,9 @@
         <input type="submit" value="Sign Up">
     </form>
     </textarea>
+    <p>
+      <a href="{% url 'index' %}?partner_key={{ object.key_string }}">
+        Continue to the Signup Form
+      </a>
+    </p>
 {% endblock %}
