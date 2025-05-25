@@ -1,4 +1,26 @@
 <html>
+<style type="text/css">
+body{
+    background: black;
+    color: white;
+}
+#join-form {
+    width: 300px;
+    text-align: right;
+    margin: 40px 0;
+    padding: 20px;
+    border: 1px solid #888;
+}
+#join-form label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+}
+#join-form .errorlist {
+    color: red;
+    list-style: none;
+}
+</style>
 <body>
     <h1>The General Strike<h1>
     <h2>{{ the_totals.total }} committed | {{ the_totals.needed }} needed</h2>
