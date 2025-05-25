@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Thank You!</h2>
+<h2>Thank You for Joining the General Strike!</h2>
 <h3>Here's where it <strong>should</strong> say:</h3>
-<p>Your sign-up has been received. Please check your email to validate your contact information.</p>
-<h3>But for testing purposes, here's what the email would look like:</h3>
-<h4>Hey {{ object.name }}! Welcome to the {{ object.chapter }} chapter of the General Strike!</h4>
+<p>Your signature has been received! There's one last step before you can be counted: please check your email to validate your contact information.</p>
+<h3>But for testing purposes, instead here's what the email would look like:</h3>
+<div id="fake-email">
+  <p class="header"><strong>From:</strong> General Strike US<br />
+  <strong>To:</strong> {{ object.email }}</br />
+  <strong>Subject:</strong> Welcome to the General Strike!</p>
+<p>Hey {{ object.name }}! Welcome to the {{ object.chapter }} chapter of the General Strike!</p>
 <h4><a href="{{ validation_link }}">Click here to validate your email and be counted!</a></h4>
 {% endblock %}

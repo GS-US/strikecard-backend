@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Thank You!</h2>
-<p>Your email has been validated successfully.</p>
+<h3>Thank You! Your email has been validated successfully!</h3>
+<h1>Welcome to the {{ object.title }} Chapter, Striker #{{ the_totals.total }}!</h1>
+<p>{{ object.description }}</p>
+
+{% if object.social_links.exists %}
+<ul>
+    {% for link in object.social_links.all %}
+    <li><a href="{{ link.url }}">{{ link.platform }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% endblock %}
