@@ -6,6 +6,7 @@ from .models import PendingContact
 
 
 class PendingContactForm(forms.ModelForm):
+    email = forms.CharField(required=True)
     zip_code = forms.CharField(max_length=5)
 
     class Meta:

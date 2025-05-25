@@ -11,11 +11,14 @@ def get_chapter_for_zip(zip_code):
     if not zip_code:
         return None
 
+    if type(zip_code) == str:
+        zip_code = Zip.objects.get(code=zip_code)
+
     try:
         return ChapterZip.objects.get(zip_code=zip_code.code).chapter
     except (ChapterZip.DoesNotExist, Chapter.DoesNotExist):
         try:
-            return Chapter.objects.get(states=zip_code.state_id)
+            return Chapter.objects.filter(states=zip_code.state_id).first()
         except Chapter.DoesNotExist:
             try:
                 return Chapter.objects.get(slug='national')
