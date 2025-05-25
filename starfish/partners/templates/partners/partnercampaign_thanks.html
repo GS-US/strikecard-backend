@@ -4,6 +4,10 @@
     <h1>Thank You</h1>
     <p>Your Partner Campaign has been created successfully.</p>
 
+    <p>
+      You can give this URL out to send users to our system to signup, and stay connected with you: <br />
+      {{ request.scheme }}://{{ request.get_host }}{% url 'index' %}?partner_key={{ object.key_string }}
+    </p>
     <p>You can embed the following HTML code into your website to include a signup form that will submit directly to our system:</p>
 
     <textarea rows="15" cols="80" readonly>
@@ -15,9 +19,4 @@
         <input type="submit" value="Sign Up">
     </form>
     </textarea>
-    <p>
-      <a href="{% url 'index' %}?partner_key={{ object.key_string }}">
-        Continue to the Signup Form
-      </a>
-    </p>
 {% endblock %}
