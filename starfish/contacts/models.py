@@ -48,6 +48,7 @@ class BaseContact(HashedContactRecord):
 
     class Meta:
         abstract: True
+        ordering = ('-created',)
 
     def __str__(self):
         return self.name
@@ -135,6 +136,9 @@ class Contact(BaseContact):
     validated = models.DateTimeField(null=True, blank=True)
 
     history = HistoricalRecords()
+
+    class Meta:
+        ordering = ('-validated',)
 
     def remove(self, status, removed_by=None, notes=''):
         RemovedContact.objects.create(
