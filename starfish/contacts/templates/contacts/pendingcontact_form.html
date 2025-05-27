@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Sign Up</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+<div id="join-form" class="user-form">
+  <h1>Join the<br />General Strike!</h1>
+  <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Join!</button>
+  </form>
+</div>
 {% endblock %}

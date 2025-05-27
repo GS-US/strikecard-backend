@@ -7,6 +7,10 @@ from django.http import HttpResponse
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
+from unfold.contrib.filters.admin import (
+    AutocompleteSelectFilter,
+    AutocompleteSelectMultipleFilter,
+)
 from unfold.widgets import UnfoldAdminTextInputWidget
 
 from chapters.models import ChapterRole
@@ -39,7 +43,9 @@ class ContactAdmin(ObjectPermissionsModelAdmin, SimpleHistoryAdmin, ModelAdmin):
         'validated',
     )
     search_fields = ('name', 'email')
-    list_filter = ('validated', 'chapter')
+    list_display_links = ('name', 'email')
+    list_filter = (('chapter', AutocompleteSelectMultipleFilter), 'validated')
+    list_filter_submit = True
     autocomplete_fields = ['zip_code']
     readonly_fields = ['referer_full', 'validated']
     exclude = ['referer_host']

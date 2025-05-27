@@ -3,9 +3,9 @@ from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView
-from partners.models import PartnerCampaign
 
 from chapters.models import Chapter, ChapterRole
+from partners.models import PartnerCampaign
 
 from .forms import PendingContactForm
 from .models import Contact, PendingContact
@@ -38,12 +38,22 @@ class PendingContactCreateView(CreateView):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
+    def get_initial(self):
+        initial = super().get_initial()
+        partner_key = self.request.GET.get('partner_key')
+        if partner_key:
+            initial['partner_key'] = partner_key
+        return initial
+        self.object = form.save()
+        return super().form_valid(form)
+
     def form_valid(self, form):
         partner_key = form.cleaned_data.get('partner_key')
         if partner_key:
             try:
                 form.instance.partner_campaign = PartnerCampaign.objects.get(
-                    key_string=partner_key)
+                    key_string=partner_key
+                )
             except PartnerCampaign.DoesNotExist:
                 pass
         return super().form_valid(form)
