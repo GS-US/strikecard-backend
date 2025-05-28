@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Thank You</h1>
     <p>Your Partner Campaign has been created successfully.</p>
-
+    <p>Your key is: {{ object.key_string }}<br />Please save this</p>
     <p>
       You can give this URL out to send users to our system to signup, and stay connected with you: <br />
       {{ request.scheme }}://{{ request.get_host }}{% url 'index' %}?partner_key={{ object.key_string }}

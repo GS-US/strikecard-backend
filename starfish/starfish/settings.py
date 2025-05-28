@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'unfold.contrib.simple_history',
     'simple_history',
     'django.contrib.admin',
+    'import_export',
     'rules',
     'regions',
     'chapters',
