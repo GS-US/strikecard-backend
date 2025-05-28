@@ -20,13 +20,19 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
     )
     search_fields = ('name', 'email', 'url', 'legacy_source')
     list_filter = ('created', 'modified')
-    readonly_fields = ('key_string', 'created', 'modified', 'last_used', 'view_contacts_link')
+    readonly_fields = (
+        'key_string',
+        'created',
+        'modified',
+        'last_used',
+        'view_contacts_link',
+    )
     compressed_fields = True
 
     def view_contacts_link(self, obj):
         url = reverse('admin:contacts_contact_changelist')
         url += f'?partner_campaign__id__exact={obj.id}'
-        return format_html('<a href="{}">View related contacts</a>', url)
+        return format_html('<a href="{}">View contacts</a>', url)
 
     view_contacts_link.short_description = 'Related Contacts'
 
