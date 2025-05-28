@@ -1,6 +1,7 @@
 import rules
 from django import forms
 from django.contrib import admin
+from import_export.admin import ImportExportMixin
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
@@ -11,32 +12,7 @@ from unfold.contrib.filters.admin import (
 
 from chapters.models import ChapterRole
 from contacts.models import Contact
-
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
-
-
-class ContactResource(resources.ModelResource):
-    class Meta:
-        model = Contact
-        fields = (
-            'id',
-            'name',
-            'email',
-            'phone',
-            'chapter__title',
-            'partner_campaign__name',
-            'validated',
-        )
-        export_order = (
-            'id',
-            'name',
-            'email',
-            'phone',
-            'chapter__title',
-            'partner_campaign__name',
-            'validated',
-        )
+from contacts.resources import ContactResource
 
 
 class ContactForm(forms.ModelForm):
@@ -57,7 +33,7 @@ class ContactForm(forms.ModelForm):
 
 @admin.register(Contact)
 class ContactAdmin(
-    ImportExportModelAdmin,
+    ImportExportMixin,
     ObjectPermissionsModelAdmin,
     SimpleHistoryAdmin,
     ModelAdmin,

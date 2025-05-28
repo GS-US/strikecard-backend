@@ -1,2 +1,4 @@
+ - test contact import
+ - export fix zip, row headers
  - partneradmin link to contacts
  - contacts filter by partner
