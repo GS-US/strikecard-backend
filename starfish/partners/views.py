@@ -1,4 +1,5 @@
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, FormView
 from .forms import PartnerCampaignCreateForm, PartnerCampaignLookupForm
 from .models import PartnerCampaign
@@ -9,7 +10,7 @@ class PartnerCampaignCreateView(CreateView):
     template_name = 'partners/partnercampaign_form.html'
 
     def get_context_data(self, form=None):
-        context = super().get_context_data(fom=form)
+        context = super().get_context_data(form=form)
         context['lookup_form'] = PartnerCampaignLookupForm()
         return context
 
@@ -20,20 +21,23 @@ class PartnerCampaignThanksView(DetailView):
     model = PartnerCampaign
     template_name = 'partners/partnercampaign_thanks.html'
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        return response
-
-
-class PartnerCampaignLookupView(DetailView):
-    model = PartnerCampaign
-    template_name = 'partners/partnercampaign_detail.html'
+class PartnerCampaignLookupFormView(FormView):
+    form_class = PartnerCampaignLookupForm
+    template_name = 'partners/partnercampaign_lookup.html'
 
     def form_valid(self, form):
         partner_key = form.cleaned_data.get('partner_key')
         email = form.cleaned_data.get('email')
-        context = self.get_context_data(form=form)
-        context['object'] = PartnerCampaign.objects.get(
-            key_string=partner_key, email=email
-        )
-        return self.render_to_response(context)
+        try:
+            partner_campaign = PartnerCampaign.objects.get(
+                key_string=partner_key,
+                email=email
+            )
+            return redirect('partner_campaign_detail', pk=partner_campaign.pk)
+        except PartnerCampaign.DoesNotExist:
+            form.add_error(None, 'No matching partner campaign found.')
+            return self.form_invalid(form)
+
+class PartnerCampaignDetailView(DetailView):
+    model = PartnerCampaign
+    template_name = 'partners/partnercampaign_detail.html'
