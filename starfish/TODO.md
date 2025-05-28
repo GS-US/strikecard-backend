@@ -1,4 +1,5 @@
  - test contact import
- - export fix zip, row headers
+ - export fix validated date (only in partner export??)
  - partneradmin link to contacts
  - contacts filter by partner
+ - better map mock contact zip codes to chapters

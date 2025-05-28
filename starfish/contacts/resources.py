@@ -4,6 +4,11 @@ from contacts.models import Contact
 
 
 class ContactResource(resources.ModelResource):
+    zip_code = resources.Field(attribute='zip_code', column_name='ZIP')
+    chapter__title = resources.Field(attribute='chapter__title', column_name='Chapter')
+    partner_campaign__name = resources.Field(
+        attribute='partner_campaign__name', column_name='Partner'
+    )
 
     class Meta:
         model = Contact

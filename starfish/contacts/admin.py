@@ -5,10 +5,7 @@ from import_export.admin import ImportExportMixin
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
-from unfold.contrib.filters.admin import (
-    AutocompleteSelectFilter,
-    AutocompleteSelectMultipleFilter,
-)
+from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 
 from chapters.models import ChapterRole
 from contacts.models import Contact

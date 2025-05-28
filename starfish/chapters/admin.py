@@ -122,6 +122,7 @@ class ChapterAdmin(
 @admin.register(ChapterZip)
 class ChapterZipAdmin(ModelAdmin):
     list_display = ['zip_code', 'chapter', 'state']
+    search_fields = ['zip_code__code']
     autocomplete_fields = ['chapter', 'zip_code']
     list_filter = [
         'chapter',
