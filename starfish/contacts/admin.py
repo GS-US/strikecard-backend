@@ -1,9 +1,6 @@
-import csv
-
 import rules
 from django import forms
 from django.contrib import admin
-from django.http import HttpResponse
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
@@ -11,10 +8,35 @@ from unfold.contrib.filters.admin import (
     AutocompleteSelectFilter,
     AutocompleteSelectMultipleFilter,
 )
-from unfold.widgets import UnfoldAdminTextInputWidget
 
 from chapters.models import ChapterRole
 from contacts.models import Contact
+
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
+
+
+class ContactResource(resources.ModelResource):
+    class Meta:
+        model = Contact
+        fields = (
+            'id',
+            'name',
+            'email',
+            'phone',
+            'chapter__title',
+            'partner_campaign__name',
+            'validated',
+        )
+        export_order = (
+            'id',
+            'name',
+            'email',
+            'phone',
+            'chapter__title',
+            'partner_campaign__name',
+            'validated',
+        )
 
 
 class ContactForm(forms.ModelForm):
@@ -34,7 +56,13 @@ class ContactForm(forms.ModelForm):
 
 
 @admin.register(Contact)
-class ContactAdmin(ObjectPermissionsModelAdmin, SimpleHistoryAdmin, ModelAdmin):
+class ContactAdmin(
+    ImportExportModelAdmin,
+    ObjectPermissionsModelAdmin,
+    SimpleHistoryAdmin,
+    ModelAdmin,
+):
+    resource_class = ContactResource
     list_display = (
         'name',
         'email',
@@ -50,42 +78,8 @@ class ContactAdmin(ObjectPermissionsModelAdmin, SimpleHistoryAdmin, ModelAdmin):
     readonly_fields = ['referer_full', 'validated']
     exclude = ['referer_host']
     date_hierarchy = 'validated'
-    actions = ['export_as_csv']
     form = ContactForm
     compressed_fields = True
-
-    def export_as_csv(self, request, queryset):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=contacts.csv'
-        writer = csv.writer(response)
-        writer.writerow(
-            [
-                'Name',
-                'Email',
-                'Phone',
-                'Chapter',
-                'Partner Campaign',
-                'Validated Date',
-            ]
-        )
-        for obj in queryset:
-            writer.writerow(
-                [
-                    obj.name,
-                    obj.email,
-                    obj.phone,
-                    obj.chapter.title if obj.chapter else '',
-                    obj.partner_campaign.name if obj.partner_campaign else '',
-                    (
-                        obj.validated.strftime('%Y-%m-%d %H:%M:%S')
-                        if obj.validated
-                        else ''
-                    ),
-                ]
-            )
-        return response
-
-    export_as_csv.short_description = 'Export selected contacts as CSV'
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:
