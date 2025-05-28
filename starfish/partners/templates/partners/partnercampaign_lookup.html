@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h3><a href="{% url "partner_campaign_lookup" %}">Find your campaign</a></h3>
     <div class="user-form">
-        <h1>Create a Partner Campaign</h1>
+        <h1>Look up your Partner Campaign</h1>
+        <p>If a matching campaign exists, you'll get a link sent to the email address on file</p>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Create!</button>
+            <button type="submit">Search</button>
         </form>
     </div>
 {% endblock %}

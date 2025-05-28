@@ -39,7 +39,11 @@ class BaseContact(HashedContactRecord):
         blank=True,
     )
     partner_campaign = models.ForeignKey(
-        'partners.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
+        'partners.PartnerCampaign',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='contacts',
     )
     referer_full = models.TextField('Referrer', blank=True, null=True)
     referer_host = models.CharField(max_length=255, blank=True, null=True)

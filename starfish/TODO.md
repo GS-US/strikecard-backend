@@ -1,0 +1,2 @@
+ - partneradmin link to contacts
+ - contacts filter by partner

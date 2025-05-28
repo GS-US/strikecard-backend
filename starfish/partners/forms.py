@@ -3,7 +3,7 @@ from django import forms
 from .models import PartnerCampaign
 
 
-class PartnerCampaignForm(forms.ModelForm):
+class PartnerCampaignCreateForm(forms.ModelForm):
     class Meta:
         model = PartnerCampaign
         fields = [
@@ -11,3 +11,8 @@ class PartnerCampaignForm(forms.ModelForm):
             'email',
             'url',
         ]
+
+
+class PartnerCampaignLookupForm(forms.Form):
+    partner_key = forms.CharField()
+    email = forms.CharField()
