@@ -6,6 +6,7 @@ from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
 from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
+from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
 from chapters.models import ChapterRole
 from contacts.models import Contact
@@ -45,7 +46,11 @@ class ContactAdmin(
     )
     search_fields = ('name', 'email')
     list_display_links = ('name', 'email')
-    list_filter = (('chapter', AutocompleteSelectMultipleFilter), 'validated')
+    list_filter = (
+        ('chapter', AutocompleteSelectMultipleFilter),
+        ('partner_campaign', AutocompleteSelectMultipleFilter),
+        'validated',
+    )
     list_filter_submit = True
     autocomplete_fields = ['zip_code']
     readonly_fields = ['referer_full', 'validated']
@@ -53,6 +58,8 @@ class ContactAdmin(
     date_hierarchy = 'validated'
     form = ContactForm
     compressed_fields = True
+    import_form_class = ImportForm
+    export_form_class = ExportForm
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:
