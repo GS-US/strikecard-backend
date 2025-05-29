@@ -3,7 +3,7 @@ from django.utils import timezone
 from factory.django import DjangoModelFactory
 from faker import Faker
 
-from chapters.models import Chapter
+from chapters.models import Chapter, get_chapter_for_zip
 from chapters.tests.factories import ChapterFactory
 from contacts.models import Contact, ExpungedContact, PendingContact, RemovedContact
 from partners.tests.factories import PartnerCampaignFactory
@@ -21,7 +21,6 @@ class ContactFactory(DjangoModelFactory):
     email = factory.Faker('email')
     phone = factory.Faker('phone_number')
     zip_code = factory.Iterator(Zip.objects.all())
-    chapter = factory.Iterator(Chapter.objects.all())
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)
     referer_full = factory.Faker('url')
     validated = factory.LazyFunction(
@@ -29,6 +28,10 @@ class ContactFactory(DjangoModelFactory):
             fake.date_time_between(start_date="-3y"), timezone.get_current_timezone()
         )
     )
+
+    @factory.lazy_attribute
+    def chapter(self):
+        return get_chapter_for_zip(self.zip_code)
 
 
 class PendingContactFactory(DjangoModelFactory):

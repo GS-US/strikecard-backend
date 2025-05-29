@@ -42,7 +42,7 @@ class Command(BaseCommand):
             admin = User.objects.create_superuser('admin', 'admin@example.com', 'a')
 
         self.partner_campaigns = []
-        for _ in range(3):
+        for _ in range(5):
             pc = PartnerCampaignFactory()
             self.partner_campaigns.append(pc)
 
@@ -58,28 +58,26 @@ class Command(BaseCommand):
                 users.append(user)
                 ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
 
-            for _ in range(3):
+            for _ in range(4):
                 ChapterSocialLinkFactory(chapter=chapter)
 
-            for _ in range(3):
+            for _ in range(random.randint(0, 2)):
                 PaperTotalFactory(
                     chapter=chapter, submitted_by_user=random.choice(users)
                 )
 
-            for _ in range(10):
-                ContactFactory(
-                    chapter=chapter, partner_campaign=self.get_partner_campaign()
-                )
-
-            for _ in range(random.randint(1, 3)):
+            for _ in range(random.randint(0, 3)):
                 PendingContactFactory(
                     chapter=chapter, partner_campaign=self.get_partner_campaign()
                 )
 
-            for _ in range(random.randint(1, 3)):
+            for _ in range(random.randint(0, 3)):
                 RemovedContactFactory(removed_by=random.choice(users))
 
-            for _ in range(random.randint(1, 3)):
+            for _ in range(random.randint(0, 3)):
                 ExpungedContactFactory(
                     chapter=chapter, partner_campaign=self.get_partner_campaign()
                 )
+
+        for _ in range(1000):
+            ContactFactory(partner_campaign=self.get_partner_campaign())
