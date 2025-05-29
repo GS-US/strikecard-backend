@@ -5,7 +5,20 @@
   <h1>Join the<br />General Strike!</h1>
   <form method="post">
       {% csrf_token %}
-      {{ form.as_p }}
+{% for hidden in form.hidden_fields %}
+{{ hidden }}
+{% endfor %}
+{% for field in form.visible_fields %}
+    <div class="fieldWrapper{% if field.field.required %} required{% endif %}">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+        {% if field.help_text %}
+          <p class="help" id="{{ field.auto_id }}_helptext">
+            {{ field.help_text|safe }}
+          </p>
+        {% endif %}
+    </div>
+{% endfor %}
       <button type="submit">Join!</button>
   </form>
 </div>

@@ -7,7 +7,7 @@ from .models import PendingContact
 
 class PendingContactForm(forms.ModelForm):
     email = forms.CharField(required=True)
-    zip_code = forms.CharField(max_length=5)
+    zip_code = forms.CharField(label='ZIP Code', max_length=5)
     partner_key = forms.CharField(
         widget=forms.HiddenInput(), max_length=16, required=False
     )
