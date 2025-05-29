@@ -11,7 +11,8 @@ import os
 import django
 from django.urls import re_path
 from channels.routing import ProtocolTypeRouter, URLRouter
-from django.core.asgi import get_asgi_application  # Added import
+from django.core.asgi import get_asgi_application
+from channels.auth import AuthMiddlewareStack  # Added import
 
 from starfish.consumers import TotalsConsumer
 
@@ -20,7 +21,9 @@ django.setup()
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket': URLRouter([
-        re_path(r'^ws/totals/$', TotalsConsumer.as_asgi()),
-    ]),
+    'websocket': AuthMiddlewareStack(  # Wrapped with AuthMiddlewareStack
+        URLRouter([
+            re_path(r'^ws/totals/$', TotalsConsumer.as_asgi()),
+        ])
+    ),
 })
