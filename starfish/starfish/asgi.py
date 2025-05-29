@@ -9,8 +9,17 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 
 import os
 import django
+from django.urls import re_path
+from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.routing import get_default_application
+
+from starfish.consumers import TotalsConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'starfish.settings')
 django.setup()
-application = get_default_application()
+application = ProtocolTypeRouter({
+    'http': get_asgi_application(),
+    'websocket': URLRouter([
+        re_path(r'^ws/totals/$', TotalsConsumer.as_asgi()),
+    ]),
+})
