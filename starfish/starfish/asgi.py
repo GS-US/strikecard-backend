@@ -11,12 +11,13 @@ import os
 import django
 from django.urls import re_path
 from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.routing import get_default_application
+from django.core.asgi import get_asgi_application  # Added import
 
 from starfish.consumers import TotalsConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'starfish.settings')
 django.setup()
+
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     'websocket': URLRouter([
