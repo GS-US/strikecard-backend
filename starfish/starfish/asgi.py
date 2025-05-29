@@ -8,22 +8,27 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
+
 import django
-from django.urls import re_path
+from channels.auth import AuthMiddlewareStack  # Added import
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-from channels.auth import AuthMiddlewareStack  # Added import
+from django.urls import re_path
 
 from starfish.consumers import TotalsConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'starfish.settings')
 django.setup()
 
-application = ProtocolTypeRouter({
-    'http': get_asgi_application(),
-    'websocket': AuthMiddlewareStack(  # Wrapped with AuthMiddlewareStack
-        URLRouter([
-            re_path(r'^ws/totals/$', TotalsConsumer.as_asgi()),
-        ])
-    ),
-})
+application = ProtocolTypeRouter(
+    {
+        'http': get_asgi_application(),
+        'websocket': AuthMiddlewareStack(  # Wrapped with AuthMiddlewareStack
+            URLRouter(
+                [
+                    re_path(r'ws/totals/', TotalsConsumer.as_asgi()),
+                ]
+            )
+        ),
+    }
+)

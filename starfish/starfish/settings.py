@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'import_export',
     'rules',
-    'channels',
+    #'channels',
     'regions',
     'chapters',
     'contacts',
@@ -79,7 +79,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'starfish.wsgi.application'
-ASGI_APPLICATION = 'starfish.asgi.application'
+# ASGI_APPLICATION = 'starfish.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
