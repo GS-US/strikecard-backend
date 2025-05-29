@@ -16,6 +16,7 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
         'name',
         'email',
         'url',
+        'contacts',
         'last_used',
     )
     search_fields = ('name', 'email', 'url', 'legacy_source')
@@ -28,6 +29,9 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
         'view_contacts_link',
     )
     compressed_fields = True
+
+    def contacts(self, obj):
+        return obj.contacts.count() or 0
 
     def view_contacts_link(self, obj):
         url = reverse('admin:contacts_contact_changelist')
