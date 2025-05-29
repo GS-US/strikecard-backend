@@ -1,3 +1,5 @@
+import random
+
 import factory
 from django.utils import timezone
 from factory.django import DjangoModelFactory
@@ -20,7 +22,7 @@ class ContactFactory(DjangoModelFactory):
     name = factory.Faker('name')
     email = factory.Faker('email')
     phone = factory.Faker('phone_number')
-    zip_code = factory.Iterator(Zip.objects.all())
+    zip_code = factory.LazyFunction(lambda: Zip.objects.order_by('?').first())
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)
     referer_full = factory.Faker('url')
     validated = factory.LazyFunction(
