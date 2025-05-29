@@ -5,6 +5,7 @@
   <h1>Join the<br />General Strike!</h1>
   <form method="post">
       {% csrf_token %}
+{{ form.non_field_errors }}
 {% for hidden in form.hidden_fields %}
 {{ hidden }}
 {% endfor %}

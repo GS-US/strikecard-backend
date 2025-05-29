@@ -6,7 +6,21 @@
         <p>If a matching campaign exists, you'll get a link sent to the email address on file</p>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+{{ form.non_field_errors }}
+{% for hidden in form.hidden_fields %}
+{{ hidden }}
+{% endfor %}
+{% for field in form.visible_fields %}
+    <div class="fieldWrapper{% if field.field.required %} required{% endif %}">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+        {% if field.help_text %}
+          <p class="help" id="{{ field.auto_id }}_helptext">
+            {{ field.help_text|safe }}
+          </p>
+        {% endif %}
+    </div>
+{% endfor %}
             <button type="submit">Search</button>
         </form>
     </div>
