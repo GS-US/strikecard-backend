@@ -1,4 +1,38 @@
 <html>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+  const socket = new WebSocket("ws://" + window.location.host + "/ws/totals/");
+
+  socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+
+    // Update grand total display
+    if (data.total !== undefined) {
+      const totalElem = document.getElementById("grand-total");
+      if (totalElem) {
+        totalElem.textContent = data.total;
+      }
+    }
+
+    if (data.new_contact) {
+      Toastify({
+        text: "🎉 New contact signed up!",
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        stopOnFocus: true,
+      }).showToast();
+    }
+  };
+
+  socket.onerror = function(error) {
+    console.error("WebSocket error:", error);
+  };
+</script>
 <style type="text/css">
 body{
     background: black;

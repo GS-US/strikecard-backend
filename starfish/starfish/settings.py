@@ -37,11 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'import_export',
     'rules',
+    'channels',
     'regions',
     'chapters',
     'contacts',
     'partners',
-    'channels',  # Added 'channels' app
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -79,7 +79,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'starfish.wsgi.application'
-ASGI_APPLICATION = 'starfish.asgi.application'  # Added for Channels
+ASGI_APPLICATION = 'starfish.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -91,10 +91,9 @@ DATABASES = {
     }
 }
 
-# Channels configuration
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',  # Use Redis in production
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
 
@@ -177,7 +176,9 @@ UNFOLD = {
                     {
                         'title': 'Partners',
                         'icon': 'group',
-                        'link': reverse_lazy('admin:partners_partnercampaign_changelist'),
+                        'link': reverse_lazy(
+                            'admin:partners_partnercampaign_changelist'
+                        ),
                     },
                     {
                         'title': 'Affiliates',

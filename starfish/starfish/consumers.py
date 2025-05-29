@@ -1,13 +1,15 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+
+from channels.generic.websocket import AsyncWebsocketConsumer
+
 from .utils import get_the_totals
+
 
 class TotalsConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.channel_layer.group_add('totals_group', self.channel_name)
         await self.accept()
-        total = get_the_totals()
-        await self.send(text_data=json.dumps({'total': total}))
+        await self.send(text_data=json.dumps(get_the_totals()))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard('totals_group', self.channel_name)
