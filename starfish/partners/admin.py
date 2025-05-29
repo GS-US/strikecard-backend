@@ -32,9 +32,12 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
     def view_contacts_link(self, obj):
         url = reverse('admin:contacts_contact_changelist')
         url += f'?partner_campaign__id__exact={obj.id}'
-        return format_html('<a href="{}">View contacts</a>', url)
+        return format_html(
+            '<a class="inline-block bg-primary-600 text-white font-semibold py-1 px-3 rounded text-sm no-underline" href="{}">View contacts</a>',
+            url,
+        )
 
-    view_contacts_link.short_description = 'Related Contacts'
+    view_contacts_link.short_description = 'Contacts'
 
 
 class PledgeInline(TabularInline):

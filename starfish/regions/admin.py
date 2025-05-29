@@ -19,10 +19,12 @@ class StateAdmin(ReadOnlyAdminMixin, ModelAdmin):
     compressed_fields = True
 
     def zip_codes(self, obj):
-        url = (
-            reverse('admin:regions_zip_changelist') + f'?state__code__exact={obj.code}'
+        url = reverse('admin:regions_zip_changelist')
+        url += f'?state__code__exact={obj.code}'
+        return format_html(
+            '<a class="inline-block bg-primary-600 text-white font-semibold py-1 px-3 rounded text-sm no-underline" href="{}">View ZIP Codes</a>',
+            url,
         )
-        return format_html('<a href="{}">View ZIP Codes</a>', url)
 
     zip_codes.short_description = 'ZIP Codes'
 

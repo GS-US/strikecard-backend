@@ -2,6 +2,8 @@ import rules
 from django import forms
 from django.contrib import admin
 from django.db.models import Sum
+from django.urls import reverse
+from django.utils.html import format_html
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
@@ -72,6 +74,7 @@ class ChapterAdmin(
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
     autocomplete_fields = ['states']
+    readonly_fields = ('view_contacts_link',)
     compressed_fields = True
 
     inlines = [
@@ -80,6 +83,16 @@ class ChapterAdmin(
         PaperTotalInline,
         ChapterZipInline,
     ]
+
+    def view_contacts_link(self, obj):
+        url = reverse('admin:contacts_contact_changelist')
+        url += f'?chapter_id__exact={obj.id}'
+        return format_html(
+            '<a class="inline-block bg-primary-600 text-white font-semibold py-1 px-3 rounded text-sm no-underline" href="{}">View contacts</a>',
+            url,
+        )
+
+    view_contacts_link.short_description = 'Contacts'
 
     def total_contacts(self, obj):
         contacts_count = obj.contacts.count()
