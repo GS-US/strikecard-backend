@@ -17,7 +17,6 @@ from django.urls import reverse_lazy
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     'chapters',
     'contacts',
     'partners',
+    'channels',  # Added 'channels' app
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -79,7 +79,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'starfish.wsgi.application'
-
+ASGI_APPLICATION = 'starfish.asgi.application'  # Added for Channels
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -91,6 +91,12 @@ DATABASES = {
     }
 }
 
+# Channels configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',  # Use Redis in production
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -110,7 +116,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -121,7 +126,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -173,9 +177,7 @@ UNFOLD = {
                     {
                         'title': 'Partners',
                         'icon': 'group',
-                        'link': reverse_lazy(
-                            'admin:partners_partnercampaign_changelist'
-                        ),
+                        'link': reverse_lazy('admin:partners_partnercampaign_changelist'),
                     },
                     {
                         'title': 'Affiliates',
