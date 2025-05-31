@@ -42,9 +42,6 @@ class SoftDeletableAdminMixin:
 
 class ReadOnlyAdminMixin:
 
-    def get_readonly_fields(self, request, obj=None):
-        return self.fields
-
     def has_add_permission(self, request):
         return False
 

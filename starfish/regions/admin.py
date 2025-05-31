@@ -15,7 +15,6 @@ class StateAdmin(ReadOnlyAdminMixin, ModelAdmin):
     list_display_links = list_display
     search_fields = list_display
     fields = list_display + ['zip_codes']
-    readonly_fields = fields
     compressed_fields = True
 
     def zip_codes(self, obj):
@@ -31,16 +30,38 @@ class StateAdmin(ReadOnlyAdminMixin, ModelAdmin):
 
 @admin.register(Zip)
 class ZipAdmin(ReadOnlyAdminMixin, ModelAdmin):
-    list_display = ['state', 'code']
-    list_display_links = ['code']
+    list_display = ['state', 'code', 'type', 'county', 'population']
+    list_display_links = list_display
     search_fields = [
         'code',
         'state__code',
         'state__name',
+        'primary_city',
+        'county',
+        'acceptable_cities',
     ]
-    list_filter = ['state']
-    fields = ['state', 'code', 'associated_chapter']
-    readonly_fields = fields
+    list_filter = [
+        'type',
+        'state',
+    ]
+    fields = [
+        (
+            'code',
+            'type',
+        ),
+        'state',
+        ('county', 'primary_city'),
+        'acceptable_cities',
+        (
+            'timezone',
+            'area_codes',
+        ),
+        (
+            'latitude',
+            'longitude',
+        ),
+        'population',
+    ]
     compressed_fields = True
 
     def associated_chapter(self, obj):
