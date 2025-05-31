@@ -1,3 +1,10 @@
+ - partner slug
+ - add Contact.leadershipscore 1-5
+ - add Contact.notes
+ - check zip codes 
+ - catch all range for zips per chapter?
+ - chapters only one state
+ 
  - websocket totals update notify
  - websocket new contact notify
  - expunge contacts
@@ -10,9 +17,3 @@
     - view chapter, partner buttons in contact changeview broken
     - export fix validated date (only in partner export??)
     - contact exporter lists wrong fields to be exported but does right thing; bug in import-export?
-
- for demo:
-    - new instance
-    - open port
-    - better test data?
-    - user accounts
