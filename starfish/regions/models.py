@@ -30,4 +30,4 @@ class Zip(models.Model):
         verbose_name = 'ZIP Code'
 
     def __str__(self):
-        return f'{self.code} {self.state}'
+        return self.code

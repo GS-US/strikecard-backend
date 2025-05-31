@@ -1,8 +1,6 @@
  - partner slug
  - add Contact.leadershipscore 1-5
  - add Contact.notes
- - check zip codes 
- - catch all range for zips per chapter?
  - chapters only one state
  
  - websocket totals update notify
