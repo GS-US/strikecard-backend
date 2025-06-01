@@ -45,7 +45,7 @@ class ContactNoteInlineFormSet(BaseInlineFormSet):
 class ContactNoteInlineForm(forms.ModelForm):
     class Meta:
         model = ContactNote
-        fields = ('note', 'created_by', 'created')
+        fields = ('note',)
 
     def __init__(self, *args, **kwargs):
         readonly = kwargs.pop('readonly', False)
@@ -54,8 +54,6 @@ class ContactNoteInlineForm(forms.ModelForm):
         if readonly:
             self.fields['note'].widget = admin.widgets.AdminReadonlyField()
             self.fields['note'].required = False
-        self.fields['created_by'].widget = admin.widgets.AdminReadonlyField()
-        self.fields['created'].widget = admin.widgets.AdminReadonlyField()
 
 
 class ContactNoteInline(admin.TabularInline):
