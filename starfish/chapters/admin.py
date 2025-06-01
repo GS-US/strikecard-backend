@@ -79,7 +79,7 @@ class ChapterAdmin(
     list_display = ('title', 'total_contacts', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
-    autocomplete_fields = ['states']
+    autocomplete_fields = ['state']
     readonly_fields = ('view_contacts_link',)
     compressed_fields = True
 

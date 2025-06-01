@@ -20,15 +20,14 @@ class Command(BaseCommand):
             name = state.name
 
         chapter_slug = slugify(name)
-        chapter, created = Chapter.objects.get_or_create(
+        chapter, created = Chapter.objects.update_or_create(
             slug=chapter_slug,
             defaults={
                 'title': name,
                 'description': f'{name} Chapter of the General Strike',
+                'state': state,
             },
         )
-        if created and state:
-            chapter.states.add(state)
         return chapter
 
     def handle(self, *args, **kwargs):

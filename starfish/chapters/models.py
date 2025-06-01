@@ -11,37 +11,32 @@ def get_chapter_for_zip(zip_code):
     if not zip_code:
         return None
 
-    if type(zip_code) == str:
+    if isinstance(zip_code, str):
         zip_code = Zip.objects.get(code=zip_code)
 
     try:
         return ChapterZip.objects.get(zip_code=zip_code.code).chapter
     except (ChapterZip.DoesNotExist, Chapter.DoesNotExist):
         try:
-            return Chapter.objects.filter(states=zip_code.state_id).first()
+            return Chapter.objects.filter(state=zip_code.state_id).first()
         except Chapter.DoesNotExist:
-            try:
-                return Chapter.objects.get(slug='national')
-            except Chapter.DoesNotExist:
-                return None
+            return None
 
 
 class Chapter(TimeStampedModel, SoftDeletableModel):
+    state = models.ForeignKey(State, related_name='chapters', on_delete=models.PROTECT)
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
     contact_email = models.EmailField(blank=True, null=True)
     website_url = models.URLField('Website', blank=True, null=True)
-    states = models.ManyToManyField(
-        'regions.State', related_name='chapters', blank=True
-    )
 
     objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
 
     class Meta:
         ordering = (
-            'states__name',
+            'state__name',
             'title',
         )
 
