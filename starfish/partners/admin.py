@@ -22,7 +22,7 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
     search_fields = ('name', 'email', 'url', 'legacy_source')
     list_filter = ('created', 'modified')
     readonly_fields = (
-        'key_string',
+        'slug',
         'created',
         'modified',
         'last_used',
@@ -53,9 +53,9 @@ class PledgeInline(TabularInline):
 
 
 @admin.register(Affiliate)
-class AffiliateAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
+    class AffiliateAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
     list_display = ('organization_name', 'total_pledged')
-    search_fields = ('organization_name', 'email', 'notes')
+    search_fields = ('organization_name', 'contact_email', 'notes')
     readonly_fields = ('created', 'modified')
     inlines = [PledgeInline]
     compressed_fields = True
