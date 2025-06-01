@@ -9,7 +9,7 @@ from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
 from chapters.models import ChapterRole
-from contacts.models import Contact
+from contacts.models import Contact, ContactNote
 from contacts.resources import ContactResource
 
 
@@ -27,6 +27,29 @@ class ContactForm(forms.ModelForm):
                 widget.can_add_related = False
                 widget.can_change_related = False
                 widget.can_delete_related = False
+
+
+class ContactNoteInline(admin.TabularInline):
+    model = ContactNote
+    fields = ('note', 'created_by', 'created')
+    readonly_fields = ('created_by', 'created')
+    extra = 0
+    can_delete = False
+
+    def has_add_permission(self, request, obj):
+        return True
+
+    def save_new_object(self, form, commit=True):
+        obj = form.save(commit=False)
+        obj.created_by = form.request.user
+        if commit:
+            obj.save()
+        return obj
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        formset.request = request
+        return formset
 
 
 @admin.register(Contact)
@@ -60,6 +83,7 @@ class ContactAdmin(
     compressed_fields = True
     import_form_class = ImportForm
     export_form_class = ExportForm
+    inlines = [ContactNoteInline]
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:
@@ -96,3 +120,24 @@ class ContactAdmin(
             'chapter', flat=True
         )
         return qs.filter(chapter__in=user_chapters)
+
+
+@admin.register(ContactNote)
+class ContactNoteAdmin(admin.ModelAdmin):
+    list_display = ('contact', 'created_by', 'created')
+    fields = ('contact', 'note', 'created_by', 'created')
+    readonly_fields = ('created_by', 'created')
+    date_hierarchy = 'created'
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user
+        obj.save()
+
+    def has_change_permission(self, request, obj=None):
+        # Prevent editing of existing notes
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        # Prevent deletion of notes
+        return False

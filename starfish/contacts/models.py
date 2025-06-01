@@ -3,18 +3,19 @@ from datetime import timedelta
 from urllib.parse import urlparse
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from model_utils import FieldTracker
 from model_utils.fields import UrlsafeTokenField
-from model_utils.managers import SoftDeletableManager
-from model_utils.models import SoftDeletableModel, TimeStampedModel
+from model_utils.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
-from chapters.models import Chapter, ChapterZip, get_chapter_for_zip
+from chapters.models import get_chapter_for_zip
+
+User = get_user_model()
 
 
 class HashedContactRecord(TimeStampedModel):
@@ -51,7 +52,7 @@ class BaseContact(HashedContactRecord):
     tracker = FieldTracker(fields=['email', 'phone', 'partner_campaign'])
 
     class Meta:
-        abstract: True
+        abstract = True
         ordering = ('-created',)
 
     def __str__(self):
@@ -72,7 +73,6 @@ class BaseContact(HashedContactRecord):
             self.chapter = get_chapter_for_zip(self.zip_code)
 
     def update_hashes(self):
-
         def _hash(s):
             return hashlib.sha256((s + settings.CONTACT_HASH_SALT).encode()).hexdigest()
 
@@ -196,3 +196,21 @@ class ExpungedContact(HashedContactRecord):
 
     def __str__(self):
         return f'expunged: {self.email_hash}'
+
+
+class ContactNote(models.Model):
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name='notes')
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='contact_notes'
+    )
+    note = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Note by {self.created_by.username} on {self.created.strftime("%Y-%m-%d %H:%M")}'
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            # Prevent updates to existing notes
+            return
+        super().save(*args, **kwargs)
