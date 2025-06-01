@@ -1,8 +1,8 @@
  - partner slug
  - add Contact.leadershipscore 1-5
  - add Contact.notes
- - chapters only one state
  - chapterzipadmin & inline allow only zips from current state
+ - add chapter.catch_all 
  
  - websocket totals update notify
  - websocket new contact notify
