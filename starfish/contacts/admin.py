@@ -38,6 +38,8 @@ class ContactNoteInlineFormSet(BaseInlineFormSet):
         form = super().get_form(form_class, form_kwargs)
         instance = form.instance
 
+        print('??')
+        print(instance)
         if instance.pk:
             form.fields['note'].widget = admin.widgets.AdminReadonlyField()
             form.fields['note'].required = False
@@ -49,9 +51,6 @@ class ContactNoteInlineForm(forms.ModelForm):
     class Meta:
         model = ContactNote
         fields = ('note',)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
 
 class ContactNoteInline(admin.TabularInline):
