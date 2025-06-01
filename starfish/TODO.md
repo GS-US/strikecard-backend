@@ -1,9 +1,7 @@
- - partner slug
  - add Contact.leadershipscore 1-5
  - add Contact.notes
  - chapterzipadmin & inline allow only zips from current state
  - add chapter.catch_all 
- - set up /partners/<slug> route to redirect to signup form
  - partner detail view require hashed token sent to email
  
  - websocket totals update notify

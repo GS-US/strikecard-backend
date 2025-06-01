@@ -21,8 +21,8 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
     )
     search_fields = ('name', 'email', 'url', 'legacy_source')
     list_filter = ('created', 'modified')
+    prepopulated_fields = {'slug': ['name']}
     readonly_fields = (
-        'slug',
         'created',
         'modified',
         'last_used',
