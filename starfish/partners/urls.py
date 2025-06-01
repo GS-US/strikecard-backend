@@ -28,7 +28,7 @@ urlpatterns = [
         name='partner_campaign_detail',
     ),
     path(
-        '<slug:slug>/export/',
+        'export/<slug:slug>/',
         PartnerCampaignContactExportView.as_view(),
         name='partner_campaign_export',
     ),

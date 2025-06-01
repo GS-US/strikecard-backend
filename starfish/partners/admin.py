@@ -53,7 +53,7 @@ class PledgeInline(TabularInline):
 
 
 @admin.register(Affiliate)
-    class AffiliateAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
+class AffiliateAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
     list_display = ('organization_name', 'total_pledged')
     search_fields = ('organization_name', 'contact_email', 'notes')
     readonly_fields = ('created', 'modified')
