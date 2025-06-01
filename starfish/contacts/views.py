@@ -44,15 +44,13 @@ class PendingContactCreateView(CreateView):
         if partner_key:
             initial['partner_key'] = partner_key
         return initial
-        self.object = form.save()
-        return super().form_valid(form)
 
     def form_valid(self, form):
         partner_key = form.cleaned_data.get('partner_key')
         if partner_key:
             try:
                 form.instance.partner_campaign = PartnerCampaign.objects.get(
-                    key_string=partner_key
+                    slug=partner_key
                 )
             except PartnerCampaign.DoesNotExist:
                 pass
@@ -65,4 +63,4 @@ class PendingContactCreateView(CreateView):
 class SuccessView(DetailView):
     model = Chapter
     template_name = 'contacts/validation_success.html'
-    slug_url_kw_arg = 'slug'
+    slug_url_kwarg = 'slug'
