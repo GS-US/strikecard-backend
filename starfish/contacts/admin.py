@@ -31,15 +31,18 @@ class ContactForm(forms.ModelForm):
 
 
 class ContactNoteInlineFormSet(BaseInlineFormSet):
-    def get_form_kwargs(self, index):
-        kwargs = super().get_form_kwargs(index)
-        if self.instance.pk and index is not None:
-            form = self.forms[index]
-            if form.instance.pk:
-                kwargs['readonly'] = True
-            else:
-                kwargs['readonly'] = False
-        return kwargs
+    def get_form(self, form_class, form_kwargs=None):
+        if form_kwargs is None:
+            form_kwargs = {}
+
+        form = super().get_form(form_class, form_kwargs)
+        instance = form.instance
+
+        if instance.pk:
+            form.fields['note'].widget = admin.widgets.AdminReadonlyField()
+            form.fields['note'].required = False
+
+        return form
 
 
 class ContactNoteInlineForm(forms.ModelForm):
@@ -48,12 +51,7 @@ class ContactNoteInlineForm(forms.ModelForm):
         fields = ('note',)
 
     def __init__(self, *args, **kwargs):
-        readonly = kwargs.pop('readonly', False)
         super().__init__(*args, **kwargs)
-
-        if readonly:
-            self.fields['note'].widget = admin.widgets.AdminReadonlyField()
-            self.fields['note'].required = False
 
 
 class ContactNoteInline(admin.TabularInline):
