@@ -52,7 +52,7 @@ class ContactAdmin(
         'validated',
     )
     list_filter_submit = True
-    autocomplete_fields = ['zip_code']
+    autocomplete_fields = ['zip_code', 'chapter', 'partner_campaign']
     readonly_fields = ['referer_full', 'validated']
     exclude = ['referer_host']
     date_hierarchy = 'validated'

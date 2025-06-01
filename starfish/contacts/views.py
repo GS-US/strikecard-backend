@@ -40,17 +40,17 @@ class PendingContactCreateView(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        partner_key = self.request.GET.get('partner_key')
-        if partner_key:
-            initial['partner_key'] = partner_key
+        partner_slug = self.request.GET.get('partner_slug')
+        if partner_slug:
+            initial['partner_slug'] = partner_slug
         return initial
 
     def form_valid(self, form):
-        partner_key = form.cleaned_data.get('partner_key')
-        if partner_key:
+        partner_slug = form.cleaned_data.get('partner_slug')
+        if partner_slug:
             try:
                 form.instance.partner_campaign = PartnerCampaign.objects.get(
-                    slug=partner_key
+                    slug=partner_slug
                 )
             except PartnerCampaign.DoesNotExist:
                 pass

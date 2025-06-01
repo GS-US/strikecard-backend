@@ -8,7 +8,7 @@ from .models import PendingContact
 class PendingContactForm(forms.ModelForm):
     email = forms.CharField(required=True)
     zip_code = forms.CharField(label='ZIP Code', max_length=5)
-    partner_key = forms.CharField(
+    partner_slug = forms.CharField(
         widget=forms.HiddenInput(), max_length=255, required=False
     )
 
@@ -19,7 +19,7 @@ class PendingContactForm(forms.ModelForm):
             'email',
             'phone',
             'zip_code',
-            'partner_key',
+            'partner_slug',
         ]
 
     def clean_zip_code(self):
