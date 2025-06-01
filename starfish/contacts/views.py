@@ -40,9 +40,7 @@ class PendingContactCreateView(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        partner_slug = self.kwargs.get('p')
-        if partner_slug:
-            initial['partner_slug'] = partner_slug
+        initial['partner_slug'] = self.kwargs.get('p')
         return initial
 
     def form_valid(self, form):

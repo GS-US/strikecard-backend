@@ -6,6 +6,7 @@ from contacts.views import PendingContactCreateView
 
 urlpatterns = [
     path('', PendingContactCreateView.as_view(), name='index'),
+    path('p/<str:p>/', PendingContactCreateView.as_view(), name='partner_signup'),
     path('admin/', admin.site.urls),
     path('contacts/', include('contacts.urls')),
     path('chapters/', include('chapters.urls')),
