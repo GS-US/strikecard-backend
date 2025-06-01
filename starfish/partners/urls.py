@@ -13,7 +13,7 @@ urlpatterns = [
         'create/', PartnerCampaignCreateView.as_view(), name='partner_campaign_create'
     ),
     path(
-        'thanks/<int:pk>/',
+        'thanks/<slug:slug>/',
         PartnerCampaignThanksView.as_view(),
         name='partner_campaign_thanks',
     ),
@@ -23,12 +23,12 @@ urlpatterns = [
         name='partner_campaign_lookup',
     ),
     path(
-        'detail/<int:pk>/',
+        '<slug:slug>/',
         PartnerCampaignDetailView.as_view(),
         name='partner_campaign_detail',
     ),
     path(
-        'export/<int:pk>/',
+        '<slug:slug>/export/',
         PartnerCampaignContactExportView.as_view(),
         name='partner_campaign_export',
     ),
