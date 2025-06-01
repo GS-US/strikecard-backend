@@ -2,6 +2,7 @@
  - add Contact.leadershipscore 1-5
  - add Contact.notes
  - chapters only one state
+ - chapterzipadmin & inline allow only zips from current state
  
  - websocket totals update notify
  - websocket new contact notify

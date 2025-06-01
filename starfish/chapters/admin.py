@@ -21,10 +21,15 @@ from starfish.admin import SoftDeletableAdminMixin, pretty_button
 
 class ChapterZipInline(TabularInline):
     model = ChapterZip
+    fields = ['zip_code', 'county']
     autocomplete_fields = ['zip_code']
     extra = 1
     tab = True
     verbose_name = 'ZIP'
+    readonly_fields = ['county']
+
+    def county(self, obj):
+        return obj.zip_code.county
 
 
 class ChapterRoleInlineForm(forms.ModelForm):
