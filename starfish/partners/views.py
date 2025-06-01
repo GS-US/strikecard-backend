@@ -15,12 +15,14 @@ class PartnerCampaignCreateView(CreateView):
     template_name = 'partners/partnercampaign_form.html'
 
     def get_success_url(self):
-        return reverse('partner_campaign_thanks', kwargs={'pk': self.object.pk})
+        return reverse('partner_campaign_thanks', kwargs={'slug': self.object.slug})
 
 
 class PartnerCampaignThanksView(DetailView):
     model = PartnerCampaign
     template_name = 'partners/partnercampaign_thanks.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
 
 class PartnerCampaignLookupFormView(FormView):
@@ -32,9 +34,9 @@ class PartnerCampaignLookupFormView(FormView):
         email = form.cleaned_data.get('email')
         try:
             partner_campaign = PartnerCampaign.objects.get(
-                key_string=partner_key, email=email
+                slug=partner_key, email=email
             )
-            return redirect('partner_campaign_detail', pk=partner_campaign.pk)
+            return redirect('partner_campaign_detail', slug=partner_campaign.slug)
         except PartnerCampaign.DoesNotExist:
             form.add_error(None, 'No matching partner campaign found.')
             return self.form_invalid(form)
@@ -43,20 +45,22 @@ class PartnerCampaignLookupFormView(FormView):
 class PartnerCampaignDetailView(DetailView):
     model = PartnerCampaign
     template_name = 'partners/partnercampaign_detail.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['count'] = context['object'].contacts.count()
-        context['export_url'] = reverse('partner_campaign_export', kwargs={'pk': self.object.pk})
+        context['export_url'] = reverse('partner_campaign_export', kwargs={'slug': self.object.slug})
         return context
 
 
 class PartnerCampaignContactExportView(View):
-    def get(self, request, pk):
-        partner_campaign = get_object_or_404(PartnerCampaign, pk=pk)
+    def get(self, request, slug):
+        partner_campaign = get_object_or_404(PartnerCampaign, slug=slug)
         contacts = partner_campaign.contacts.all()
 
         dataset = ContactResource().export(contacts)
         response = HttpResponse(dataset.csv, content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="contacts_{partner_campaign.pk}.csv"'
+        response['Content-Disposition'] = f'attachment; filename="contacts_{partner_campaign.slug}.csv"'
         return response
