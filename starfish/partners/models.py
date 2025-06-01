@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 from django.utils.timezone import now
-from model_utils.fields import UrlsafeTokenField
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from simple_history.models import HistoricalRecords
 
@@ -12,7 +12,7 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     url = models.URLField('URL', blank=True, null=True)
-    key_string = UrlsafeTokenField(unique=True, max_length=16)
+    slug = models.SlugField(unique=True, max_length=255)
     legacy_source = models.CharField(max_length=255, blank=True, null=True, unique=True)
     notes = models.CharField(max_length=255, blank=True, null=True)
     last_used = models.DateTimeField(blank=True, null=True)
@@ -22,6 +22,11 @@ class PartnerCampaign(TimeStampedModel, SoftDeletableModel):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(PartnerCampaign, self).save(*args, **kwargs)
 
     def use(self):
         self.last_used = now()
