@@ -31,20 +31,12 @@ class ContactForm(forms.ModelForm):
 
 
 class ContactNoteInlineFormSet(BaseInlineFormSet):
-    def get_form(self, form_class, form_kwargs=None):
-        if form_kwargs is None:
-            form_kwargs = {}
 
-        form = super().get_form(form_class, form_kwargs)
-        instance = form.instance
-
-        print('??')
-        print(instance)
-        if instance.pk:
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+        if form.instance.pk:
             form.fields['note'].widget = admin.widgets.AdminReadonlyField()
             form.fields['note'].required = False
-
-        return form
 
 
 class ContactNoteInlineForm(forms.ModelForm):
