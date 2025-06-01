@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from unfold.admin import ModelAdmin
 
 from chapters.models import get_chapter_for_zip
-from starfish.admin import ReadOnlyAdminMixin
+from starfish.admin import ReadOnlyAdminMixin, pretty_button, pretty_link
 
 from .models import State, Zip
 
@@ -18,11 +18,9 @@ class StateAdmin(ReadOnlyAdminMixin, ModelAdmin):
     compressed_fields = True
 
     def zip_codes(self, obj):
-        url = reverse('admin:regions_zip_changelist')
-        url += f'?state__code__exact={obj.code}'
-        return format_html(
-            '<a class="inline-block bg-primary-600 text-white font-semibold py-1 px-3 rounded text-sm no-underline" href="{}">View ZIP Codes</a>',
-            url,
+        return pretty_button(
+            reverse('admin:regions_zip_changelist') + f'?state__code__exact={obj.code}',
+            'View ZIP Codes',
         )
 
     zip_codes.short_description = 'ZIP Codes'
@@ -49,7 +47,10 @@ class ZipAdmin(ReadOnlyAdminMixin, ModelAdmin):
             'code',
             'type',
         ),
-        'state',
+        (
+            'state',
+            'associated_chapter',
+        ),
         ('county', 'primary_city'),
         'acceptable_cities',
         (
@@ -67,9 +68,11 @@ class ZipAdmin(ReadOnlyAdminMixin, ModelAdmin):
     def associated_chapter(self, obj):
         chapter = get_chapter_for_zip(obj)
         if chapter:
-            url = reverse('admin:chapters_chapter_change', args=[chapter.id])
-            return format_html('<a href="{}">{}</a>', url, chapter.title)
+            return pretty_link(
+                reverse('admin:chapters_chapter_change', args=[chapter.id]),
+                chapter.title,
+            )
         else:
-            return 'No Chapter'
+            return None
 
     associated_chapter.short_description = 'Chapter'

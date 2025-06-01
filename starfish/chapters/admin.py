@@ -7,6 +7,7 @@ from django.utils.html import format_html
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
+from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 
 from chapters.models import (
     Chapter,
@@ -15,7 +16,7 @@ from chapters.models import (
     ChapterZip,
     PaperTotal,
 )
-from starfish.admin import SoftDeletableAdminMixin
+from starfish.admin import SoftDeletableAdminMixin, pretty_button
 
 
 class ChapterZipInline(TabularInline):
@@ -85,11 +86,10 @@ class ChapterAdmin(
     ]
 
     def view_contacts_link(self, obj):
-        url = reverse('admin:contacts_contact_changelist')
-        url += f'?chapter_id__exact={obj.id}'
-        return format_html(
-            '<a class="inline-block bg-primary-600 text-white font-semibold py-1 px-3 rounded text-sm no-underline" href="{}">View contacts</a>',
-            url,
+        return pretty_button(
+            reverse('admin:contacts_contact_changelist')
+            + f'?chapter_id__exact={obj.id}',
+            'View contacts',
         )
 
     view_contacts_link.short_description = 'Contacts'
@@ -135,12 +135,14 @@ class ChapterAdmin(
 @admin.register(ChapterZip)
 class ChapterZipAdmin(ModelAdmin):
     list_display = ['zip_code', 'chapter', 'state']
-    search_fields = ['zip_code__code']
+    search_fields = ['zip_code__code', 'chapter__title', 'state__name']
     autocomplete_fields = ['chapter', 'zip_code']
     list_filter = [
-        'chapter',
+        ('chapter', AutocompleteSelectMultipleFilter),
     ]
-    fields = ['chapter', 'zip_code']
+    fields = ['chapter', 'state', 'zip_code']
+    compressed_fields = True
+    list_filter_submit = True
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
