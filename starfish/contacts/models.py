@@ -30,12 +30,12 @@ class BaseContact(HashedContactRecord):
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     zip_code = models.ForeignKey(
-        'regions.Zip', on_delete=models.PROTECT, related_name='contacts'
+        'regions.Zip', on_delete=models.PROTECT, related_name='%(class)ss'
     )
     chapter = models.ForeignKey(
         'chapters.Chapter',
         on_delete=models.PROTECT,
-        related_name='contacts',
+        related_name='%(class)ss',
         null=True,
         blank=True,
     )
@@ -44,12 +44,10 @@ class BaseContact(HashedContactRecord):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='contacts',
+        related_name='%(class)ss',
     )
     referer_full = models.TextField('Referrer', blank=True, null=True)
     referer_host = models.CharField(max_length=255, blank=True, null=True)
-
-    tracker = FieldTracker(fields=['email', 'phone', 'partner_campaign'])
 
     class Meta:
         abstract = True
@@ -100,6 +98,8 @@ class PendingContact(BaseContact):
         null=True, blank=True, default=_get_validation_expires
     )
 
+    tracker = FieldTracker(fields=['email', 'phone', 'partner_campaign'])
+
     def token_is_expired(self):
         return now() > self.validation_expires
 
@@ -139,6 +139,7 @@ class PendingContact(BaseContact):
 class Contact(BaseContact):
     validated = models.DateTimeField(null=True, blank=True)
 
+    tracker = FieldTracker(fields=['email', 'phone', 'partner_campaign'])
     history = HistoricalRecords()
 
     class Meta:
@@ -207,7 +208,7 @@ class ContactNote(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Note by {self.created_by.username} on {self.created.strftime("%Y-%m-%d %H:%M")}'
+        return f'Note by {self.created_by.username} on {self.created.strftime("%Y-%m-%d ")}'
 
     def save(self, *args, **kwargs):
         if self.pk:
