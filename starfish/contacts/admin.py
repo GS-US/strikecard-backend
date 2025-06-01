@@ -1,6 +1,7 @@
 import rules
 from django import forms
 from django.contrib import admin
+from django.forms.models import BaseInlineFormSet
 from import_export.admin import ImportExportMixin
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
@@ -29,17 +30,46 @@ class ContactForm(forms.ModelForm):
                 widget.can_delete_related = False
 
 
+class ContactNoteInlineFormSet(BaseInlineFormSet):
+    def get_form_kwargs(self, index):
+        kwargs = super().get_form_kwargs(index)
+        if self.instance.pk and index is not None:
+            form = self.forms[index]
+            if form.instance.pk:
+                kwargs['readonly'] = True
+            else:
+                kwargs['readonly'] = False
+        return kwargs
+
+
+class ContactNoteInlineForm(forms.ModelForm):
+    class Meta:
+        model = ContactNote
+        fields = ('note', 'created_by', 'created')
+
+    def __init__(self, *args, **kwargs):
+        readonly = kwargs.pop('readonly', False)
+        super().__init__(*args, **kwargs)
+
+        if readonly:
+            self.fields['note'].widget = admin.widgets.AdminReadonlyField()
+            self.fields['note'].required = False
+        self.fields['created_by'].widget = admin.widgets.AdminReadonlyField()
+        self.fields['created'].widget = admin.widgets.AdminReadonlyField()
+
+
 class ContactNoteInline(admin.TabularInline):
     model = ContactNote
+    form = ContactNoteInlineForm
+    formset = ContactNoteInlineFormSet
     fields = ('note', 'created_by', 'created')
+    readonly_fields = ('created_by', 'created')
     extra = 1
     can_delete = False
 
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return ('note', 'created_by', 'created')
-        else:
-            return ('created_by', 'created')
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('created_by')
 
 
 @admin.register(Contact)
