@@ -3,6 +3,7 @@
  - chapterzipadmin & inline allow only zips from current state
  - add chapter.catch_all 
  - partner detail view require hashed token sent to email
+ - Paper -> Offline
  
  - websocket totals update notify
  - websocket new contact notify
