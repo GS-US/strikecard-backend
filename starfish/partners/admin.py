@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
 
-from starfish.admin import SoftDeletableAdminMixin
+from starfish.admin import SoftDeletableAdminMixin, pretty_button
 
 from .models import Affiliate, PartnerCampaign, Pledge
 
@@ -34,11 +34,10 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
         return obj.contacts.count() or 0
 
     def view_contacts_link(self, obj):
-        url = reverse('admin:contacts_contact_changelist')
-        url += f'?partner_campaign__id__exact={obj.id}'
-        return format_html(
-            '<a class="inline-block bg-primary-600 text-white font-semibold py-1 px-3 rounded text-sm no-underline" href="{}">View contacts</a>',
-            url,
+        return pretty_button(
+            reverse('admin:contacts_contact_changelist')
+            + f'?partner_campaign__id__exact={obj.id}',
+            'View contacts',
         )
 
     view_contacts_link.short_description = 'Contacts'

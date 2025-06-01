@@ -39,8 +39,11 @@ class Command(BaseCommand):
             state = State.objects.get(code=state_code)
             for title in titles:
                 chapter = self._new_chapter(state=state, name=title)
-                zips = Zip.objects.filter(state__name=state).order_by('?')[
-                    : random.randint(20, 50)
+                zips = Zip.objects.filter(state__code=state_code).order_by('?')[
+                    : random.randint(5, 50)
                 ]
                 for z in zips:
-                    chapter.zips.create(zip_code=z)
+                    try:
+                        chapter.zips.create(zip_code=z)
+                    except:
+                        pass

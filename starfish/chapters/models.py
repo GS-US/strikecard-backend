@@ -85,8 +85,14 @@ class ChapterSocialLink(models.Model):
 
 
 class ChapterZip(models.Model):
+    zip_code = models.OneToOneField(
+        Zip,
+        primary_key=True,
+        on_delete=models.PROTECT,
+        related_name='chapter',
+        verbose_name='ZIP',
+    )
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='zips')
-    zip_code = models.ForeignKey(Zip, on_delete=models.PROTECT, related_name='chapters')
     state = models.ForeignKey(State, on_delete=models.PROTECT, editable=False)
 
     class Meta:

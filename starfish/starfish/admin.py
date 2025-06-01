@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 admin.site.disable_action('delete_selected')
 
@@ -50,3 +51,17 @@ class ReadOnlyAdminMixin:
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+def pretty_button(url, title):
+    return format_html(
+        '<a class="inline-block bg-primary-600 text-white font-semibold py-1 px-3 rounded text-sm no-underline" href="{}">{}</a>',
+        url,
+        title,
+    )
+
+
+def pretty_link(url, title):
+    return format_html(
+        '<a class="text-primary-600 dark:text-primary-500" href="{}">{}</a>', url, title
+    )
