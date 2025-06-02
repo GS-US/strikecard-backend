@@ -14,7 +14,7 @@ from chapters.models import (
     ChapterRole,
     ChapterSocialLink,
     ChapterZip,
-    PaperTotal,
+    OfflineTotal,
 )
 from starfish.admin import SoftDeletableAdminMixin, pretty_button
 
@@ -65,8 +65,8 @@ class ChapterSocialLinkInline(TabularInline):
     verbose_name = 'Link'
 
 
-class PaperTotalInline(TabularInline):
-    model = PaperTotal
+class OfflineTotalInline(TabularInline):
+    model = OfflineTotal
     readonly_fields = ['submitted_by_user']
     extra = 1
     tab = True
@@ -86,7 +86,7 @@ class ChapterAdmin(
     inlines = [
         ChapterRoleInline,
         ChapterSocialLinkInline,
-        PaperTotalInline,
+        OfflineTotalInline,
         ChapterZipInline,
     ]
 
@@ -102,8 +102,10 @@ class ChapterAdmin(
     def total_contacts(self, obj):
         contacts_count = obj.contacts.count()
         expunged_contacts_count = obj.expunged_contacts.count()
-        paper_total_count = obj.paper_totals.aggregate(Sum('count'))['count__sum'] or 0
-        return contacts_count + expunged_contacts_count + paper_total_count
+        offline_total_count = (
+            obj.offline_totals.aggregate(Sum('count'))['count__sum'] or 0
+        )
+        return contacts_count + expunged_contacts_count + offline_total_count
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:
@@ -131,7 +133,7 @@ class ChapterAdmin(
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
         for obj in instances:
-            if isinstance(obj, PaperTotal) and not obj.submitted_by_user_id:
+            if isinstance(obj, OfflineTotal) and not obj.submitted_by_user_id:
                 obj.submitted_by_user = request.user
             obj.save()
         formset.save_m2m()
