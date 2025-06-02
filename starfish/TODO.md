@@ -1,4 +1,3 @@
- - add Contact.leadershipscore 1-5
  - chapterzipadmin & inline allow only zips from current state
  - add chapter.catch_all 
  - partner detail view require hashed token sent to email

@@ -73,6 +73,7 @@ class ContactAdmin(
         'name',
         'email',
         'chapter',
+        'leadership_score',
         'partner_campaign',
         'validated',
     )
