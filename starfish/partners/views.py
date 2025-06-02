@@ -1,7 +1,7 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, FormView, View
-from django.http import HttpResponse
 
 from contacts.admin import ContactResource
 
@@ -30,12 +30,10 @@ class PartnerCampaignLookupFormView(FormView):
     template_name = 'partners/partnercampaign_lookup.html'
 
     def form_valid(self, form):
-        partner_key = form.cleaned_data.get('partner_key')
+        slug = form.cleaned_data.get('slug')
         email = form.cleaned_data.get('email')
         try:
-            partner_campaign = PartnerCampaign.objects.get(
-                slug=partner_key, email=email
-            )
+            partner_campaign = PartnerCampaign.objects.get(slug=slug, email=email)
             return redirect('partner_campaign_detail', slug=partner_campaign.slug)
         except PartnerCampaign.DoesNotExist:
             form.add_error(None, 'No matching partner campaign found.')
@@ -51,7 +49,9 @@ class PartnerCampaignDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['count'] = context['object'].contacts.count()
-        context['export_url'] = reverse('partner_campaign_export', kwargs={'slug': self.object.slug})
+        context['export_url'] = reverse(
+            'partner_campaign_export', kwargs={'slug': self.object.slug}
+        )
         return context
 
 
@@ -62,5 +62,7 @@ class PartnerCampaignContactExportView(View):
 
         dataset = ContactResource().export(contacts)
         response = HttpResponse(dataset.csv, content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="contacts_{partner_campaign.slug}.csv"'
+        response['Content-Disposition'] = (
+            f'attachment; filename="contacts_{partner_campaign.slug}.csv"'
+        )
         return response

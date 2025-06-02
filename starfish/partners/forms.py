@@ -14,5 +14,5 @@ class PartnerCampaignCreateForm(forms.ModelForm):
 
 
 class PartnerCampaignLookupForm(forms.Form):
-    partner_key = forms.CharField()
+    slug = forms.CharField()
     email = forms.CharField()
