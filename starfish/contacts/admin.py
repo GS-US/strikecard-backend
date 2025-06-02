@@ -34,8 +34,9 @@ class ContactNoteInlineFormSet(BaseInlineFormSet):
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
+        form.fields['note'].widget.attrs['rows'] = 3
         if form.instance.pk:
-            form.fields['note'].widget = admin.widgets.AdminReadonlyField()
+            form.fields['note'].disabled = True
             form.fields['note'].required = False
 
 
@@ -53,6 +54,7 @@ class ContactNoteInline(admin.TabularInline):
     readonly_fields = ('created_by', 'created')
     extra = 1
     can_delete = False
+    tab = True
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

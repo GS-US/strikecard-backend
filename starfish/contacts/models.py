@@ -207,6 +207,9 @@ class ContactNote(models.Model):
     note = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'Note'
+
     def __str__(self):
         return f'Note by {self.created_by.username} on {self.created.strftime("%Y-%m-%d ")}'
 
