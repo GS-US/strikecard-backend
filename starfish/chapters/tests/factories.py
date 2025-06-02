@@ -2,7 +2,7 @@ import factory
 from django.utils.text import slugify
 from factory.django import DjangoModelFactory
 
-from chapters.models import Chapter, ChapterRole, ChapterSocialLink, PaperTotal
+from chapters.models import Chapter, ChapterRole, ChapterSocialLink, OfflineTotal
 from regions.models import State, Zip
 from users.tests.factories import UserFactory
 
@@ -38,9 +38,9 @@ class ChapterSocialLinkFactory(DjangoModelFactory):
     url = factory.Faker('url')
 
 
-class PaperTotalFactory(DjangoModelFactory):
+class OfflineTotalFactory(DjangoModelFactory):
     class Meta:
-        model = PaperTotal
+        model = OfflineTotal
 
     chapter = factory.SubFactory(ChapterFactory)
     count = factory.Faker('random_int', min=1, max=1000)

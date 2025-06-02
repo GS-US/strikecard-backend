@@ -103,9 +103,9 @@ class ChapterZip(models.Model):
         super().save(*args, **kwargs)
 
 
-class PaperTotal(models.Model):
+class OfflineTotal(models.Model):
     chapter = models.ForeignKey(
-        Chapter, on_delete=models.PROTECT, related_name='paper_totals'
+        Chapter, on_delete=models.PROTECT, related_name='offline_totals'
     )
     count = models.PositiveIntegerField()
     submitted_by_user = models.ForeignKey(

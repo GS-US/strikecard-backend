@@ -9,7 +9,7 @@ from chapters.tests.factories import (
     ChapterFactory,
     ChapterRoleFactory,
     ChapterSocialLinkFactory,
-    PaperTotalFactory,
+    OfflineTotalFactory,
 )
 from contacts.tests.factories import (
     ContactFactory,
@@ -62,7 +62,7 @@ class Command(BaseCommand):
                 ChapterSocialLinkFactory(chapter=chapter)
 
             for _ in range(random.randint(0, 2)):
-                PaperTotalFactory(
+                OfflineTotalFactory(
                     chapter=chapter, submitted_by_user=random.choice(users)
                 )
 
