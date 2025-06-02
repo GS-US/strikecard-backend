@@ -137,7 +137,11 @@ class PendingContact(BaseContact):
 
 
 class Contact(BaseContact):
+    LEADERSHIP_CHOICES = ((i, str(i)) for i in range(1, 6))
     validated = models.DateTimeField(null=True, blank=True)
+    leadership_score = models.SmallIntegerField(
+        'Leadership', choices=LEADERSHIP_CHOICES, null=True, blank=True
+    )
 
     tracker = FieldTracker(fields=['email', 'phone', 'partner_campaign'])
     history = HistoricalRecords()
