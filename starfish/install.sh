@@ -2,6 +2,10 @@
 set -e
 set -x
 
+cp starfish/local_settings.template.py starfish/local_settings.py
+
+read -p "Edit starfish/local_settings.py, then press Enter to continue..."
+
 python3 -m venv .venv
 source .venv/bin/activate
 
