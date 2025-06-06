@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.db.models import Sum
 from django.urls import reverse
-from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
 
