@@ -1,12 +1,7 @@
 import random
 
-from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand
-from django.utils import timezone
-
 from chapters.models import Chapter
 from chapters.tests.factories import (
-    ChapterFactory,
     ChapterRoleFactory,
     ChapterSocialLinkFactory,
     OfflineTotalFactory,
@@ -17,12 +12,13 @@ from contacts.tests.factories import (
     PendingContactFactory,
     RemovedContactFactory,
 )
+from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 from partners.tests.factories import (
     AffiliateFactory,
     PartnerCampaignFactory,
     PledgeFactory,
 )
-from regions.models import State, Zip
 from users.tests.factories import UserFactory
 
 
