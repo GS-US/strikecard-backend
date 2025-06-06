@@ -3,6 +3,7 @@ ipdb
 black
 isort
 flake8
+flake8-pyproject
 mypy
 python-decouple
 django-extensions

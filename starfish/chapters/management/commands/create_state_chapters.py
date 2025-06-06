@@ -1,6 +1,7 @@
 import random
 
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 from django.utils.text import slugify
 
 from chapters.models import Chapter
@@ -38,11 +39,12 @@ class Command(BaseCommand):
             state = State.objects.get(code=state_code)
             for title in titles:
                 chapter = self._new_chapter(state=state, name=title)
+                # This will be removed when we have actual zip codes for chapters
                 zips = Zip.objects.filter(state__code=state_code).order_by('?')[
                     : random.randint(5, 50)
                 ]
                 for z in zips:
                     try:
                         chapter.zips.create(zip_code=z)
-                    except:
+                    except IntegrityError:
                         pass
