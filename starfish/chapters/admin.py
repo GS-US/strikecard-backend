@@ -1,4 +1,11 @@
 import rules
+from chapters.models import (
+    Chapter,
+    ChapterRole,
+    ChapterSocialLink,
+    ChapterZip,
+    OfflineTotal,
+)
 from django import forms
 from django.contrib import admin
 from django.db.models import Sum
@@ -8,13 +15,6 @@ from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 
-from chapters.models import (
-    Chapter,
-    ChapterRole,
-    ChapterSocialLink,
-    ChapterZip,
-    OfflineTotal,
-)
 from starfish.admin import SoftDeletableAdminMixin, pretty_button
 
 
@@ -134,6 +134,8 @@ class ChapterAdmin(
         for obj in instances:
             if isinstance(obj, OfflineTotal) and not obj.submitted_by_user_id:
                 obj.submitted_by_user = request.user
+            if isinstance(obj, ChapterRole) and not obj.added_by_user_id:
+                obj.added_by_user = request.user
             obj.save()
         formset.save_m2m()
 
