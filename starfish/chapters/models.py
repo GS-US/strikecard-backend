@@ -1,9 +1,9 @@
 from django.conf import settings
 from django.db import models
 from model_utils.models import SoftDeletableModel, TimeStampedModel
+from regions.models import State, Zip
 from simple_history.models import HistoricalRecords
 
-from regions.models import State, Zip
 from starfish.models import SoftDeletablePermissionManager
 
 
@@ -30,6 +30,7 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     description = models.TextField(blank=True, null=True)
     contact_email = models.EmailField(blank=True, null=True)
     website_url = models.URLField('Website', blank=True, null=True)
+    nearby_chapters = models.ManyToManyField('self')
 
     objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()

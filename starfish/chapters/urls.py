@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import ChapterListView, ChapterDetailView
+
+from .views import ChapterDetailView, ChapterListView
 
 urlpatterns = [
     path('', ChapterListView.as_view(), name='chapter_list'),
-    path('<int:pk>/', ChapterDetailView.as_view(), name='chapter_detail'),
+    path('<str:slug>/', ChapterDetailView.as_view(), name='chapter_detail'),
 ]
