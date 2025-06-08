@@ -2,6 +2,8 @@
 set -e
 set -x
 
+source ./.env
+
 PORT="${1:-8000}"
 
 python manage.py flush --no-input

@@ -2,9 +2,9 @@
 set -e
 set -x
 
-cp starfish/local_settings.template.py starfish/local_settings.py
+cp .env.template .env 
 
-read -p "Edit starfish/local_settings.py, then press Enter to continue..."
+read -p "You will need to edit .env to add your secret keys. Press Enter to confirm you understand and continue."
 
 python3 -m venv .venv
 source .venv/bin/activate
