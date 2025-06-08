@@ -12,4 +12,13 @@
 </ul>
 {% endif %}
 
+{% if object.nearby_chapters.exists %}
+<p>Nearby chapters:</p>
+<ul>
+    {% for nc in object.nearby_chapters.all %}
+    <li><a href="{% url 'chapter_detail' nc.slug %}">{{ nc }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% endblock %}
