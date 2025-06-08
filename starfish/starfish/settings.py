@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'import_export',
     'rules',
-    #'channels',
     'regions',
     'chapters',
     'contacts',
@@ -79,7 +78,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'starfish.wsgi.application'
-# ASGI_APPLICATION = 'starfish.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -89,12 +87,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
 }
 
 # Password validation
