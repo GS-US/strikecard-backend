@@ -7,4 +7,3 @@ django-simple-history
 rules
 django-unfold
 django-import-export
-django-channels
