@@ -5,6 +5,6 @@ services:
     working_dir: /starfish
     volumes:
       - ./starfish:/starfish
-    command: sh -c 'cd /starfish && . .venv/bin/activate && pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir -r requirements_dev.txt && /starfish/dev.sh'
+    command: sh -c 'cd /starfish && pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir -r requirements_dev.txt && /starfish/dev.sh'
     ports:
       - 8000:8000
