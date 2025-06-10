@@ -89,7 +89,6 @@ class ChapterZip(models.Model):
         verbose_name='ZIP',
     )
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='zips')
-    state = models.ForeignKey(State, on_delete=models.PROTECT, editable=False)
 
     class Meta:
         verbose_name = 'Chapter ZIP'
@@ -97,11 +96,6 @@ class ChapterZip(models.Model):
 
     def __str__(self):
         return str(self.zip_code)
-
-    def save(self, *args, **kwargs):
-        if not self.state_id:
-            self.state = self.zip_code.state
-        super().save(*args, **kwargs)
 
 
 class OfflineTotal(models.Model):

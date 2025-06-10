@@ -142,15 +142,24 @@ class ChapterAdmin(
 
 @admin.register(ChapterZip)
 class ChapterZipAdmin(ModelAdmin):
-    list_display = ['zip_code', 'chapter', 'state']
-    search_fields = ['zip_code__code', 'chapter__title', 'state__name']
+    list_display = [
+        'zip_code',
+        'chapter',
+    ]
+    search_fields = [
+        'zip_code__code',
+        'chapter__title',
+    ]
     autocomplete_fields = ['chapter', 'zip_code']
     list_filter = [
         ('chapter', AutocompleteSelectMultipleFilter),
     ]
-    fields = ['chapter', 'state', 'zip_code']
+    fields = ['chapter', 'zip_code']
     compressed_fields = True
     list_filter_submit = True
+
+    def state(self, obj):
+        return obj.chapter.state
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
