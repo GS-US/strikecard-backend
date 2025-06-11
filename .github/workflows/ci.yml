@@ -1,0 +1,46 @@
+name: ci
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Black Lint
+        uses: psf/black@stable
+        with:
+          options: "--check --diff --verbose"
+          src: "starfish/"
+          version: "~=25.1"
+
+      - name: isort Lint
+        uses: isort/isort-action@v1
+        with:
+          configuration: "--check-only --diff"
+          isort-version: "6"
+          requirements-files: "starfish/requirements.txt starfish/requirements-dev.txt"
+          sort-paths: "starfish/"
+
+      - name: Flake8 Lint
+        uses: py-actions/flake8@v2
+        with:
+          args: "--toml-config=pyproject.toml"
+          flake8-version: "7"
+          path: "starfish/"
+          plugins: "flake8-pyproject~=1"
