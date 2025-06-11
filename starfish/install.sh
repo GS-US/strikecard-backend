@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -e
-set -x
 
 if [ ! -f ./.env ]; then
     cp .env.template .env 
     read -p "You will need to edit .env to add your secret keys. Press Enter to confirm you understand and continue."
 fi
 
+set -x
 
 python3 -m venv .venv
 source .venv/bin/activate
