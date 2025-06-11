@@ -30,7 +30,7 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     description = models.TextField(blank=True, null=True)
     contact_email = models.EmailField(blank=True, null=True)
     website_url = models.URLField('Website', blank=True, null=True)
-    nearby_chapters = models.ManyToManyField('self')
+    nearby_chapters = models.ManyToManyField('self', blank=True)
 
     objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
