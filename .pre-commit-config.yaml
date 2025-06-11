@@ -14,3 +14,9 @@ repos:
     hooks:
       - id: flake8
         additional_dependencies: ["flake8-pyproject>=1.2,<2"]
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.13.0
+    hooks:
+      - id: markdownlint-cli2
+        require_serial: true
