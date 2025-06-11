@@ -14,6 +14,7 @@ from pathlib import Path
 from django.urls import reverse_lazy
 from configurations import Configuration, values
 
+
 class Common(Configuration):
     # Build paths inside the project like this: BASE_DIR / 'subdir'.
     BASE_DIR = Path(__file__).resolve().parent.parent
@@ -190,7 +191,9 @@ class Common(Configuration):
                         {
                             'title': 'Chapter ZIPs',
                             'icon': 'map',
-                            'link': reverse_lazy('admin:chapters_chapterzip_changelist'),
+                            'link': reverse_lazy(
+                                'admin:chapters_chapterzip_changelist'
+                            ),
                         },
                     ],
                 },
@@ -220,12 +223,14 @@ class Dev(Common):
     DEBUG = values.BooleanValue(True)
     DEBUG_TOOLBAR = True
     INSTALLED_APPS = Common.INSTALLED_APPS + ["debug_toolbar"]
-    MIDDLEWARE = ['starfish.middleware.ipdb_exception.IPDBExceptionMiddleware', "debug_toolbar.middleware.DebugToolbarMiddleware"] + Common.MIDDLEWARE
+    MIDDLEWARE = [
+        'starfish.middleware.ipdb_exception.IPDBExceptionMiddleware',
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ] + Common.MIDDLEWARE
     INTERNAL_IPS = ["127.0.0.1"]
     ALLOWED_HOSTS = values.ListValue(["localhost"])
+
 
 class Production(Common):
     DEBUG = False
     ALLOWED_HOSTS = values.ListValue([".generalstrikeus.com"])
-
-
