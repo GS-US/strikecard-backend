@@ -11,6 +11,12 @@ force_grid_wrap = 0
 use_parentheses = true
 
 [tool.flake8]
+extend-exclude = [
+  "*/.venv/*.py",
+  "*/tests.py",
+  "*/tests/*.py",
+  "starfish/*settings*.py",
+  "starfish/regions/management/commands/import_zipcodes.py",
+]
 extend-ignore = "E501"
-extend-exclude = "*/tests.py */tests/*.py starfish/*settings*.py regions/management/commands/import_zipcodes.py"
 per-file-ignores = "*/apps.py:F401"
