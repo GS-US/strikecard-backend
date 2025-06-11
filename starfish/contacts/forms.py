@@ -1,5 +1,4 @@
 from django import forms
-
 from regions.models import Zip
 
 from .models import PendingContact

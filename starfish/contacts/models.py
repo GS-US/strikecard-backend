@@ -2,6 +2,7 @@ import hashlib
 from datetime import timedelta
 from urllib.parse import urlparse
 
+from chapters.models import get_chapter_for_zip
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -12,8 +13,6 @@ from model_utils import FieldTracker
 from model_utils.fields import UrlsafeTokenField
 from model_utils.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
-
-from chapters.models import get_chapter_for_zip
 
 User = get_user_model()
 

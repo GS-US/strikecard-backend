@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-
 from regions.models import State, Zip
 
 STATE_NAMES = {
@@ -60,7 +59,6 @@ STATE_NAMES = {
 import csv
 
 from django.core.management.base import BaseCommand
-
 from regions.models import Zip
 
 

@@ -1,4 +1,7 @@
 import rules
+from chapters.models import ChapterRole
+from contacts.models import Contact, ContactNote
+from contacts.resources import ContactResource
 from django import forms
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
@@ -8,10 +11,6 @@ from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
 from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
-
-from chapters.models import ChapterRole
-from contacts.models import Contact, ContactNote
-from contacts.resources import ContactResource
 
 
 class ContactForm(forms.ModelForm):

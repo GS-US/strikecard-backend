@@ -1,8 +1,8 @@
+from chapters.models import get_chapter_for_zip
 from django.contrib import admin
 from django.urls import reverse
 from unfold.admin import ModelAdmin
 
-from chapters.models import get_chapter_for_zip
 from starfish.admin import ReadOnlyAdminMixin, pretty_button, pretty_link
 
 from .models import State, Zip

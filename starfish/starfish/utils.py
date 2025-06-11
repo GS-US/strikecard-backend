@@ -1,8 +1,7 @@
-from django.conf import settings
-from django.db.models import Sum
-
 from chapters.models import OfflineTotal
 from contacts.models import Contact, ExpungedContact
+from django.conf import settings
+from django.db.models import Sum
 from partners.models import Pledge
 
 
