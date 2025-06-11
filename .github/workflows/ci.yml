@@ -43,4 +43,4 @@ jobs:
           args: "--toml-config=pyproject.toml"
           flake8-version: "7"
           path: "starfish/"
-          plugins: "flake8-pyproject~=1"
+          plugins: "flake8-pyproject>=1.2,<2"
