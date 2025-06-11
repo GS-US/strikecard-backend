@@ -20,10 +20,8 @@ class Common(Configuration):
 
     # Secrets definition (required to be set via environment variables)
     SECRET_KEY = values.SecretValue()
-    CONTACT_HASH_SALT = values.SecretValue()
 
     # Application definition
-
     INSTALLED_APPS = [
         'django.contrib.auth',
         'django.contrib.contenttypes',
@@ -86,7 +84,6 @@ class Common(Configuration):
 
     # Database
     # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -96,7 +93,6 @@ class Common(Configuration):
 
     # Password validation
     # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
     AUTH_PASSWORD_VALIDATORS = [
         {
             'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -114,31 +110,24 @@ class Common(Configuration):
 
     # Internationalization
     # https://docs.djangoproject.com/en/5.2/topics/i18n/
-
     LANGUAGE_CODE = 'en-us'
-
     TIME_ZONE = values.Value('UTC')
-
     USE_I18N = True
-
     USE_TZ = True
 
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
     STATIC_URL = 'static/'
 
     # Default primary key field type
     # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
     DEBUG = values.BooleanValue(False)
 
-    AUTH_USER_MODEL = 'users.User'
-
     SIMPLE_HISTORY_REVERT_DISABLED = True
-
+    AUTH_USER_MODEL = 'users.User'
+    CONTACT_HASH_SALT = values.SecretValue()
     FINAL_COUNT = 11000000
 
     UNFOLD = {
