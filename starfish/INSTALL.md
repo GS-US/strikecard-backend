@@ -1,30 +1,57 @@
-# Dev Environment Setup
-(recommend venv + pip)
+# Installation and Local Setup Instructions
 
- - setup a virtualenv
- - install requirements.txt
- - install requirements_dev.txt
- - `cp .env.template .env`
- - edit .env
-   - set a value for `DJANGO_SECRET_KEY`
-   - set a value for `DJANGO_CONTACT_HASH_SALT`
- - run dev.sh
- - visit `localhost:8000` in your favorite browser
+We use `pip` and `venv` to manage the development environment when installed
+locally. To set up the development environment and get working, please follow
+these instructions.
 
-## Generating secret keys for development
-You can run the following in a terminal with the venv activated to output a
-value appropriate for both `DJANGO_SECRET_KEY` and `DJANGO_CONTACT_HASH_SALT`:
+1. (One-time setup) [Install and Configure the Development Environment](#install-and-configure-the-development-environment).
+1. Each time you start a new terminal or IDE session, be sure to [Activate the Virtual Environment](#activate-the-virtual-environment).
+1. When ready to run the server, [Start the Local Server](#start-the-local-server).
 
-```
+## Install and Configure the Development Environment
+
+This is a one-time setup and must be run before subsequent steps.
+
+- Run `pushd starfish/` to enter the subdirectory where the installers are.
+- Run `./install.sh` to set up the local development environment.
+- Edit `.env` to configure the local deployment environment.
+  - Set a value for `DJANGO_SECRET_KEY`.
+  - Set a value for `DJANGO_CONTACT_HASH_SALT`.
+  - See [Generating Secret Keys for
+      Development](#generating-secret-keys-for-development) below for how to
+      securely generate these values.
+
+### Generating Secret Keys for Development
+
+Run the following in a terminal with the `venv` activated to output values
+appropriate for both `DJANGO_SECRET_KEY` and `DJANGO_CONTACT_HASH_SALT`. You
+will need to run this twice, once for each value. Copy the returned values into
+the `.env` file.
+
+```shell
 python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
 ```
 
+## Activate the Virtual Environment
 
-## Notes for other setups
+- Ensure you are in the `starfish/` directory.
+- Run `source ./venv/bin/activate` to activate the virtual environment.
 
-If you are running on a host other than localhost (or you have changed that name
-on your system) and/or have multiple hostnames you need to allow, add the following to `.env`
+## Start the Local Server
 
-```
-export DJANGO_ALLOWED_HOSTS='yourhostname,yourotherhostname,localhost,ifyouuseit'
+- Ensure you are in the `starfish/` directory.
+- Run `./dev.sh` to start the server.
+- Visit `localhost:8000` in your favorite browser to view the site.
+
+### For Other Networking Configurations
+
+If any of the following apply, then add the following line to your `.env` file,
+making appropriate substitutions for bracketed `<values>`.
+
+- Running on a host other than `localhost`.
+- Changed the name of `localhost` on your system.
+- Have multiple hostnames you need to allow in Django.
+
+```shell
+export DJANGO_ALLOWED_HOSTS='<yourhostname>,<yourotherhostname>,localhost,<ifyouuseit>'
 ```
