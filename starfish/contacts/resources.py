@@ -1,6 +1,5 @@
-from import_export import resources
-
 from contacts.models import Contact
+from import_export import resources
 
 
 class ContactResource(resources.ModelResource):

@@ -1,10 +1,9 @@
 import random
 
+from chapters.models import Chapter
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
 from django.utils.text import slugify
-
-from chapters.models import Chapter
 from regions.models import State, Zip
 
 chapter_exceptions = {

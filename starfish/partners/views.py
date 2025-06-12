@@ -1,9 +1,8 @@
+from contacts.admin import ContactResource
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, FormView, View
-
-from contacts.admin import ContactResource
 
 from .forms import PartnerCampaignCreateForm, PartnerCampaignLookupForm
 from .models import PartnerCampaign

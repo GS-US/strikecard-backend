@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from django.urls import reverse_lazy
+
 from configurations import Configuration, values
+from django.urls import reverse_lazy
 
 
 class Common(Configuration):

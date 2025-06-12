@@ -1,5 +1,4 @@
 import factory
-
 from partners.models import Affiliate, PartnerCampaign, Pledge
 from users.models import User
 
