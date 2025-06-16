@@ -18,8 +18,27 @@ from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 from starfish.admin import SoftDeletableAdminMixin, pretty_button
 
 
+class ChapterZipForm(forms.ModelForm):
+    class Meta:
+        model = ChapterZip
+        fields = '__all__'
+
+    def clean_zip_code(self):
+        if "state" in self.data:
+            state = self.data["state"]
+        elif "chapter" in self.cleaned_data:
+            state = self.cleaned_data["chapter"].state.code
+        zip_code = self.cleaned_data["zip_code"]
+        if zip_code.state.code != state:
+            raise forms.ValidationError(
+                "Zip code must be in the same state as the chapter"
+            )
+        return zip_code
+
+
 class ChapterZipInline(TabularInline):
     model = ChapterZip
+    form = ChapterZipForm
     fields = ['zip_code', 'county']
     autocomplete_fields = ['zip_code']
     extra = 1
@@ -142,6 +161,7 @@ class ChapterAdmin(
 
 @admin.register(ChapterZip)
 class ChapterZipAdmin(ModelAdmin):
+    form = ChapterZipForm
     list_display = [
         'zip_code',
         'chapter',
