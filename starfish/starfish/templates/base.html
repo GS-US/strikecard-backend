@@ -57,7 +57,7 @@ a {
 <body>
     <div id="header">
         <h1>The General Strike</h1>
-        <h3>{{ the_totals.total }} committed | {{ the_totals.needed }} needed</h3>
+        <h3>{{ the_totals.total_str }} committed | {{ the_totals.needed_str }} needed</h3>
         <h3>
             <a href="{% url 'index' %}">Join!</a> |
             <a href="{% url 'chapter_list' %}">Chapters</a> |
