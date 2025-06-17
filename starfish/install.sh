@@ -2,7 +2,7 @@
 set -e
 
 if [ ! -f ./.env ]; then
-    cp .env.template .env 
+    cp .env.template .env
     read -p "You will need to edit .env to add your secret keys. Press Enter to confirm you understand and continue."
 fi
 
