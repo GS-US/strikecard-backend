@@ -44,3 +44,9 @@ jobs:
           flake8-version: "7.2"
           path: "starfish/"
           plugins: "flake8-pyproject>=1.2,<2"
+
+      - name: Yamllint
+        uses: karancode/yamllint-github-action@master
+        with:
+          yamllint_strict: true
+          yamllint_comment: true
