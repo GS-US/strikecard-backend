@@ -8,3 +8,16 @@ services:
     command: sh -c 'cd /starfish && pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir -r requirements_dev.txt && /starfish/dev.sh'
     ports:
       - 8000:8000
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    user: "65534:65534"
+    environment:
+      POSTGRES_USER: starfish
+      POSTGRES_PASSWORD: starfish
+      POSTGRES_DB: starfish
+    ports:
+      - 5432:5432
+    volumes:
+      - ../postgres:/var/lib/postgresql/data
