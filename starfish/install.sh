@@ -14,6 +14,7 @@ source .venv/bin/activate
 source ./.env
 pip install -r requirements.txt
 pip install -r requirements_dev.txt
+pip install -r ../mkdocs-requirements.txt
 
 pre-commit install
 
