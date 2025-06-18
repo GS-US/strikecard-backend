@@ -1,0 +1,88 @@
+/* Color */
+:root > * {
+  --lightbox-shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+/* link color correction */
+.md-content a :not(a.toclink),
+.md-content a:visited :not(a.toclink) {
+  color: revert;
+}
+
+.md-content a:hover :not(a.toclink) {
+  color: revert;
+  border-bottom: 1px solid;
+}
+
+.md-typeset .headerlink:hover {
+  border-bottom: none;
+}
+
+/* header accessiblity/readability */
+.md-typeset h1 {
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+  font-size: 2em;
+}
+
+.md-typeset h2 {
+  font-weight: 600;
+  font-size: 1.6em;
+}
+
+.md-typeset h3 {
+  font-weight: 600;
+  font-size: 1.25em;
+}
+
+.md-typeset h4 {
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.md-typeset h5 {
+  font-weight: 600;
+  font-size: 0.8em;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset :not(h1, h2, h3, h4, h5) + :is(h2, h3, h4, h5) {
+  margin-top: 0.6em;
+}
+
+.md-typeset h1 + :is(h2, h3, h4) {
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+}
+
+.md-typeset ul,
+.md-typeset ol {
+  line-height: 1.2;
+}
+
+/* lightgallery and image tweaks */
+
+/* image width */
+.md-grid {
+  max-width: 100%;
+}
+
+/* adds a flexbox to the surrounding div */
+a.glightbox {
+  display: flex;
+  justify-content: center;
+}
+
+/* adding the drop shadow,margin and keeping the images at 50 viewport width */
+a.glightbox img {
+  max-width: 50vw;
+  box-shadow: 5px 5px 13px var(--lightbox-shadow-color);
+  margin-bottom: 1rem;
+}
+
+/* 100 viewport width on smaller screens */
+@media only screen and (max-width: 600px) {
+  a.glightbox img {
+    max-width: 100%;
+  }
+}
