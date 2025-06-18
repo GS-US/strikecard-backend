@@ -29,6 +29,8 @@ Runs the following repo hooks:
 - Black (formatting)
 - isort (formatting)
 - flake8 (linting)
+- markdownlint (linting)
+- yamllint (linting)
 
 ### Continuous Integration (CI)
 
@@ -39,5 +41,7 @@ Runs the following actions:
 - Black (format linting)
 - isort (format linting)
 - flake8 (linting)
+- markdownlint (linting)
+- yamllint (linting)
 
 Intended to mirror [pre-commit](#pre-commit).

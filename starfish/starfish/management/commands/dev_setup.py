@@ -6,6 +6,8 @@ from chapters.tests.factories import (
     ChapterSocialLinkFactory,
     OfflineTotalFactory,
 )
+from contacts.models import Contact
+from contacts.signals import update_chapter_total_on_contact_change
 from contacts.tests.factories import (
     ContactFactory,
     ExpungedContactFactory,
@@ -14,6 +16,7 @@ from contacts.tests.factories import (
 )
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from django.db.models.signals import post_save
 from partners.tests.factories import (
     AffiliateFactory,
     PartnerCampaignFactory,
@@ -32,6 +35,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         User = get_user_model()
+        post_save.disconnect(update_chapter_total_on_contact_change, sender=Contact)
 
         admin = User.objects.filter(username='admin').first()
         if not admin:
@@ -77,3 +81,6 @@ class Command(BaseCommand):
 
         for _ in range(1000):
             ContactFactory(partner_campaign=self.get_partner_campaign())
+
+        for chapter in Chapter.objects.all():
+            chapter.update_total_contacts()

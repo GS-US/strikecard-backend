@@ -8,7 +8,6 @@ from chapters.models import (
 )
 from django import forms
 from django.contrib import admin
-from django.db.models import Sum
 from django.urls import reverse
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
@@ -116,14 +115,6 @@ class ChapterAdmin(
         )
 
     view_contacts_link.short_description = 'Contacts'
-
-    def total_contacts(self, obj):
-        contacts_count = obj.contacts.count()
-        expunged_contacts_count = obj.expunged_contacts.count()
-        offline_total_count = (
-            obj.offline_totals.aggregate(Sum('count'))['count__sum'] or 0
-        )
-        return contacts_count + expunged_contacts_count + offline_total_count
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:

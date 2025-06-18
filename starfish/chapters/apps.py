@@ -7,3 +7,4 @@ class ChaptersConfig(AppConfig):
 
     def ready(self):
         import chapters.rules
+        import chapters.signals

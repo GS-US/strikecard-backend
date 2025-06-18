@@ -1,0 +1,61 @@
+site_name: Strikecard Backend (Operation Starfish 2.0)
+repo_url: https://github.com/GS-US/strikecard-backend/
+
+theme:
+  name: material
+  palette:
+    primary: black
+    accent: indigo
+  search_index_only: true
+  language: en
+  features:
+    - navigation.indexes
+    - navigation.instant
+    - content.code.copy
+    - content.action.edit
+# favicon: images/favicon.png
+# logo: images/logo.png
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.keys
+  - pymdownx.superfences
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - blog:
+      archive_date_format: MM/yyyy
+  - meta
+  - git-revision-date-localized:
+      type: date
+      strict: false
+  - glightbox
+  - redirects:
+      redirect_maps:
+
+nav:
+  - Home: index.md
+  - Blog:
+      - blog/index.md
+
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    anchors: warn
+    absolute_links: warn
+    unrecognized_links: warn

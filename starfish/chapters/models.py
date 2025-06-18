@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from regions.models import State, Zip
 from simple_history.models import HistoricalRecords
@@ -31,6 +32,7 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     contact_email = models.EmailField(blank=True, null=True)
     website_url = models.URLField('Website', blank=True, null=True)
     nearby_chapters = models.ManyToManyField('self', blank=True)
+    total_contacts = models.IntegerField(default=0)
 
     objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
@@ -43,6 +45,15 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
 
     def __str__(self):
         return self.title
+
+    def update_total_contacts(self, save=True):
+        self.total_contacts = (
+            self.contacts.count()
+            + (self.offline_totals.aggregate(Sum('count'))['count__sum'] or 0)
+            + self.expunged_contacts.count()
+        )
+        if save:
+            self.save()
 
 
 class ChapterRole(models.Model):

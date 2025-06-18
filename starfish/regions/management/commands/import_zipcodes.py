@@ -1,3 +1,6 @@
+# CSV of ZIP codes available for free at
+# https://www.unitedstateszipcodes.org/zip-code-database/
+
 from django.core.management.base import BaseCommand
 from regions.models import State, Zip
 
