@@ -1,61 +1,39 @@
-name: ci
+name: python
 
 on: # yamllint disable-line rule:truthy
   push:
     branches:
       - main
+    paths:
+      - "**.py"
   pull_request:
     branches:
       - main
+    paths:
+      - "**.py"
   workflow_dispatch:
-    branches:
-      - main
 
 jobs:
-  check:
+  check_python:
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      - name: Black Lint
-        uses: psf/black@stable
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+      - uses: psf/black@8a737e727ac5ab2f1d4cf5876720ed276dc8dc4b # 25.1.0
         with:
           options: "--check --diff --verbose"
           src: "starfish/"
           version: "~=25.1"
-
-      - name: isort Lint
-        uses: isort/isort-action@v1
+      - uses: isort/isort-action@24d8a7a51d33ca7f36c3f23598dafa33f7071326 # 1.1.1
         with:
           configuration: "--check-only --diff"
           isort-version: "6.0"
           requirements-files: "starfish/requirements.txt starfish/requirements-dev.txt"
           sort-paths: "starfish/"
-
-      - name: Flake8 Lint
-        uses: py-actions/flake8@v2
+      - uses: py-actions/flake8@84ec6726560b6d5bd68f2a5bed83d62b52bb50ba # 2.3.0
         with:
           args: "--toml-config=pyproject.toml"
           flake8-version: "7.2"
           path: "starfish/"
           plugins: "flake8-pyproject>=1.2,<2"
-
-      - name: Lint Markdown
-        uses: DavidAnson/markdownlint-cli2-action@v16
-        with:
-          config: .markdownlint-cli2.jsonc
-          globs: "**/*.md"
-
-      - name: Yamllint
-        uses: karancode/yamllint-github-action@master
-        with:
-          yamllint_strict: true
-          yamllint_comment: true
