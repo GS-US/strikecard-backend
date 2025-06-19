@@ -65,6 +65,10 @@ Available at <https://gs-us.github.io/strikecard-backend/>.
 
 Defined in [`mkdocs.yml`](./mkdocs.yml). Controls navigation layout in the rendered docs.
 
+### Docs Local Build
+
+Build locally as described in [`INSTALL.md`](starfish/INSTALL.md#working-with-the-docs).
+
 ### Docs Content
 
 Defined in [`docs/`](docs/).
