@@ -10,12 +10,11 @@ from contacts.models import Contact
 from contacts.signals import update_chapter_total_on_contact_change
 from contacts.tests.factories import (
     ContactFactory,
-    ExpungedContactFactory,
     PendingContactFactory,
-    RemovedContactFactory,
 )
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 from django.db.models.signals import post_save
 from partners.tests.factories import (
     AffiliateFactory,
@@ -71,6 +70,8 @@ class Command(BaseCommand):
                     chapter=chapter, partner_campaign=self.get_partner_campaign()
                 )
 
+            """
+            removing for now; fails without email to hash
             for _ in range(random.randint(0, 3)):
                 RemovedContactFactory(removed_by=random.choice(users))
 
@@ -78,9 +79,13 @@ class Command(BaseCommand):
                 ExpungedContactFactory(
                     chapter=chapter, partner_campaign=self.get_partner_campaign()
                 )
+            """
 
         for _ in range(1000):
-            ContactFactory(partner_campaign=self.get_partner_campaign())
+            try:
+                ContactFactory(partner_campaign=self.get_partner_campaign())
+            except IntegrityError:
+                pass
 
         for chapter in Chapter.objects.all():
             chapter.update_total_contacts()
