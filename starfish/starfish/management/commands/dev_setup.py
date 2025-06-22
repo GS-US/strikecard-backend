@@ -6,7 +6,7 @@ from chapters.tests.factories import (
     ChapterSocialLinkFactory,
     OfflineTotalFactory,
 )
-from contacts.models import Contact
+from contacts.models import Contact, RemovedContact
 from contacts.signals import update_chapter_total_on_contact_change
 from contacts.tests.factories import (
     ContactFactory,
@@ -42,20 +42,25 @@ class Command(BaseCommand):
 
         self.partner_campaigns = []
         for _ in range(5):
-            pc = PartnerCampaignFactory()
-            self.partner_campaigns.append(pc)
+            try:
+                self.partner_campaigns.append(PartnerCampaignFactory())
+            except IntegrityError:
+                pass
 
         for _ in range(3):
             affiliate = AffiliateFactory()
-            for _ in range(2):
+            for _ in range(random.randint(0, 3)):
                 PledgeFactory(affiliate=affiliate, submitted_by_user=admin)
 
         for chapter in Chapter.objects.all():
             users = []
             for _ in range(2):
-                user = UserFactory()
-                users.append(user)
-                ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
+                try:
+                    user = UserFactory()
+                    users.append(user)
+                    ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
+                except IntegrityError:
+                    pass
 
             for _ in range(4):
                 ChapterSocialLinkFactory(chapter=chapter)
@@ -66,26 +71,24 @@ class Command(BaseCommand):
                 )
 
             for _ in range(random.randint(0, 3)):
-                PendingContactFactory(
-                    chapter=chapter, partner_campaign=self.get_partner_campaign()
-                )
+                try:
+                    PendingContactFactory(
+                        chapter=chapter, partner_campaign=self.get_partner_campaign()
+                    )
+                except IntegrityError:
+                    pass
 
-            """
-            removing for now; fails without email to hash
-            for _ in range(random.randint(0, 3)):
-                RemovedContactFactory(removed_by=random.choice(users))
-
-            for _ in range(random.randint(0, 3)):
-                ExpungedContactFactory(
-                    chapter=chapter, partner_campaign=self.get_partner_campaign()
-                )
-            """
-
-        for _ in range(1000):
+        for _ in range(100):
             try:
                 ContactFactory(partner_campaign=self.get_partner_campaign())
             except IntegrityError:
                 pass
+
+        for c in Contact.objects.order_by('?')[:20]:
+            c.remove(random.choice(RemovedContact.STATUS_CHOICES)[0])
+
+        for c in Contact.objects.order_by('?')[:20]:
+            c.expunge()
 
         for chapter in Chapter.objects.all():
             chapter.update_total_contacts()
