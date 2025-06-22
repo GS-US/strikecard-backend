@@ -43,6 +43,7 @@ class PendingContactCreateView(CreateView):
         return initial
 
     def form_valid(self, form):
+        # TODO: move into form.clean?
         partner_slug = form.cleaned_data.get('partner_slug')
         if partner_slug:
             try:

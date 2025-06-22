@@ -1,7 +1,7 @@
 from django import forms
 from regions.models import Zip
 
-from .models import PendingContact
+from .models import PendingContact, get_by_email
 
 
 class PendingContactForm(forms.ModelForm):
@@ -24,22 +24,34 @@ class PendingContactForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        name = self.fields["name"]
-        name.widget = forms.TextInput(attrs={"placeholder": "e.g., Jordan Doe"})
+        name = self.fields['name']
+        name.widget = forms.TextInput(attrs={'placeholder': 'e.g., Jordan Doe'})
 
-        email = self.fields["email"]
-        email.widget = forms.EmailInput(attrs={"placeholder": "e.g., j.doe@abc.com"})
+        email = self.fields['email']
+        email.widget = forms.EmailInput(attrs={'placeholder': 'e.g., j.doe@abc.com'})
 
-        phone = self.fields["phone"]
-        phone.widget = forms.TextInput(attrs={"placeholder": "e.g., 202-555-1234"})
+        phone = self.fields['phone']
+        phone.widget = forms.TextInput(attrs={'placeholder': 'e.g., 202-555-1234'})
 
-        zip_code = self.fields["zip_code"]
-        zip_code.widget = forms.TextInput(attrs={"placeholder": "e.g., 01234"})
+        zip_code = self.fields['zip_code']
+        zip_code.widget = forms.TextInput(attrs={'placeholder': 'e.g., 01234'})
 
     def clean_zip_code(self):
         zip_code_input = self.cleaned_data.get('zip_code').strip()
         try:
-            zip_instance = Zip.objects.get(code=zip_code_input)
+            return Zip.objects.get(code=zip_code_input)
         except Zip.DoesNotExist:
-            raise forms.ValidationError('Please enter a valid 5-digit zip code.')
-        return zip_instance
+            raise forms.ValidationError('Please enter a valid 5-digit ZIP Code.')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email').strip()
+        contact = get_by_email(email)
+
+        if contact:
+            if isinstance(contact, PendingContact):
+                contact.delete()
+            else:
+                raise forms.ValidationError(
+                    'The email address entered is already registered.'
+                )
+        return email

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 from model_utils.models import SoftDeletableModel, TimeStampedModel
@@ -107,6 +108,13 @@ class ChapterZip(models.Model):
 
     def __str__(self):
         return str(self.zip_code)
+
+    def clean(self):
+        if self.chapter_id and self.zip_code_id:
+            if self.chapter.state != self.zip_code.state:
+                raise ValidationError(
+                    'ZIP code must be in the same state as the chapter.'
+                )
 
 
 class OfflineTotal(models.Model):
