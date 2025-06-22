@@ -27,12 +27,20 @@ from users.tests.factories import UserFactory
 class Command(BaseCommand):
     help = 'Setup default dev data'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--contacts',
+            type=int,
+            default=1000,
+            help='Number of contacts to add (default: 1000)',
+        )
+
     def get_partner_campaign(self, threshold=0.2):
         if random.random() < threshold:
             return random.choice(self.partner_campaigns)
         return None
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args, **options):
         User = get_user_model()
         post_save.disconnect(update_chapter_total_on_contact_change, sender=Contact)
 
@@ -78,16 +86,16 @@ class Command(BaseCommand):
                 except IntegrityError:
                     pass
 
-        for _ in range(100):
+        for _ in range(options['contacts']):
             try:
                 ContactFactory(partner_campaign=self.get_partner_campaign())
             except IntegrityError:
                 pass
 
-        for c in Contact.objects.order_by('?')[:20]:
+        for c in Contact.objects.order_by('?')[:10]:
             c.remove(random.choice(RemovedContact.STATUS_CHOICES)[0])
 
-        for c in Contact.objects.order_by('?')[:20]:
+        for c in Contact.objects.order_by('?')[:10]:
             c.expunge()
 
         for chapter in Chapter.objects.all():

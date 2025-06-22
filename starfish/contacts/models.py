@@ -36,9 +36,6 @@ class HashedContactRecord(TimeStampedModel):
     email_hash = models.CharField(
         max_length=128, unique=True, db_index=True, editable=False
     )
-    phone_hash = models.CharField(
-        max_length=128, blank=True, null=True, db_index=True, editable=False
-    )
 
     def get_real_instance(self):
         for attr in self.CHILD_ATTRS:
@@ -82,23 +79,22 @@ class BaseContact(HashedContactRecord):
     def save(self, *args, **kwargs):
         self.update_referer_host()
         self.assign_chapter()
-        self.update_hashes()
+        self.update_email_hash()
+
         if self.partner_campaign and (
             not self.pk or self.tracker.has_changed('partner_campaign')
         ):
             self.partner_campaign.use()
+
         super().save(*args, **kwargs)
 
     def assign_chapter(self):
         if self.zip_code and not self.chapter:
             self.chapter = get_chapter_for_zip(self.zip_code)
 
-    def update_hashes(self):
+    def update_email_hash(self):
         if self.email and (not self.pk or self.tracker.has_changed('email')):
             self.email_hash = hash_str(self.email)
-
-        if self.phone and (not self.pk or self.tracker.has_changed('phone')):
-            self.phone_hash = hash_str(self.phone)
 
     def update_referer_host(self):
         if self.referer_full and not self.referer_host:
@@ -174,7 +170,6 @@ class Contact(BaseContact):
         RemovedContact.objects.create(
             id=self.id,
             email_hash=self.email_hash,
-            phone_hash=self.phone_hash,
             status=status,
             removed_by=removed_by,
             notes=notes,
@@ -185,7 +180,6 @@ class Contact(BaseContact):
         ExpungedContact.objects.create(
             id=self.id,
             email_hash=self.email_hash,
-            phone_hash=self.phone_hash,
             chapter=self.chapter,
             partner_campaign=self.partner_campaign,
             validated=self.validated,
