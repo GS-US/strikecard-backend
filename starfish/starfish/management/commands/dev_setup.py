@@ -1,14 +1,14 @@
 import random
 
 from chapters.models import Chapter
-from chapters.tests.factories import (
+from chapters.test_helpers.factories import (
     ChapterRoleFactory,
     ChapterSocialLinkFactory,
     OfflineTotalFactory,
 )
 from contacts.models import Contact
 from contacts.signals import update_chapter_total_on_contact_change
-from contacts.tests.factories import (
+from contacts.test_helpers.factories import (
     ContactFactory,
     ExpungedContactFactory,
     PendingContactFactory,
@@ -17,12 +17,12 @@ from contacts.tests.factories import (
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db.models.signals import post_save
-from partners.tests.factories import (
+from partners.test_helpers.factories import (
     AffiliateFactory,
     PartnerCampaignFactory,
     PledgeFactory,
 )
-from users.tests.factories import UserFactory
+from users.test_helpers.factories import UserFactory
 
 
 class Command(BaseCommand):

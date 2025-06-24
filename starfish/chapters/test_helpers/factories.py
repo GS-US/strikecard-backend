@@ -2,8 +2,7 @@ import factory
 from chapters.models import Chapter, ChapterRole, ChapterSocialLink, OfflineTotal
 from django.utils.text import slugify
 from factory.django import DjangoModelFactory
-from regions.models import State, Zip
-from users.tests.factories import UserFactory
+from users.test_helpers.factories import UserFactory
 
 
 class ChapterFactory(DjangoModelFactory):
