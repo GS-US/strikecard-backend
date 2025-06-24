@@ -1,7 +1,10 @@
+import random
+
 import factory
 from chapters.models import Chapter, get_chapter_for_zip
 from chapters.test_helpers.factories import ChapterFactory
-from contacts.models import Contact, ExpungedContact, PendingContact, RemovedContact
+from contacts.models import (Contact, ExpungedContact, PendingContact,
+                             RemovedContact)
 from django.utils import timezone
 from factory.django import DjangoModelFactory
 from faker import Faker
