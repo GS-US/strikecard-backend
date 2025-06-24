@@ -1,0 +1,8 @@
+{
+  "fix": false,
+  "ignores": [
+    ".git/",
+    ".venv/",
+    "starfish/.venv/"
+  ]
+}

@@ -4,7 +4,6 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView
-from partners.models import PartnerCampaign
 
 from .forms import PendingContactForm
 from .models import PendingContact
@@ -43,14 +42,7 @@ class PendingContactCreateView(CreateView):
         return initial
 
     def form_valid(self, form):
-        partner_slug = form.cleaned_data.get('partner_slug')
-        if partner_slug:
-            try:
-                form.instance.partner_campaign = PartnerCampaign.objects.get(
-                    slug=partner_slug
-                )
-            except PartnerCampaign.DoesNotExist:
-                pass
+        form.instance.referer_full = self.request.META.get('HTTP_REFERER')
         return super().form_valid(form)
 
     def get_success_url(self):

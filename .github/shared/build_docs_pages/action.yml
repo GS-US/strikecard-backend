@@ -1,0 +1,28 @@
+name: Build Docs Pages
+description: Build Docs Pages for mkdocs workflows.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # 5.6.0
+      with:
+        python-version: 3.12
+        cache: "pip"
+
+    - name: Configure venv
+      run: python3 -m venv "./.venv"
+      shell: bash
+
+    - name: Activate venv
+      run: |
+        . "./.venv/bin/activate"
+        echo PATH=$PATH >> $GITHUB_ENV
+      shell: bash
+
+    - name: Install Dependencies
+      run: pip install -r "mkdocs-requirements.txt"
+      shell: bash
+
+    - name: Build Pages # this is both a build and check step
+      run: mkdocs build --strict
+      shell: bash

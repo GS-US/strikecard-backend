@@ -1,0 +1,20 @@
+.user-form {
+    width: 300px;
+    text-align: right;
+    margin: 40px 0;
+    padding: 20px;
+    border: 1px solid #888;
+}
+.user-form label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+	margin-bottom: 14px;
+}
+.user-form .required label {
+	font-weight: bold;
+}
+.user-form .errorlist {
+    color: red;
+    list-style: none;
+}

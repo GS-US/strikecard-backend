@@ -2,7 +2,7 @@
 set -e
 
 if [ ! -f ./.env ]; then
-    cp .env.template .env 
+    cp .env.template .env
     read -p "You will need to edit .env to add your secret keys. Press Enter to confirm you understand and continue."
 fi
 
@@ -14,6 +14,9 @@ source .venv/bin/activate
 source ./.env
 pip install -r requirements.txt
 pip install -r requirements_dev.txt
+pip install -r ../mkdocs-requirements.txt
+
+pre-commit install
 
 python manage.py flush --no-input
 

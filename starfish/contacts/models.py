@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from chapters.models import get_chapter_for_zip
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
@@ -17,16 +18,36 @@ from simple_history.models import HistoricalRecords
 User = get_user_model()
 
 
+def hash_str(s):
+    return hashlib.sha256((s + settings.CONTACT_HASH_SALT).encode()).hexdigest()
+
+
+def get_by_email(email):
+    try:
+        hc = HashedContactRecord.objects.get(email_hash=hash_str(email))
+        return hc.get_real_instance()
+    except HashedContactRecord.DoesNotExist:
+        pass
+
+
 class HashedContactRecord(TimeStampedModel):
-    email_hash = models.CharField(max_length=128, db_index=True, editable=False)
-    phone_hash = models.CharField(
-        max_length=128, blank=True, null=True, db_index=True, editable=False
+    CHILD_ATTRS = ['pendingcontact', 'contact', 'expungedcontact', 'removedcontact']
+
+    email_hash = models.CharField(
+        max_length=128, unique=True, db_index=True, editable=False
     )
+
+    def get_real_instance(self):
+        for attr in self.CHILD_ATTRS:
+            try:
+                return getattr(self, attr)
+            except ObjectDoesNotExist:
+                continue
 
 
 class BaseContact(HashedContactRecord):
     name = models.CharField(max_length=255)
-    email = models.EmailField(blank=True, null=True)
+    email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     zip_code = models.ForeignKey(
         'regions.Zip', on_delete=models.PROTECT, related_name='%(class)ss'
@@ -58,26 +79,22 @@ class BaseContact(HashedContactRecord):
     def save(self, *args, **kwargs):
         self.update_referer_host()
         self.assign_chapter()
-        self.update_hashes()
+        self.update_email_hash()
+
         if self.partner_campaign and (
             not self.pk or self.tracker.has_changed('partner_campaign')
         ):
             self.partner_campaign.use()
+
         super().save(*args, **kwargs)
 
     def assign_chapter(self):
         if self.zip_code and not self.chapter:
             self.chapter = get_chapter_for_zip(self.zip_code)
 
-    def update_hashes(self):
-        def _hash(s):
-            return hashlib.sha256((s + settings.CONTACT_HASH_SALT).encode()).hexdigest()
-
+    def update_email_hash(self):
         if self.email and (not self.pk or self.tracker.has_changed('email')):
-            self.email_hash = _hash(self.email)
-
-        if self.phone and (not self.pk or self.tracker.has_changed('phone')):
-            self.phone_hash = _hash(self.phone)
+            self.email_hash = hash_str(self.email)
 
     def update_referer_host(self):
         if self.referer_full and not self.referer_host:
@@ -106,6 +123,7 @@ class PendingContact(BaseContact):
         if self.token_is_expired():
             return None
 
+        self.delete()
         contact = Contact.objects.create(
             name=self.name,
             email=self.email,
@@ -113,9 +131,10 @@ class PendingContact(BaseContact):
             zip_code=self.zip_code,
             chapter=self.chapter,
             partner_campaign=self.partner_campaign,
+            referer_full=self.referer_full,
+            referer_host=self.referer_host,
             validated=now(),
         )
-        self.delete()
         return contact
 
     def get_validation_link(self, request):
@@ -149,26 +168,24 @@ class Contact(BaseContact):
         ordering = ('-validated',)
 
     def remove(self, status, removed_by=None, notes=''):
+        self.delete()
         RemovedContact.objects.create(
             id=self.id,
             email_hash=self.email_hash,
-            phone_hash=self.phone_hash,
             status=status,
             removed_by=removed_by,
             notes=notes,
         )
-        self.delete()
 
     def expunge(self):
+        self.delete()
         ExpungedContact.objects.create(
             id=self.id,
             email_hash=self.email_hash,
-            phone_hash=self.phone_hash,
             chapter=self.chapter,
             partner_campaign=self.partner_campaign,
             validated=self.validated,
         )
-        self.delete()
 
 
 class RemovedContact(HashedContactRecord):

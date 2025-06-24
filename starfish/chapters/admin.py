@@ -77,9 +77,19 @@ class ChapterAdmin(
     list_display = ('title', 'total_contacts', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
-    autocomplete_fields = ['state', 'nearby_chapters']
+    autocomplete_fields = ['nearby_chapters']
     readonly_fields = ('view_contacts_link',)
     compressed_fields = True
+    fields = (
+        'state',
+        'title',
+        'slug',
+        'nearby_chapters',
+        'view_contacts_link',
+        'description',
+        'contact_email',
+        'website_url',
+    )
 
     inlines = [
         ChapterRoleInline,
@@ -92,7 +102,7 @@ class ChapterAdmin(
         return pretty_button(
             reverse('admin:contacts_contact_changelist')
             + f'?chapter_id__exact={obj.id}',
-            'View contacts',
+            f'View {obj.total_contacts} contacts',
         )
 
     view_contacts_link.short_description = 'Contacts'

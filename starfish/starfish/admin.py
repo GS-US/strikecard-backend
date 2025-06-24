@@ -6,6 +6,9 @@ admin.site.disable_action('delete_selected')
 
 class SoftDeletableAdminMixin:
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     def get_queryset(self, request):
         return self.model.objects.with_user(request.user).get_queryset()
 
