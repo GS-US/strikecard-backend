@@ -15,6 +15,7 @@ extend-exclude = [
   "*/.venv/*.py",
   "*/tests.py",
   "*/tests/*.py",
+  "*/test_helpers/*.py"
   "starfish/*settings*.py",
   "starfish/regions/management/commands/import_zipcodes.py",
 ]
