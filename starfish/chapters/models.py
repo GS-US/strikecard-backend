@@ -75,6 +75,13 @@ class ChapterRole(models.Model):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='assistant')
     title = models.CharField(max_length=255, blank=True, null=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "chapter"], name="chapter_role_unique_user_role"
+            )
+        ]
+
     def __str__(self):
         return self.get_role_display()
 
