@@ -122,10 +122,6 @@ class ContactAdmin(
         return rules.test_perm('contacts.add_contact', request.user)
 
     def has_delete_permission(self, request, obj=None):
-        if request.user.is_superuser:
-            return True
-        if obj:
-            return rules.test_perm('contacts.delete_contact', request.user, obj)
         return False
 
     def get_queryset(self, request):

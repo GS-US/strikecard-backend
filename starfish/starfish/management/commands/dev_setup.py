@@ -6,16 +6,15 @@ from chapters.test_helpers.factories import (
     ChapterSocialLinkFactory,
     OfflineTotalFactory,
 )
-from contacts.models import Contact
+from contacts.models import Contact, RemovedContact
 from contacts.signals import update_chapter_total_on_contact_change
 from contacts.test_helpers.factories import (
     ContactFactory,
-    ExpungedContactFactory,
     PendingContactFactory,
-    RemovedContactFactory,
 )
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 from django.db.models.signals import post_save
 from partners.test_helpers.factories import (
     AffiliateFactory,
@@ -28,12 +27,20 @@ from users.test_helpers.factories import UserFactory
 class Command(BaseCommand):
     help = 'Setup default dev data'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--contacts',
+            type=int,
+            default=1000,
+            help='Number of contacts to add (default: 1000)',
+        )
+
     def get_partner_campaign(self, threshold=0.2):
         if random.random() < threshold:
             return random.choice(self.partner_campaigns)
         return None
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args, **options):
         User = get_user_model()
         post_save.disconnect(update_chapter_total_on_contact_change, sender=Contact)
 
@@ -43,20 +50,25 @@ class Command(BaseCommand):
 
         self.partner_campaigns = []
         for _ in range(5):
-            pc = PartnerCampaignFactory()
-            self.partner_campaigns.append(pc)
+            try:
+                self.partner_campaigns.append(PartnerCampaignFactory())
+            except IntegrityError:
+                pass
 
         for _ in range(3):
             affiliate = AffiliateFactory()
-            for _ in range(2):
+            for _ in range(random.randint(0, 3)):
                 PledgeFactory(affiliate=affiliate, submitted_by_user=admin)
 
         for chapter in Chapter.objects.all():
             users = []
             for _ in range(2):
-                user = UserFactory()
-                users.append(user)
-                ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
+                try:
+                    user = UserFactory()
+                    users.append(user)
+                    ChapterRoleFactory(chapter=chapter, user=user, added_by_user=admin)
+                except IntegrityError:
+                    pass
 
             for _ in range(4):
                 ChapterSocialLinkFactory(chapter=chapter)
@@ -67,20 +79,24 @@ class Command(BaseCommand):
                 )
 
             for _ in range(random.randint(0, 3)):
-                PendingContactFactory(
-                    chapter=chapter, partner_campaign=self.get_partner_campaign()
-                )
+                try:
+                    PendingContactFactory(
+                        chapter=chapter, partner_campaign=self.get_partner_campaign()
+                    )
+                except IntegrityError:
+                    pass
 
-            for _ in range(random.randint(0, 3)):
-                RemovedContactFactory(removed_by=random.choice(users))
+        for _ in range(options['contacts']):
+            try:
+                ContactFactory(partner_campaign=self.get_partner_campaign())
+            except IntegrityError:
+                pass
 
-            for _ in range(random.randint(0, 3)):
-                ExpungedContactFactory(
-                    chapter=chapter, partner_campaign=self.get_partner_campaign()
-                )
+        for c in Contact.objects.order_by('?')[:10]:
+            c.remove(random.choice(RemovedContact.STATUS_CHOICES)[0])
 
-        for _ in range(1000):
-            ContactFactory(partner_campaign=self.get_partner_campaign())
+        for c in Contact.objects.order_by('?')[:10]:
+            c.expunge()
 
         for chapter in Chapter.objects.all():
             chapter.update_total_contacts()

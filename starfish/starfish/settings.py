@@ -42,6 +42,7 @@ class Common(Configuration):
         'django.contrib.admin',
         'import_export',
         'rules',
+        'rest_framework',
         'regions',
         'chapters',
         'contacts',
@@ -230,6 +231,7 @@ class Dev(Common):
     ] + Common.MIDDLEWARE
     INTERNAL_IPS = ["127.0.0.1"]
     ALLOWED_HOSTS = values.ListValue(["localhost"])
+    STATIC_ROOT = Common.BASE_DIR / 'static/'
 
 
 class Production(Common):
