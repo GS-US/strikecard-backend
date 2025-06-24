@@ -42,6 +42,7 @@ class Common(Configuration):
         'django.contrib.admin',
         'import_export',
         'rules',
+        'rest_framework',
         'regions',
         'chapters',
         'contacts',
