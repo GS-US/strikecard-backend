@@ -6,7 +6,7 @@ source ./.env
 set -x
 
 PORT="${1:-8000}"
-shift
+if [[ $# -gt 0 ]]; then shift; fi
 
 python manage.py flush --no-input
 
