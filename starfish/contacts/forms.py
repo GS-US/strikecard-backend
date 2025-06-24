@@ -1,4 +1,5 @@
 from django import forms
+from partners.models import PartnerCampaign
 from regions.models import Zip
 
 from .models import PendingContact, get_by_email
@@ -35,6 +36,16 @@ class PendingContactForm(forms.ModelForm):
 
         zip_code = self.fields['zip_code']
         zip_code.widget = forms.TextInput(attrs={'placeholder': 'e.g., 01234'})
+
+    def clean(self):
+        partner_slug = self.cleaned_data.get('partner_slug')
+        if partner_slug:
+            try:
+                self.instance.partner_campaign = PartnerCampaign.objects.get(
+                    slug=partner_slug
+                )
+            except PartnerCampaign.DoesNotExist:
+                pass
 
     def clean_zip_code(self):
         zip_code_input = self.cleaned_data.get('zip_code').strip()

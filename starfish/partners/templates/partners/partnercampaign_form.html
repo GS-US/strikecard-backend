@@ -2,7 +2,7 @@
 
 {% block content %}
     <h3><a href="{% url "partner_campaign_lookup" %}">Find your campaign</a></h3>
-    <div class="user-form">
+    <div id="partner-create-form" class="user-form">
         <h1>Create a Partner Campaign</h1>
         <form method="post">
             {% csrf_token %}

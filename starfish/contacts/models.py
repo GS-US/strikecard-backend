@@ -131,6 +131,8 @@ class PendingContact(BaseContact):
             zip_code=self.zip_code,
             chapter=self.chapter,
             partner_campaign=self.partner_campaign,
+            referer_full=self.referer_full,
+            referer_host=self.referer_host,
             validated=now(),
         )
         return contact

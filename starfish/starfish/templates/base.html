@@ -1,59 +1,8 @@
+{% load static %}
 <html>
-<style type="text/css">
-body{
-    background: black;
-    color: white;
-    padding: 10px;
-    font-family: sans-serif;
-}
-#header {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #444;
-}
-#header h1, #header h3 {
-    margin: 3px 0;
-}
-a {
-	color: tomato;
-}
-#header a {
-    text-decoration: none;
-}
-.user-form {
-    width: 300px;
-    text-align: right;
-    margin: 40px 0;
-    padding: 20px;
-    border: 1px solid #888;
-}
-.user-form label {
-    display: inline-block;
-    width: 100px;
-    text-align: right;
-	margin-bottom: 14px;
-}
-.user-form .required label {
-	font-weight: bold;
-}
-.user-form .errorlist {
-    color: red;
-    list-style: none;
-}
-#fake-email {
-    width: 500px;
-    margin: 0px 0 40px 0;
-    padding: 20px;
-    border: 1px solid #888;
-}
-#fake-email .header {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #444;
-}
-#fake-email .header strong{
-    display: inline-block;
-    width: 80px;
-}
-</style>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}" />
 <body>
     <div id="header">
         <h1>The General Strike</h1>
