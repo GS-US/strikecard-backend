@@ -1,16 +1,21 @@
+import os
+from pathlib import PurePath
+
 from contacts.forms import PendingContactForm
 from django.core.management import call_command
 from django.test import TestCase
 from regions.models import Zip
+
+start_dir = PurePath(os.getcwd())
+if start_dir.name != "starfish":
+    start_dir /= "starfish"
 
 
 # Create your tests here.
 class TestPendingContactForm(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        # call_command("makemigrations", verbosity=0)
-        # call_command("migrate", verbosity=0)
-        call_command("loaddata", "starfish/regions/fixtures/regions.json")
+        call_command("loaddata", start_dir / "regions/fixtures/regions.json")
 
     def test_phone(self):
         success_phones = ("202 202 2020",)
