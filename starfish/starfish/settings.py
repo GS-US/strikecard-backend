@@ -78,6 +78,7 @@ class Common(Configuration):
                     'django.contrib.auth.context_processors.auth',
                     'django.contrib.messages.context_processors.messages',
                     'starfish.context_processors.the_totals',
+                    'starfish.context_processors.hide_save_and_add_another',
                 ],
             },
         },
