@@ -5,3 +5,4 @@ pymdown-extensions==10.15
 mkdocs-glightbox==0.3.7
 mkdocs-git-revision-date-localized-plugin==1.2.6
 mkdocs-redirects==1.2.1
+mkdocs-table-reader-plugin==2.0.3

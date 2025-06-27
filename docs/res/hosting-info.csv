@@ -1,0 +1,9 @@
+﻿Provider,Type,Flavor,Cost ($/yr),SLA,Backups,CPU,Mem (GB),Total Disk (GB),Disk0 (GB),Disk1 (GB),Disk2 (GB),Disk2 (GB)
+dreamhost,shared,unlimited,132,100,,,,,,,,
+dreamhost,vps,business,384,100,,2,2,60,60,,,
+dreamhost,vps,professional,696,100,,2,4,60,60,,,
+gandi,vps,,175,,,2,4,44,20,20,2,2
+servarica,vps,giant,200,99.99,,16,32,2208,160,2048,,
+servarica,vps,medium,88,99.99,,8,16,1104,80,1024,,
+linode,vps,,84,99.9,yes,2,4,40,40,,,
+linode,vps,,60,99.9,no,2,4,40,40,,,
