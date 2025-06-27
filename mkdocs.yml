@@ -41,6 +41,8 @@ plugins:
       type: date
       strict: false
   - glightbox
+  - table-reader:
+      data_path: docs
   - redirects:
       redirect_maps:
 
@@ -48,6 +50,8 @@ nav:
   - Home: index.md
   - Blog:
       - blog/index.md
+  - Business Cases: business-cases.md
+  - People: people.md
 
 validation:
   nav:
