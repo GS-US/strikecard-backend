@@ -6,6 +6,7 @@ from .views import (
     PendingContactDetailView,
     SuccessView,
     validate_contact,
+    PendingContactCreateAPIView,  # New import
 )
 
 urlpatterns = [
@@ -29,5 +30,11 @@ urlpatterns = [
         'contact/<int:pk>/',
         PendingContactDetailView.as_view(),
         name='pending_contact_detail',
+    ),
+    # New DRF route
+    path(
+        'api/pending-contacts/',
+        PendingContactCreateAPIView.as_view(),
+        name='api_pending_contact_create',
     ),
 ]

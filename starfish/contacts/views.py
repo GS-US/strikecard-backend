@@ -8,6 +8,11 @@ from django.views.generic import CreateView, DetailView
 from .forms import PendingContactForm
 from .models import PendingContact
 
+# Import DRF dependencies
+from rest_framework import generics
+
+from .serializers import PendingContactSerializer
+
 
 def validate_contact(request, token):
     pending_contact = get_object_or_404(PendingContact, validation_token=token)
@@ -53,3 +58,12 @@ class SuccessView(DetailView):
     model = Chapter
     template_name = 'contacts/validation_success.html'
     slug_url_kwarg = 'slug'
+
+
+# New DRF API View
+class PendingContactCreateAPIView(generics.CreateAPIView):
+    queryset = PendingContact.objects.all()
+    serializer_class = PendingContactSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(referer_full=self.request.META.get('HTTP_REFERER'))
