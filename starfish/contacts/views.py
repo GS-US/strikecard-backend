@@ -5,12 +5,11 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView
 
-from .forms import PendingContactForm
-from .models import PendingContact
-
 # Import DRF dependencies
 from rest_framework import generics
 
+from .forms import PendingContactForm
+from .models import PendingContact
 from .serializers import PendingContactSerializer
 
 
@@ -60,7 +59,6 @@ class SuccessView(DetailView):
     slug_url_kwarg = 'slug'
 
 
-# New DRF API View
 class PendingContactCreateAPIView(generics.CreateAPIView):
     queryset = PendingContact.objects.all()
     serializer_class = PendingContactSerializer

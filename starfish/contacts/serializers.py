@@ -1,13 +1,14 @@
-from rest_framework import serializers
-from .models import PendingContact, get_by_email
-from regions.models import Zip
 from partners.models import PartnerCampaign
+from regions.models import Zip
+from rest_framework import serializers
+
+from .models import PendingContact, get_by_email
 
 
 class PendingContactSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     zip_code = serializers.CharField(max_length=5)
-    partner_slug = serializers.CharField(max_length=255, required=False, write_only=True)
+    partner_slug = serializers.CharField(max_length=255, required=False)
 
     class Meta:
         model = PendingContact
@@ -39,7 +40,5 @@ class PendingContactSerializer(serializers.ModelSerializer):
                 )
             except PartnerCampaign.DoesNotExist:
                 pass
-        zip_code = validated_data.pop('zip_code')
-        validated_data['zip_code'] = Zip.objects.get(code=zip_code)
-        pending_contact = PendingContact.objects.create(**validated_data)
-        return pending_contact
+
+        return PendingContact.objects.create(**validated_data)
