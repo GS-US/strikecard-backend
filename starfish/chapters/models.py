@@ -83,7 +83,7 @@ class ChapterRole(models.Model):
         ]
 
     def __str__(self):
-        return self.get_role_display()
+        return ''
 
 
 class ChapterSocialLink(models.Model):
@@ -96,7 +96,7 @@ class ChapterSocialLink(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.platform
+        return ''
 
 
 class ChapterZip(models.Model):

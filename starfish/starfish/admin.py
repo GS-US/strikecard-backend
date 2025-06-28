@@ -1,7 +1,35 @@
 from django.contrib import admin
+from django.contrib.admin import widgets as admin_widgets
 from django.utils.html import format_html
 
 admin.site.disable_action('delete_selected')
+
+_original_related_wrapper_init = admin_widgets.RelatedFieldWidgetWrapper.__init__
+
+
+def patched_related_wrapper_init(
+    self,
+    widget,
+    rel,
+    admin_site,
+    can_add_related=None,
+    can_change_related=None,
+    can_delete_related=None,
+    can_view_related=None,
+):
+    _original_related_wrapper_init(
+        self,
+        widget,
+        rel,
+        admin_site,
+        can_add_related=False,
+        can_change_related=False,
+        can_delete_related=False,
+        can_view_related=False,
+    )
+
+
+admin_widgets.RelatedFieldWidgetWrapper.__init__ = patched_related_wrapper_init
 
 
 class SoftDeletableAdminMixin:

@@ -6,7 +6,6 @@ from chapters.models import (
     ChapterZip,
     OfflineTotal,
 )
-from django import forms
 from django.contrib import admin
 from django.urls import reverse
 from rules.contrib.admin import ObjectPermissionsModelAdmin
@@ -30,28 +29,11 @@ class ChapterZipInline(TabularInline):
         return obj.zip_code.county
 
 
-class ChapterRoleInlineForm(forms.ModelForm):
-
-    class Meta:
-        model = ChapterRole
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if 'user' in self.fields:
-            widget = self.fields['user'].widget
-            widget.can_add_related = False
-            widget.can_change_related = False
-            widget.can_delete_related = False
-
-
 class ChapterRoleInline(TabularInline):
     model = ChapterRole
     readonly_fields = ['added_by_user']
     autocomplete_fields = ['user']
     extra = 1
-    form = ChapterRoleInlineForm
     tab = True
     verbose_name = 'Role'
 
@@ -138,6 +120,8 @@ class ChapterAdmin(
             if isinstance(obj, ChapterRole) and not obj.added_by_user_id:
                 obj.added_by_user = request.user
             obj.save()
+        for obj in formset.deleted_objects:
+            obj.delete()
         formset.save_m2m()
 
 
