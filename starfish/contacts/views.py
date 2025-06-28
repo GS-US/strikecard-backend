@@ -64,4 +64,5 @@ class PendingContactCreateAPIView(generics.CreateAPIView):
     serializer_class = PendingContactSerializer
 
     def perform_create(self, serializer):
-        serializer.save(referer_full=self.request.META.get('HTTP_REFERER'))
+        pc = serializer.save(referer_full=self.request.META.get('HTTP_REFERER'))
+        pc.send_validation_email(self.request)

@@ -109,10 +109,8 @@ def _get_validation_expires():
 
 
 class PendingContact(BaseContact):
-    validation_token = UrlsafeTokenField(null=True, blank=True)
-    validation_expires = models.DateTimeField(
-        null=True, blank=True, default=_get_validation_expires
-    )
+    validation_token = UrlsafeTokenField(max_length=32)
+    validation_expires = models.DateTimeField(default=_get_validation_expires)
 
     tracker = FieldTracker(fields=['email', 'phone', 'partner_campaign'])
 
@@ -143,8 +141,9 @@ class PendingContact(BaseContact):
         )
 
     def send_validation_email(self, request):
-        # Unused for now
         validation_link = self.get_validation_link(request)
+        print(validation_link)
+        return  # don't send until SMTP configured
         send_mail(
             'Please validate your email',
             f'Click the link to validate your email: {validation_link}',
