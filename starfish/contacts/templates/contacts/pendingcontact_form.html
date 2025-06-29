@@ -3,7 +3,14 @@
 {% block content %}
 <div id="join-form" class="user-form">
   <h1>Join the<br />General Strike!</h1>
-  <form method="post">
+<form id="contact-form" method="post"
+    action="{% url 'pending_contact_create' %}"
+    hx-post="{% url 'api_pending_contact_create' %}"
+    hx-target="#form-messages"
+    hx-swap="outerHTML"
+    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+    >
+
       {% csrf_token %}
 {{ form.non_field_errors }}
 {% for hidden in form.hidden_fields %}
@@ -20,7 +27,8 @@
         {% endif %}
     </div>
 {% endfor %}
-      <button type="submit">Join!</button>
+    <button type="submit">Join!</button>
   </form>
+  <div id="form-messages"></div>
 </div>
 {% endblock %}
