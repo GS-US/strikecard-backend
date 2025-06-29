@@ -1,8 +1,8 @@
-from contacts.admin import ContactResource
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, FormView, View
+from members.admin import MemberResource
 
 from .forms import PartnerCampaignCreateForm, PartnerCampaignLookupForm
 from .models import PartnerCampaign
@@ -47,21 +47,21 @@ class PartnerCampaignDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['count'] = context['object'].contacts.count()
+        context['count'] = context['object'].members.count()
         context['export_url'] = reverse(
             'partner_campaign_export', kwargs={'slug': self.object.slug}
         )
         return context
 
 
-class PartnerCampaignContactExportView(View):
+class PartnerCampaignMemberExportView(View):
     def get(self, request, slug):
         partner_campaign = get_object_or_404(PartnerCampaign, slug=slug)
-        contacts = partner_campaign.contacts.all()
+        members = partner_campaign.members.all()
 
-        dataset = ContactResource().export(contacts)
+        dataset = MemberResource().export(members)
         response = HttpResponse(dataset.csv, content_type='text/csv')
         response['Content-Disposition'] = (
-            f'attachment; filename="contacts_{partner_campaign.slug}.csv"'
+            f'attachment; filename="members_{partner_campaign.slug}.csv"'
         )
         return response

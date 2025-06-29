@@ -2,10 +2,10 @@ from django import forms
 from partners.models import PartnerCampaign
 from regions.models import Zip
 
-from .models import PendingContact, get_by_email
+from .models import PendingMember, get_by_email
 
 
-class PendingContactForm(forms.ModelForm):
+class PendingMemberForm(forms.ModelForm):
     email = forms.CharField(required=True)
     zip_code = forms.CharField(label='5-digit ZIP Code', min_length=5, max_length=5)
     partner_slug = forms.CharField(
@@ -13,7 +13,7 @@ class PendingContactForm(forms.ModelForm):
     )
 
     class Meta:
-        model = PendingContact
+        model = PendingMember
         fields = [
             'name',
             'email',
@@ -56,11 +56,11 @@ class PendingContactForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email').strip()
-        contact = get_by_email(email)
+        member = get_by_email(email)
 
-        if contact:
-            if isinstance(contact, PendingContact):
-                contact.delete()
+        if member:
+            if isinstance(member, PendingMember):
+                member.delete()
             else:
                 raise forms.ValidationError(
                     'The email address entered is already registered.'

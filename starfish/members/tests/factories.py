@@ -3,10 +3,10 @@ import random
 import factory
 from chapters.models import Chapter, get_chapter_for_zip
 from chapters.tests.factories import ChapterFactory
-from contacts.models import Contact, ExpungedContact, PendingContact, RemovedContact
 from django.utils import timezone
 from factory.django import DjangoModelFactory
 from faker import Faker
+from members.models import ExpungedMember, Member, PendingMember, RemovedMember
 from partners.tests.factories import PartnerCampaignFactory
 from regions.models import Zip
 from users.tests.factories import UserFactory
@@ -14,9 +14,9 @@ from users.tests.factories import UserFactory
 fake = Faker()
 
 
-class ContactFactory(DjangoModelFactory):
+class MemberFactory(DjangoModelFactory):
     class Meta:
-        model = Contact
+        model = Member
 
     name = factory.Faker('name')
     email = factory.Faker('email')
@@ -35,9 +35,9 @@ class ContactFactory(DjangoModelFactory):
         return get_chapter_for_zip(self.zip_code)
 
 
-class PendingContactFactory(DjangoModelFactory):
+class PendingMemberFactory(DjangoModelFactory):
     class Meta:
-        model = PendingContact
+        model = PendingMember
 
     name = factory.Faker('name')
     email = factory.Faker('email')
@@ -48,18 +48,18 @@ class PendingContactFactory(DjangoModelFactory):
     referer_full = factory.Faker('url')
 
 
-class RemovedContactFactory(DjangoModelFactory):
+class RemovedMemberFactory(DjangoModelFactory):
     class Meta:
-        model = RemovedContact
+        model = RemovedMember
 
     status = factory.Iterator(['unsubscribed', 'deleted', 'bounced'])
     removed_by = factory.SubFactory(UserFactory)
     notes = factory.Faker('sentence')
 
 
-class ExpungedContactFactory(DjangoModelFactory):
+class ExpungedMemberFactory(DjangoModelFactory):
     class Meta:
-        model = ExpungedContact
+        model = ExpungedMember
 
     chapter = factory.SubFactory(ChapterFactory)
     partner_campaign = factory.SubFactory(PartnerCampaignFactory)

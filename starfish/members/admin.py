@@ -1,11 +1,11 @@
 import rules
 from chapters.models import ChapterRole
-from contacts.models import Contact, ContactNote
-from contacts.resources import ContactResource
 from django import forms
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
 from import_export.admin import ImportExportMixin
+from members.models import Member, MemberNote
+from members.resources import MemberResource
 from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
@@ -13,9 +13,9 @@ from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
 
-class ContactForm(forms.ModelForm):
+class MemberForm(forms.ModelForm):
     class Meta:
-        model = Contact
+        model = Member
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +29,7 @@ class ContactForm(forms.ModelForm):
                 widget.can_delete_related = False
 
 
-class ContactNoteInlineFormSet(BaseInlineFormSet):
+class MemberNoteInlineFormSet(BaseInlineFormSet):
 
     def add_fields(self, form, index):
         super().add_fields(form, index)
@@ -39,16 +39,16 @@ class ContactNoteInlineFormSet(BaseInlineFormSet):
             form.fields['note'].required = False
 
 
-class ContactNoteInlineForm(forms.ModelForm):
+class MemberNoteInlineForm(forms.ModelForm):
     class Meta:
-        model = ContactNote
+        model = MemberNote
         fields = ('note',)
 
 
-class ContactNoteInline(admin.TabularInline):
-    model = ContactNote
-    form = ContactNoteInlineForm
-    formset = ContactNoteInlineFormSet
+class MemberNoteInline(admin.TabularInline):
+    model = MemberNote
+    form = MemberNoteInlineForm
+    formset = MemberNoteInlineFormSet
     fields = ('note', 'created_by', 'created')
     readonly_fields = ('created_by', 'created')
     extra = 1
@@ -60,14 +60,14 @@ class ContactNoteInline(admin.TabularInline):
         return qs.select_related('created_by')
 
 
-@admin.register(Contact)
-class ContactAdmin(
+@admin.register(Member)
+class MemberAdmin(
     ImportExportMixin,
     ObjectPermissionsModelAdmin,
     SimpleHistoryAdmin,
     ModelAdmin,
 ):
-    resource_class = ContactResource
+    resource_class = MemberResource
     list_display = (
         'name',
         'email',
@@ -88,16 +88,16 @@ class ContactAdmin(
     readonly_fields = ['referer_full', 'validated']
     exclude = ['referer_host']
     date_hierarchy = 'validated'
-    form = ContactForm
+    form = MemberForm
     compressed_fields = True
     import_form_class = ImportForm
     export_form_class = ExportForm
-    inlines = [ContactNoteInline]
+    inlines = [MemberNoteInline]
 
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
         for obj in instances:
-            if isinstance(obj, ContactNote) and not obj.created_by_id:
+            if isinstance(obj, MemberNote) and not obj.created_by_id:
                 obj.created_by = request.user
             obj.save()
         formset.save_m2m()
@@ -106,20 +106,20 @@ class ContactAdmin(
         if request.user.is_superuser:
             return True
         if obj:
-            return rules.test_perm('contacts.view_contact', request.user, obj)
+            return rules.test_perm('members.view_member', request.user, obj)
         return True
 
     def has_change_permission(self, request, obj=None):
         if request.user.is_superuser:
             return True
         if obj:
-            return rules.test_perm('contacts.change_contact', request.user, obj)
+            return rules.test_perm('members.change_member', request.user, obj)
         return False
 
     def has_add_permission(self, request):
         if request.user.is_superuser:
             return True
-        return rules.test_perm('contacts.add_contact', request.user)
+        return rules.test_perm('members.add_member', request.user)
 
     def has_delete_permission(self, request, obj=None):
         return False

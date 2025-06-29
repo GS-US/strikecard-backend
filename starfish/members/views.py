@@ -5,21 +5,21 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView
 
-from .forms import PendingContactForm
-from .models import PendingContact
+from .forms import PendingMemberForm
+from .models import PendingMember
 
 
-def validate_contact(request, token):
-    pending_contact = get_object_or_404(PendingContact, validation_token=token)
-    contact = pending_contact.validate_contact()
-    if contact:
-        return redirect('validation_success', slug=contact.chapter.slug)
+def validate_member(request, token):
+    pending_member = get_object_or_404(PendingMember, validation_token=token)
+    member = pending_member.validate_member()
+    if member:
+        return redirect('validation_success', slug=member.chapter.slug)
     else:
         return redirect('validation_failed')
 
 
-class PendingContactDetailView(DetailView):
-    model = PendingContact
+class PendingMemberDetailView(DetailView):
+    model = PendingMember
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -27,10 +27,10 @@ class PendingContactDetailView(DetailView):
         return context
 
 
-class PendingContactCreateView(CreateView):
-    model = PendingContact
-    form_class = PendingContactForm
-    template_name = 'contacts/pendingcontact_form.html'
+class PendingMemberCreateView(CreateView):
+    model = PendingMember
+    form_class = PendingMemberForm
+    template_name = 'members/pendingmember_form.html'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
@@ -46,10 +46,10 @@ class PendingContactCreateView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('pending_contact_detail', kwargs={'pk': self.object.pk})
+        return reverse('pending_member_detail', kwargs={'pk': self.object.pk})
 
 
 class SuccessView(DetailView):
     model = Chapter
-    template_name = 'contacts/validation_success.html'
+    template_name = 'members/validation_success.html'
     slug_url_kwarg = 'slug'

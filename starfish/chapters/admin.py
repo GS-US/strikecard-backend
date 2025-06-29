@@ -56,18 +56,18 @@ class OfflineTotalInline(TabularInline):
 class ChapterAdmin(
     SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, SimpleHistoryAdmin, ModelAdmin
 ):
-    list_display = ('title', 'total_contacts', 'created')
+    list_display = ('title', 'total_members', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
     autocomplete_fields = ['nearby_chapters']
-    readonly_fields = ('view_contacts_link',)
+    readonly_fields = ('view_members_link',)
     compressed_fields = True
     fields = (
         'state',
         'title',
         'slug',
         'nearby_chapters',
-        'view_contacts_link',
+        'view_members_link',
         'description',
         'contact_email',
         'website_url',
@@ -80,14 +80,13 @@ class ChapterAdmin(
         ChapterZipInline,
     ]
 
-    def view_contacts_link(self, obj):
+    def view_members_link(self, obj):
         return pretty_button(
-            reverse('admin:contacts_contact_changelist')
-            + f'?chapter_id__exact={obj.id}',
-            f'View {obj.total_contacts} contacts',
+            reverse('admin:members_member_changelist') + f'?chapter_id__exact={obj.id}',
+            f'View {obj.total_members} members',
         )
 
-    view_contacts_link.short_description = 'Contacts'
+    view_members_link.short_description = 'Members'
 
     def has_view_permission(self, request, obj=None):
         if request.user.is_superuser:

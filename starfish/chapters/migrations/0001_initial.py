@@ -115,7 +115,7 @@ class Migration(migrations.Migration):
                     'website_url',
                     models.URLField(blank=True, null=True, verbose_name='Website'),
                 ),
-                ('total_contacts', models.IntegerField(default=0)),
+                ('total_members', models.IntegerField(default=0)),
                 ('history_id', models.AutoField(primary_key=True, serialize=False)),
                 ('history_date', models.DateTimeField(db_index=True)),
                 ('history_change_reason', models.CharField(max_length=100, null=True)),
@@ -253,7 +253,7 @@ class Migration(migrations.Migration):
                     'website_url',
                     models.URLField(blank=True, null=True, verbose_name='Website'),
                 ),
-                ('total_contacts', models.IntegerField(default=0)),
+                ('total_members', models.IntegerField(default=0)),
                 (
                     'nearby_chapters',
                     models.ManyToManyField(blank=True, to='chapters.chapter'),

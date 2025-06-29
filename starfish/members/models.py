@@ -19,19 +19,19 @@ User = get_user_model()
 
 
 def hash_str(s):
-    return hashlib.sha256((s + settings.CONTACT_HASH_SALT).encode()).hexdigest()
+    return hashlib.sha256((s + settings.MEMBER_HASH_SALT).encode()).hexdigest()
 
 
 def get_by_email(email):
     try:
-        hc = HashedContactRecord.objects.get(email_hash=hash_str(email))
+        hc = HashedMemberRecord.objects.get(email_hash=hash_str(email))
         return hc.get_real_instance()
-    except HashedContactRecord.DoesNotExist:
+    except HashedMemberRecord.DoesNotExist:
         pass
 
 
-class HashedContactRecord(TimeStampedModel):
-    CHILD_ATTRS = ['pendingcontact', 'contact', 'expungedcontact', 'removedcontact']
+class HashedMemberRecord(TimeStampedModel):
+    CHILD_ATTRS = ['pendingmember', 'member', 'expungedmember', 'removedmember']
 
     email_hash = models.CharField(
         max_length=128, unique=True, db_index=True, editable=False
@@ -45,7 +45,7 @@ class HashedContactRecord(TimeStampedModel):
                 continue
 
 
-class BaseContact(HashedContactRecord):
+class BaseMember(HashedMemberRecord):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
@@ -108,7 +108,7 @@ def _get_validation_expires():
     return now() + timedelta(days=7)
 
 
-class PendingContact(BaseContact):
+class PendingMember(BaseMember):
     validation_token = UrlsafeTokenField(null=True, blank=True)
     validation_expires = models.DateTimeField(
         null=True, blank=True, default=_get_validation_expires
@@ -119,12 +119,12 @@ class PendingContact(BaseContact):
     def token_is_expired(self):
         return now() > self.validation_expires
 
-    def validate_contact(self):
+    def validate_member(self):
         if self.token_is_expired():
             return None
 
         self.delete()
-        contact = Contact.objects.create(
+        member = Member.objects.create(
             name=self.name,
             email=self.email,
             phone=self.phone,
@@ -135,11 +135,11 @@ class PendingContact(BaseContact):
             referer_host=self.referer_host,
             validated=now(),
         )
-        return contact
+        return member
 
     def get_validation_link(self, request):
         return request.build_absolute_uri(
-            reverse('validate_contact', args=[self.validation_token])
+            reverse('validate_member', args=[self.validation_token])
         )
 
     def send_validation_email(self, request):
@@ -154,7 +154,7 @@ class PendingContact(BaseContact):
         )
 
 
-class Contact(BaseContact):
+class Member(BaseMember):
     LEADERSHIP_CHOICES = ((i, str(i)) for i in range(1, 6))
     validated = models.DateTimeField(null=True, blank=True)
     leadership_score = models.SmallIntegerField(
@@ -169,7 +169,7 @@ class Contact(BaseContact):
 
     def remove(self, status, removed_by=None, notes=''):
         self.delete()
-        RemovedContact.objects.create(
+        RemovedMember.objects.create(
             id=self.id,
             email_hash=self.email_hash,
             status=status,
@@ -179,7 +179,7 @@ class Contact(BaseContact):
 
     def expunge(self):
         self.delete()
-        ExpungedContact.objects.create(
+        ExpungedMember.objects.create(
             id=self.id,
             email_hash=self.email_hash,
             chapter=self.chapter,
@@ -188,7 +188,7 @@ class Contact(BaseContact):
         )
 
 
-class RemovedContact(HashedContactRecord):
+class RemovedMember(HashedMemberRecord):
     STATUS_CHOICES = [
         ('unsubscribed', 'Unsubscribed'),
         ('deleted', 'Deleted'),
@@ -205,9 +205,9 @@ class RemovedContact(HashedContactRecord):
         return f'{self.status}: {self.email_hash}'
 
 
-class ExpungedContact(HashedContactRecord):
+class ExpungedMember(HashedMemberRecord):
     chapter = models.ForeignKey(
-        'chapters.Chapter', on_delete=models.PROTECT, related_name='expunged_contacts'
+        'chapters.Chapter', on_delete=models.PROTECT, related_name='expunged_members'
     )
     partner_campaign = models.ForeignKey(
         'partners.PartnerCampaign', on_delete=models.SET_NULL, null=True, blank=True
@@ -219,10 +219,10 @@ class ExpungedContact(HashedContactRecord):
         return f'expunged: {self.email_hash}'
 
 
-class ContactNote(models.Model):
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name='notes')
+class MemberNote(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='notes')
     created_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='contact_notes'
+        User, on_delete=models.PROTECT, related_name='member_notes'
     )
     note = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
