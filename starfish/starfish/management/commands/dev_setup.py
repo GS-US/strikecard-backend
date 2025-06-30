@@ -1,7 +1,7 @@
 import random
 
 from chapters.models import Chapter
-from chapters.tests.factories import (
+from chapters.test_helpers.factories import (
     ChapterRoleFactory,
     ChapterSocialLinkFactory,
     OfflineTotalFactory,
@@ -12,16 +12,16 @@ from django.db import IntegrityError
 from django.db.models.signals import post_save
 from members.models import Member, RemovedMember
 from members.signals import update_chapter_total_on_member_change
-from members.tests.factories import (
+from members.test_helpers.factories import (
     MemberFactory,
     PendingMemberFactory,
 )
-from partners.tests.factories import (
+from partners.test_helpers.factories import (
     AffiliateFactory,
     PartnerCampaignFactory,
     PledgeFactory,
 )
-from users.tests.factories import UserFactory
+from users.test_helpers.factories import UserFactory
 
 
 class Command(BaseCommand):
