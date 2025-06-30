@@ -109,6 +109,9 @@ class PendingMemberForm(forms.ModelForm):
         """
         phone_input = self.cleaned_data.get("phone")
 
+        if not phone_input:
+            return None
+
         if not isinstance(phone_input, str):
             msg = "Phone number not a string."
             raise RuntimeError(msg)
@@ -167,11 +170,7 @@ def _is_phone_area_code_geographic(v):
 
 
 def _is_phone_prefix_valid(v):
-    return (
-        _is_phone_nanp_n_digit_valid(v)
-        and not _is_phone_easily_recognizable_code(v)
-        and not _is_phone_prefix_reserved(v)
-    )
+    return _is_phone_nanp_n_digit_valid(v) and not _is_phone_prefix_reserved(v)
 
 
 def _is_phone_prefix_reserved(v):
