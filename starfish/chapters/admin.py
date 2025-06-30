@@ -151,3 +151,6 @@ class ChapterZipAdmin(ModelAdmin):
             return [field.name for field in obj._meta.fields]
         else:
             return []
+
+    def has_change_permission(self, request, obj=None):
+        return False
