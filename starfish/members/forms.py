@@ -1,15 +1,16 @@
 from string import digits
 
-from contacts.models import PendingContact, get_by_email
 from django import forms
 from partners.models import PartnerCampaign
 from regions.models import Zip
+
+from .models import PendingMember, get_by_email
 
 PHONE_PUNCTUATION = r".()- "
 PHONE_TRANSLATION_TABLE = str.maketrans("", "", PHONE_PUNCTUATION)
 
 
-class PendingContactForm(forms.ModelForm):
+class PendingMemberForm(forms.ModelForm):
     email = forms.CharField(required=True)
     zip_code = forms.CharField(label='5-digit ZIP Code', min_length=5, max_length=5)
     partner_slug = forms.CharField(
@@ -17,7 +18,7 @@ class PendingContactForm(forms.ModelForm):
     )
 
     class Meta:
-        model = PendingContact
+        model = PendingMember
         fields = [
             'name',
             'email',
@@ -60,11 +61,11 @@ class PendingContactForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email').strip()
-        contact = get_by_email(email)
+        member = get_by_email(email)
 
-        if contact:
-            if isinstance(contact, PendingContact):
-                contact.delete()
+        if member:
+            if isinstance(member, PendingMember):
+                member.delete()
             else:
                 raise forms.ValidationError(
                     'The email address entered is already registered.'
@@ -107,6 +108,9 @@ class PendingContactForm(forms.ModelForm):
         - XXXX is the line number. There are no restrictions.
         """
         phone_input = self.cleaned_data.get("phone")
+
+        if not phone_input:
+            return None
 
         if not isinstance(phone_input, str):
             msg = "Phone number not a string."
@@ -166,11 +170,7 @@ def _is_phone_area_code_geographic(v):
 
 
 def _is_phone_prefix_valid(v):
-    return (
-        _is_phone_nanp_n_digit_valid(v)
-        and not _is_phone_easily_recognizable_code(v)
-        and not _is_phone_prefix_reserved(v)
-    )
+    return _is_phone_nanp_n_digit_valid(v) and not _is_phone_prefix_reserved(v)
 
 
 def _is_phone_prefix_reserved(v):

@@ -45,7 +45,7 @@ class Common(Configuration):
         'rest_framework',
         'regions',
         'chapters',
-        'contacts',
+        'members',
         'partners',
     ]
 
@@ -131,7 +131,7 @@ class Common(Configuration):
 
     SIMPLE_HISTORY_REVERT_DISABLED = True
     AUTH_USER_MODEL = 'users.User'
-    CONTACT_HASH_SALT = values.SecretValue()
+    MEMBER_HASH_SALT = values.SecretValue()
     FINAL_COUNT = 11000000
 
     UNFOLD = {
@@ -154,9 +154,9 @@ class Common(Configuration):
                     'collapsible': False,
                     'items': [
                         {
-                            'title': 'Contacts',
+                            'title': 'Members',
                             'icon': 'person',
-                            'link': reverse_lazy('admin:contacts_contact_changelist'),
+                            'link': reverse_lazy('admin:members_member_changelist'),
                         },
                         {
                             'title': 'Chapters',

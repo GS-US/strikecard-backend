@@ -33,7 +33,7 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     contact_email = models.EmailField(blank=True, null=True)
     website_url = models.URLField('Website', blank=True, null=True)
     nearby_chapters = models.ManyToManyField('self', blank=True)
-    total_contacts = models.IntegerField(default=0)
+    total_members = models.IntegerField(default=0)
 
     objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
@@ -47,11 +47,11 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     def __str__(self):
         return self.title
 
-    def update_total_contacts(self, save=True):
-        self.total_contacts = (
-            self.contacts.count()
+    def update_total_members(self, save=True):
+        self.total_members = (
+            self.members.count()
             + (self.offline_totals.aggregate(Sum('count'))['count__sum'] or 0)
-            + self.expunged_contacts.count()
+            + self.expunged_members.count()
         )
         if save:
             self.save()

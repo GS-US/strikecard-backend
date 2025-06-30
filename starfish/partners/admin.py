@@ -15,7 +15,7 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
         'name',
         'email',
         'url',
-        'contacts',
+        'members',
         'last_used',
     )
     search_fields = ('name', 'email', 'url', 'legacy_source')
@@ -25,21 +25,21 @@ class PartnerCampaignAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdm
         'created',
         'modified',
         'last_used',
-        'view_contacts_link',
+        'view_members_link',
     )
     compressed_fields = True
 
-    def contacts(self, obj):
-        return obj.contacts.count() or 0
+    def members(self, obj):
+        return obj.members.count() or 0
 
-    def view_contacts_link(self, obj):
+    def view_members_link(self, obj):
         return pretty_button(
-            reverse('admin:contacts_contact_changelist')
+            reverse('admin:members_member_changelist')
             + f'?partner_campaign__id__exact={obj.id}',
-            'View contacts',
+            'View members',
         )
 
-    view_contacts_link.short_description = 'Contacts'
+    view_members_link.short_description = 'Members'
 
 
 class PledgeInline(TabularInline):

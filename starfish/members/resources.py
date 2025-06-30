@@ -1,8 +1,8 @@
-from contacts.models import Contact
 from import_export import resources
+from members.models import Member
 
 
-class ContactResource(resources.ModelResource):
+class MemberResource(resources.ModelResource):
     zip_code = resources.Field(attribute='zip_code', column_name='ZIP')
     chapter__title = resources.Field(attribute='chapter__title', column_name='Chapter')
     partner_campaign__name = resources.Field(
@@ -10,7 +10,7 @@ class ContactResource(resources.ModelResource):
     )
 
     class Meta:
-        model = Contact
+        model = Member
         fields = (
             'name',
             'email',
