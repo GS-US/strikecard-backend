@@ -6,5 +6,4 @@ class ChaptersConfig(AppConfig):
     name = 'chapters'
 
     def ready(self):
-        import chapters.rules
         import chapters.signals

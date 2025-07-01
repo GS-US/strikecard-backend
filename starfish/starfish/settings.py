@@ -41,7 +41,6 @@ class Common(Configuration):
         'simple_history',
         'django.contrib.admin',
         'import_export',
-        'rules',
         'rest_framework',
         'regions',
         'chapters',
@@ -50,7 +49,7 @@ class Common(Configuration):
     ]
 
     AUTHENTICATION_BACKENDS = (
-        'rules.permissions.ObjectPermissionBackend',
+        'chapters.backend.ChapterRolePermissionBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
 

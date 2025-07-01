@@ -1,4 +1,3 @@
-import rules
 from chapters.models import ChapterRole
 from django import forms
 from django.contrib import admin
@@ -6,7 +5,6 @@ from django.forms.models import BaseInlineFormSet
 from import_export.admin import ImportExportMixin
 from members.models import Member, MemberNote
 from members.resources import MemberResource
-from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
 from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
@@ -63,7 +61,6 @@ class MemberNoteInline(admin.TabularInline):
 @admin.register(Member)
 class MemberAdmin(
     ImportExportMixin,
-    ObjectPermissionsModelAdmin,
     SimpleHistoryAdmin,
     ModelAdmin,
 ):
@@ -103,23 +100,20 @@ class MemberAdmin(
         formset.save_m2m()
 
     def has_view_permission(self, request, obj=None):
-        if request.user.is_superuser:
-            return True
+        # TODO: use roles
         if obj:
-            return rules.test_perm('members.view_member', request.user, obj)
-        return True
+            return True
+        return False
 
     def has_change_permission(self, request, obj=None):
-        if request.user.is_superuser:
-            return True
+        # TODO: use roles
         if obj:
-            return rules.test_perm('members.change_member', request.user, obj)
+            return True
         return False
 
     def has_add_permission(self, request):
-        if request.user.is_superuser:
-            return True
-        return rules.test_perm('members.add_member', request.user)
+        # TODO: use roles
+        return True
 
     def has_delete_permission(self, request, obj=None):
         return False

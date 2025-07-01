@@ -8,6 +8,8 @@ from simple_history.models import HistoricalRecords
 
 from starfish.models import SoftDeletablePermissionManager
 
+from .roles import ROLE_CHOICES
+
 
 def get_chapter_for_zip(zip_code):
     if not zip_code:
@@ -58,10 +60,6 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
 
 
 class ChapterRole(models.Model):
-    ROLE_CHOICES = [
-        ('facilitator', 'Facilitator'),
-        ('assistant', 'Assistant'),
-    ]
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='chapter_roles'
     )
@@ -72,7 +70,9 @@ class ChapterRole(models.Model):
         editable=False,
     )
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='roles')
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='assistant')
+    role_key = models.CharField(
+        max_length=20, choices=ROLE_CHOICES, default='assistant'
+    )
     title = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:

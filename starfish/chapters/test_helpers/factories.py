@@ -24,8 +24,6 @@ class ChapterRoleFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     added_by_user = factory.SubFactory(UserFactory)
     chapter = factory.SubFactory(ChapterFactory)
-    role = factory.Iterator(['facilitator', 'assistant'])
-    title = factory.Iterator(['Facilitator', 'Assistant'])
 
 
 class ChapterSocialLinkFactory(DjangoModelFactory):

@@ -1,4 +1,3 @@
-import rules
 from chapters.models import (
     Chapter,
     ChapterRole,
@@ -8,7 +7,6 @@ from chapters.models import (
 )
 from django.contrib import admin
 from django.urls import reverse
-from rules.contrib.admin import ObjectPermissionsModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
@@ -53,9 +51,7 @@ class OfflineTotalInline(TabularInline):
 
 
 @admin.register(Chapter)
-class ChapterAdmin(
-    SoftDeletableAdminMixin, ObjectPermissionsModelAdmin, SimpleHistoryAdmin, ModelAdmin
-):
+class ChapterAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
     list_display = ('title', 'total_members', 'created')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ['title']}
@@ -89,17 +85,15 @@ class ChapterAdmin(
     view_members_link.short_description = 'Members'
 
     def has_view_permission(self, request, obj=None):
-        if request.user.is_superuser:
-            return True
+        # TODO: use roles
         if obj:
-            return rules.test_perm('chapters.view_chapter', request.user, obj)
+            return True
         return False
 
     def has_change_permission(self, request, obj=None):
-        if request.user.is_superuser:
-            return True
+        # TODO: use roles
         if obj:
-            return rules.test_perm('chapters.change_chapter', request.user, obj)
+            return True
         return False
 
     def get_queryset(self, request):
