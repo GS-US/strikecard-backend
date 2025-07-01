@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 
 ./dev_setup.sh
-./sev_run.sh
+./dev_run.sh
