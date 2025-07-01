@@ -5,9 +5,6 @@ from regions.models import Zip
 
 from starfish.helpers.nanp_phone import clean_nanp_phone
 
-PHONE_PUNCTUATION = r".()- "
-PHONE_TRANSLATION_TABLE = str.maketrans("", "", PHONE_PUNCTUATION)
-
 
 class PendingMemberForm(forms.ModelForm):
     email = forms.CharField(required=True)
