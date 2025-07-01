@@ -1,23 +1,4 @@
-#!/usr/bin/env bash
-set -e
+#!/usr/bin/bash
 
-source ./.env
-
-set -x
-
-PORT="${1:-8000}"
-if [[ $# -gt 0 ]]; then shift; fi
-
-python manage.py flush --no-input
-
-python manage.py makemigrations
-
-python manage.py migrate
-
-python manage.py loaddata regions/fixtures/regions.json
-
-python manage.py create_state_chapters
-
-python manage.py dev_setup "$@"
-
-python manage.py runserver 0.0.0.0:$PORT
+./dev_setup.sh
+./sev_run.sh
