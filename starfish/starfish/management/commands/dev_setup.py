@@ -2,8 +2,8 @@ import random
 
 from chapters.models import Chapter
 from chapters.test_helpers.factories import (
+    ChapterLinkFactory,
     ChapterRoleFactory,
-    ChapterSocialLinkFactory,
     OfflineTotalFactory,
 )
 from django.contrib.auth import get_user_model
@@ -71,7 +71,7 @@ class Command(BaseCommand):
                     pass
 
             for _ in range(4):
-                ChapterSocialLinkFactory(chapter=chapter)
+                ChapterLinkFactory(chapter=chapter)
 
             for _ in range(random.randint(0, 2)):
                 OfflineTotalFactory(

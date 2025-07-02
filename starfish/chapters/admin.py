@@ -1,8 +1,8 @@
 import rules
 from chapters.models import (
     Chapter,
+    ChapterLink,
     ChapterRole,
-    ChapterSocialLink,
     ChapterZip,
     OfflineTotal,
 )
@@ -38,8 +38,8 @@ class ChapterRoleInline(TabularInline):
     verbose_name = 'Role'
 
 
-class ChapterSocialLinkInline(TabularInline):
-    model = ChapterSocialLink
+class ChapterLinkInline(TabularInline):
+    model = ChapterLink
     extra = 1
     tab = True
     verbose_name = 'Link'
@@ -75,7 +75,7 @@ class ChapterAdmin(
 
     inlines = [
         ChapterRoleInline,
-        ChapterSocialLinkInline,
+        ChapterLinkInline,
         OfflineTotalInline,
         ChapterZipInline,
     ]

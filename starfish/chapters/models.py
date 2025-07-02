@@ -86,7 +86,7 @@ class ChapterRole(models.Model):
         return ''
 
 
-class ChapterSocialLink(models.Model):
+class ChapterLink(models.Model):
     chapter = models.ForeignKey(
         Chapter, on_delete=models.PROTECT, related_name='social_links'
     )
