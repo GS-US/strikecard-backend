@@ -14,6 +14,7 @@ urlpatterns = [
     path('chapters/', include('chapters.urls')),
     path('partners/', include('partners.urls')),
     path('api/totals/', GetTotalsView.as_view(), name='get_the_totals'),
+    path('', include('django_prometheus.urls')),
 ]
 
 if settings.DEBUG_TOOLBAR:

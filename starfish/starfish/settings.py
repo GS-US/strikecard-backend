@@ -52,6 +52,7 @@ class Common(Configuration):
         'allauth.socialaccount',
         'allauth.socialaccount.providers.google',
         'allauth.socialaccount.providers.discord',
+        'django_prometheus',
     ]
 
     AUTHENTICATION_BACKENDS = (
@@ -61,6 +62,7 @@ class Common(Configuration):
     )
 
     MIDDLEWARE = [
+        'django_prometheus.middleware.PrometheusBeforeMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'allauth.account.middleware.AccountMiddleware',
@@ -70,6 +72,7 @@ class Common(Configuration):
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
         'simple_history.middleware.HistoryRequestMiddleware',
+        'django_prometheus.middleware.PrometheusAfterMiddleware',
     ]
 
     ROOT_URLCONF = 'starfish.urls'
@@ -192,6 +195,18 @@ class Common(Configuration):
     ACCOUNT_LOGOUT_ON_GET = True  # Allow logout via GET request
     ACCOUNT_SESSION_REMEMBER = True  # Remember user session
 
+    # Prometheus Configuration
+    PROMETHEUS_EXPORT_MIGRATIONS = False  # Disable migration metrics in development
+    PROMETHEUS_LATENCY_BUCKETS = [
+        0.1,
+        0.25,
+        0.5,
+        1.0,
+        2.5,
+        5.0,
+        10.0,
+    ]  # Response time buckets
+
     UNFOLD = {
         'SITE_TITLE': 'Strikecard Admin',
         'SITE_HEADER': 'Strikecard Admin',
@@ -289,7 +304,7 @@ class Dev(Common):
         "debug_toolbar.middleware.DebugToolbarMiddleware",
     ] + Common.MIDDLEWARE
     INTERNAL_IPS = ["127.0.0.1"]
-    ALLOWED_HOSTS = values.ListValue(["localhost"])
+    ALLOWED_HOSTS = values.ListValue(["localhost", "172.17.0.1"])
     STATIC_ROOT = Common.BASE_DIR / 'static/'
 
     # Development-specific Allauth settings - allow both OAuth and regular signup

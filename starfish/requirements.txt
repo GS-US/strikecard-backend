@@ -10,3 +10,4 @@ django-import-export~=4.3
 django-configurations~=2.5
 django-allauth
 jwt
+django-prometheus~=2.3.1
