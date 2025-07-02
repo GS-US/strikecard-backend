@@ -47,16 +47,23 @@ class Common(Configuration):
         'chapters',
         'members',
         'partners',
+        'allauth',
+        'allauth.account',
+        'allauth.socialaccount',
+        'allauth.socialaccount.providers.google',
+        'allauth.socialaccount.providers.discord',
     ]
 
     AUTHENTICATION_BACKENDS = (
         'rules.permissions.ObjectPermissionBackend',
         'django.contrib.auth.backends.ModelBackend',
+        'allauth.account.auth_backends.AuthenticationBackend',
     )
 
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
+        'allauth.account.middleware.AccountMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,7 +77,7 @@ class Common(Configuration):
     TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [],
+            'DIRS': [BASE_DIR / 'starfish' / 'templates'],
             'APP_DIRS': True,
             'OPTIONS': {
                 'context_processors': [
@@ -133,6 +140,57 @@ class Common(Configuration):
     AUTH_USER_MODEL = 'users.User'
     MEMBER_HASH_SALT = values.SecretValue()
     FINAL_COUNT = 11000000
+
+    # Allauth Configuration (updated to use new format)
+    ACCOUNT_LOGIN_METHODS = {'username'}
+    ACCOUNT_SIGNUP_FIELDS = [
+        'username*',
+        'password1*',
+        'password2*',
+    ]  # email is optional
+    ACCOUNT_EMAIL_VERIFICATION = 'none'
+    ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+    ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Strikecard] '
+
+    # Disable regular signup, only allow OAuth
+    ACCOUNT_ADAPTER = 'adapters.CustomAccountAdapter'
+    SOCIALACCOUNT_ADAPTER = 'adapters.CustomSocialAccountAdapter'
+    ACCOUNT_SIGNUP_ENABLED = False  # Disable regular signup form
+
+    # Social Account Settings
+    SOCIALACCOUNT_AUTO_SIGNUP = True
+    SOCIALACCOUNT_EMAIL_REQUIRED = False
+    SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+    SOCIALACCOUNT_STORE_TOKENS = True  # Store OAuth tokens for future use
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            },
+        },
+        'discord': {
+            'SCOPE': [
+                'identify',
+                'email',
+            ],
+        },
+    }
+
+    # Login/Logout URLs
+    LOGIN_REDIRECT_URL = '/'
+    LOGOUT_REDIRECT_URL = '/'
+
+    # Additional Allauth Settings
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'  # Change to 'https' in production
+    ACCOUNT_RATE_LIMITS = {
+        'login_failed': '5/5m',  # 5 failed attempts per 5 minutes
+    }
+    ACCOUNT_LOGOUT_ON_GET = True  # Allow logout via GET request
+    ACCOUNT_SESSION_REMEMBER = True  # Remember user session
 
     UNFOLD = {
         'SITE_TITLE': 'Strikecard Admin',
@@ -233,6 +291,10 @@ class Dev(Common):
     INTERNAL_IPS = ["127.0.0.1"]
     ALLOWED_HOSTS = values.ListValue(["localhost"])
     STATIC_ROOT = Common.BASE_DIR / 'static/'
+
+    # Development-specific Allauth settings - allow both OAuth and regular signup
+    ACCOUNT_SIGNUP_ENABLED = True  # Re-enable regular signup for development
+    ACCOUNT_ADAPTER = 'adapters.DevAccountAdapter'  # Use dev-specific adapter
 
 
 class Production(Common):
