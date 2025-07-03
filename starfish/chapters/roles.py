@@ -65,12 +65,11 @@ class Owner(Manager):
         return True
 
 
-ALL_ROLE_CLASSES = [ReporterEmail, ReporterPhone, Reporter, Manager, Owner]
+_ROLE_CLASSES = [ReporterEmail, ReporterPhone, Reporter, Manager, Owner]
 
-ROLE_CLASSES = {cls.key: cls() for cls in ALL_ROLE_CLASSES}
+ROLE_CLASSES = {cls.key: cls() for cls in _ROLE_CLASSES}
 
-ROLE_CHOICES = [(None, '---')] + [(cls.key, cls.label) for cls in ALL_ROLE_CLASSES]
-print(ROLE_CHOICES)
+ROLE_CHOICES = [(None, '---')] + [(cls.key, cls.label) for cls in _ROLE_CLASSES]
 
 
 def get_role_instance(role_key):

@@ -1,14 +1,14 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from regions.models import State, Zip
 from simple_history.models import HistoricalRecords
 
 from starfish.models import SoftDeletablePermissionManager
 
-from .roles import ROLE_CHOICES
+from .roles import ROLE_CHOICES, ROLE_CLASSES
 
 
 def get_chapter_for_zip(zip_code):
@@ -70,16 +70,17 @@ class ChapterRole(models.Model):
         editable=False,
     )
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='roles')
-    role_key = models.CharField(
-        max_length=20, choices=ROLE_CHOICES, default='assistant'
-    )
+    role_key = models.CharField(max_length=20, choices=ROLE_CHOICES)
     title = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "chapter"], name="chapter_role_unique_user_role"
-            )
+                fields=['user', 'chapter'], name='chapter_role_unique_user_role'
+            ),
+            models.CheckConstraint(
+                check=Q(role_key__in=ROLE_CLASSES.keys()), name='valid_role_key_check'
+            ),
         ]
 
     def __str__(self):

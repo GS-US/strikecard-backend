@@ -4,6 +4,7 @@ from .roles import get_user_chapter_role
 
 
 class ChapterRolePermissionBackend(BaseBackend):
+
     def has_perm(self, user, perm, obj=None):
         if user.is_superuser:
             return True
