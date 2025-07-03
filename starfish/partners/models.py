@@ -74,4 +74,4 @@ class Pledge(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return ''
+        return str(self.count)

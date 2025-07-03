@@ -35,6 +35,9 @@ class ChapterRoleInline(TabularInline):
     tab = True
     verbose_name = 'Role'
 
+    def get_inline_title(self, obj):
+        return ''
+
 
 class ChapterSocialLinkInline(TabularInline):
     model = ChapterSocialLink

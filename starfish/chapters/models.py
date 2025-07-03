@@ -8,7 +8,7 @@ from simple_history.models import HistoricalRecords
 
 from starfish.models import SoftDeletablePermissionManager
 
-from .roles import ROLE_CHOICES, ROLE_CLASSES
+from .roles import ROLE_CHOICES, ROLE_CLASSES, get_role_instance
 
 
 def get_chapter_for_zip(zip_code):
@@ -84,7 +84,11 @@ class ChapterRole(models.Model):
         ]
 
     def __str__(self):
-        return ''
+        return str(self.role)
+
+    @property
+    def role(self):
+        return get_role_instance(self.role_key)
 
 
 class ChapterSocialLink(models.Model):
@@ -97,7 +101,7 @@ class ChapterSocialLink(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return ''
+        return self.url
 
 
 class ChapterZip(models.Model):
