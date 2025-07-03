@@ -33,7 +33,6 @@ class ChapterLinkFactory(DjangoModelFactory):
         model = ChapterLink
 
     chapter = factory.SubFactory(ChapterFactory)
-    platform = factory.Iterator(['Discord', 'Bluesky', 'Substack'])
     url = factory.Faker('url')
 
 

@@ -34,6 +34,7 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     website_url = models.URLField('Website', blank=True, null=True)
     nearby_chapters = models.ManyToManyField('self', blank=True)
     total_members = models.IntegerField(default=0)
+    organizing_hub_url = models.URLField('Organizing Hub', blank=True, null=True)
 
     objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
@@ -87,16 +88,17 @@ class ChapterRole(models.Model):
 
 
 class ChapterLink(models.Model):
-    chapter = models.ForeignKey(
-        Chapter, on_delete=models.PROTECT, related_name='social_links'
-    )
-    platform = models.CharField(max_length=50)
+    chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='links')
     url = models.URLField('URL')
+    # Do not show title on creation
+    # Populate from entered URL by resolving HTTP request
+    # Allow editing
+    title = models.CharField(max_length=255, null=True)
 
     history = HistoricalRecords()
 
     def __str__(self):
-        return ''
+        return f'{self.chapter}: {self.url}'
 
 
 class ChapterZip(models.Model):
