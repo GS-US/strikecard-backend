@@ -185,7 +185,7 @@ class Common(Configuration):
     LOGOUT_REDIRECT_URL = '/'
 
     # Additional Allauth Settings
-    ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'  # Change to 'https' in production
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
     ACCOUNT_RATE_LIMITS = {
         'login_failed': '5/5m',  # 5 failed attempts per 5 minutes
     }
@@ -300,3 +300,5 @@ class Dev(Common):
 class Production(Common):
     DEBUG = False
     ALLOWED_HOSTS = values.ListValue([".generalstrikeus.com"])
+    ACCOUNT_SIGNUP_ENABLED = False  # Disable regular signup for production
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
