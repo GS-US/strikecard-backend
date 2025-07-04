@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">{% trans "Sign In" %}</h3>
+                </div>
+                <div class="card-body">
+                    {% get_providers as socialaccount_providers %}
+                    
+                    {% if socialaccount_providers %}
+                        <div class="text-center mb-4">
+                            <h5>{% trans "Sign in with:" %}</h5>
+                            <div class="d-grid gap-2">
+                                {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="text-center">
+                            <p class="text-muted">
+                                {% trans "New users can only sign up through OAuth providers above." %}
+                            </p>
+                        </div>
+                    {% endif %}
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <form class="login" method="POST" action="{% url 'account_login' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_login" class="form-label">{% trans "Username" %}</label>
+                            <input type="text" name="login" placeholder="{% trans 'Username' %}" autocomplete="username" required id="id_login" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">{% trans "Password" %}</label>
+                            <input type="password" name="password" placeholder="{% trans 'Password' %}" autocomplete="current-password" required id="id_password" class="form-control">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="remember" id="id_remember" class="form-check-input">
+                            <label class="form-check-label" for="id_remember">
+                                {% trans "Remember Me" %}
+                            </label>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+                        </div>
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

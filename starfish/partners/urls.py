@@ -1,10 +1,10 @@
 from django.urls import path
 
 from .views import (
-    PartnerCampaignContactExportView,
     PartnerCampaignCreateView,
     PartnerCampaignDetailView,
     PartnerCampaignLookupFormView,
+    PartnerCampaignMemberExportView,
     PartnerCampaignThanksView,
 )
 
@@ -29,7 +29,7 @@ urlpatterns = [
     ),
     path(
         'export/<slug:slug>/',
-        PartnerCampaignContactExportView.as_view(),
+        PartnerCampaignMemberExportView.as_view(),
         name='partner_campaign_export',
     ),
 ]

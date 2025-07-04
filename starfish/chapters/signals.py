@@ -6,4 +6,4 @@ from .models import OfflineTotal
 
 @receiver([post_save, post_delete], sender=OfflineTotal)
 def update_chapter_total_on_offline_total_change(sender, instance, **kwargs):
-    instance.chapter.update_total_contacts()
+    instance.chapter.update_total_members()

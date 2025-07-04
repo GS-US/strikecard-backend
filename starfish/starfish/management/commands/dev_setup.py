@@ -1,27 +1,27 @@
 import random
 
 from chapters.models import Chapter
-from chapters.tests.factories import (
+from chapters.test_helpers.factories import (
     ChapterRoleFactory,
     ChapterSocialLinkFactory,
     OfflineTotalFactory,
-)
-from contacts.models import Contact, RemovedContact
-from contacts.signals import update_chapter_total_on_contact_change
-from contacts.tests.factories import (
-    ContactFactory,
-    PendingContactFactory,
 )
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
 from django.db.models.signals import post_save
-from partners.tests.factories import (
+from members.models import Member, RemovedMember
+from members.signals import update_chapter_total_on_member_change
+from members.test_helpers.factories import (
+    MemberFactory,
+    PendingMemberFactory,
+)
+from partners.test_helpers.factories import (
     AffiliateFactory,
     PartnerCampaignFactory,
     PledgeFactory,
 )
-from users.tests.factories import UserFactory
+from users.test_helpers.factories import UserFactory
 
 
 class Command(BaseCommand):
@@ -29,10 +29,10 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--contacts',
+            '--members',
             type=int,
             default=1000,
-            help='Number of contacts to add (default: 1000)',
+            help='Number of members to add (default: 1000)',
         )
 
     def get_partner_campaign(self, threshold=0.2):
@@ -42,7 +42,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
-        post_save.disconnect(update_chapter_total_on_contact_change, sender=Contact)
+        post_save.disconnect(update_chapter_total_on_member_change, sender=Member)
 
         admin = User.objects.filter(username='admin').first()
         if not admin:
@@ -80,23 +80,23 @@ class Command(BaseCommand):
 
             for _ in range(random.randint(0, 3)):
                 try:
-                    PendingContactFactory(
+                    PendingMemberFactory(
                         chapter=chapter, partner_campaign=self.get_partner_campaign()
                     )
                 except IntegrityError:
                     pass
 
-        for _ in range(options['contacts']):
+        for _ in range(options['members']):
             try:
-                ContactFactory(partner_campaign=self.get_partner_campaign())
+                MemberFactory(partner_campaign=self.get_partner_campaign())
             except IntegrityError:
                 pass
 
-        for c in Contact.objects.order_by('?')[:10]:
-            c.remove(random.choice(RemovedContact.STATUS_CHOICES)[0])
+        for c in Member.objects.order_by('?')[:10]:
+            c.remove(random.choice(RemovedMember.STATUS_CHOICES)[0])
 
-        for c in Contact.objects.order_by('?')[:10]:
+        for c in Member.objects.order_by('?')[:10]:
             c.expunge()
 
         for chapter in Chapter.objects.all():
-            chapter.update_total_contacts()
+            chapter.update_total_members()
