@@ -304,7 +304,7 @@ class Dev(Common):
         "debug_toolbar.middleware.DebugToolbarMiddleware",
     ] + Common.MIDDLEWARE
     INTERNAL_IPS = ["127.0.0.1"]
-    ALLOWED_HOSTS = values.ListValue(["localhost", "172.17.0.1"])
+    ALLOWED_HOSTS = values.ListValue(["localhost"])
     STATIC_ROOT = Common.BASE_DIR / 'static/'
 
     # Development-specific Allauth settings - allow both OAuth and regular signup
