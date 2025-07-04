@@ -9,6 +9,7 @@ urlpatterns = [
     path('', PendingMemberCreateView.as_view(), name='index'),
     path('p/<str:p>/', PendingMemberCreateView.as_view(), name='partner_signup'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('members/', include('members.urls')),
     path('chapters/', include('chapters.urls')),
     path('partners/', include('partners.urls')),

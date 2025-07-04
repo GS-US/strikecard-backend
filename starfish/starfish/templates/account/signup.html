@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block title %}{% trans "Sign Up" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">{% trans "Sign Up" %}</h3>
+                </div>
+                <div class="card-body">
+                    {% get_providers as socialaccount_providers %}
+                    
+                    {% if socialaccount_providers %}
+                        <div class="text-center mb-4">
+                            <h5>{% trans "Sign up with:" %}</h5>
+                            <div class="d-grid gap-2">
+                                {% include "socialaccount/snippets/provider_list.html" with process="signup" %}
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="text-center">
+                            <p class="text-muted">
+                                {% trans "Regular signup is disabled. Please use one of the OAuth providers above to create an account." %}
+                            </p>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <p class="text-center">
+                                {% trans "No OAuth providers are configured. Please contact an administrator." %}
+                            </p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="text-center mt-3">
+                        <p>
+                            {% trans "Already have an account?" %}
+                            <a href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
