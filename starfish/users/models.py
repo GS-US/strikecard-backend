@@ -11,11 +11,9 @@ class User(AbstractUser):
         help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
     )
 
-    # Email is optional since we're not doing email verification
+    # Email is required
     email = models.EmailField(
         unique=True,
-        null=True,
-        blank=True,
         verbose_name='email address',
     )
 
