@@ -1,0 +1,8 @@
+{
+  "python.envFile": "${workspaceFolder}/starfish/.env",
+  "python.testing.unittestArgs": [
+    "starfish"
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true,
+}

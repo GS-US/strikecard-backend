@@ -18,7 +18,7 @@ This is a one-time setup and must be run before subsequent steps.
 - Run `./install.sh` to set up the local development environment.
 - Edit `.env` to configure the local deployment environment.
     - Set a value for `DJANGO_SECRET_KEY`.
-    - Set a value for `DJANGO_CONTACT_HASH_SALT`.
+    - Set a value for `DJANGO_MEMBER_HASH_SALT`.
     - See [Generating Secret Keys for
       Development](#generating-secret-keys-for-development) below for how to
       securely generate these values.
@@ -26,7 +26,7 @@ This is a one-time setup and must be run before subsequent steps.
 #### Generating Secret Keys for Development
 
 Run the following in a terminal with the `venv` activated to output values
-appropriate for both `DJANGO_SECRET_KEY` and `DJANGO_CONTACT_HASH_SALT`. You
+appropriate for both `DJANGO_SECRET_KEY` and `DJANGO_MEMBER_HASH_SALT`. You
 will need to run this twice, once for each value. Copy the returned values into
 the `.env` file.
 
