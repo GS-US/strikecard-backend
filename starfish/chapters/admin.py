@@ -88,16 +88,11 @@ class ChapterAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
     view_members_link.short_description = 'Members'
 
     def has_view_permission(self, request, obj=None):
-        # TODO: use roles
-        if obj:
-            return True
-        return False
+        print('here')
+        return request.user.has_perm('chapters.view_chapter', obj=obj)
 
     def has_change_permission(self, request, obj=None):
-        # TODO: use roles
-        if obj:
-            return True
-        return False
+        return request.user.has_perm('chapters.edit_chapter', obj=obj)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

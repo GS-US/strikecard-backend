@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q, Sum
+from django.utils.functional import cached_property
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 from regions.models import State, Zip
 from simple_history.models import HistoricalRecords
@@ -86,9 +87,14 @@ class ChapterRole(models.Model):
     def __str__(self):
         return str(self.role)
 
-    @property
+    @cached_property
     def role(self):
-        return get_role_instance(self.role_key)
+        return get_role_instance(self)
+
+    def __getattr__(self, attr):
+        if attr.startswith('can_'):
+            return getattr(self.role, attr)
+        raise AttributeError(attr)
 
 
 class ChapterSocialLink(models.Model):

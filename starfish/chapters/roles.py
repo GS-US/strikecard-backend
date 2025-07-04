@@ -5,23 +5,33 @@ class BaseRole:
     key = None
     label = None
 
+    def __init__(self, chapter=None):
+        self.chapter = chapter
+        super().__init__()
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         cls.key = camel_case_to_spaces(cls.__name__).replace(' ', '_')
 
-    def can_view_email(self):
+    def chapters_can_view_chapter(self, obj=None):
+        return True
+
+    def members_can_view_member(self, obj=None):
+        return True
+
+    def members_can_view_email(self, obj=None):
         return False
 
-    def can_view_phone(self):
+    def members_can_view_phone(self, obj=None):
         return False
 
-    def can_edit(self):
+    def members_can_edit_member(self, obj=None):
         return False
 
-    def can_delete(self):
+    def chapters_can_add_owner(self):
         return False
 
-    def get_permitted_fields(self):
+    def get_permitted_member_fields(self, obj=None):
         fields = []
         if self.can_view_email():
             fields.append('email')
@@ -36,14 +46,14 @@ class BaseRole:
 class ReporterEmail(BaseRole):
     label = 'Reporter (Email Only)'
 
-    def can_view_email(self):
+    def members_can_view_email(self, obj=None):
         return True
 
 
 class ReporterPhone(BaseRole):
     label = 'Reporter (Phone Only)'
 
-    def can_view_phone(self):
+    def members_can_view_phone(self, obj=None):
         return True
 
 
@@ -54,34 +64,26 @@ class Reporter(ReporterEmail, ReporterPhone):
 class Manager(Reporter):
     label = 'Manager'
 
-    def can_edit(self):
+    def members_can_edit_member(self, member=None):
+        return self.chapter == member.chapter
+
+    def chapters_can_edit_roles(self):
         return True
 
 
 class Owner(Manager):
     label = 'Owner'
 
-    def can_delete(self):
+    def chapters_can_add_owner(self):
         return True
 
 
 _ROLE_CLASSES = [ReporterEmail, ReporterPhone, Reporter, Manager, Owner]
 
-ROLE_CLASSES = {cls.key: cls() for cls in _ROLE_CLASSES}
+ROLE_CLASSES = {cls.key: cls for cls in _ROLE_CLASSES}
 
 ROLE_CHOICES = [(None, '---')] + [(cls.key, cls.label) for cls in _ROLE_CLASSES]
 
 
-def get_role_instance(role_key):
-    return ROLE_CLASSES.get(role_key)
-
-
-def get_user_chapter_role(user, chapter):
-    from .models import ChapterRole
-
-    if user.is_superuser:
-        return Owner()
-    try:
-        return ChapterRole.objects.get(user=user, chapter=chapter).get_role_object()
-    except ChapterRole.DoesNotExist:
-        return None
+def get_role_instance(chapter_role):
+    return ROLE_CLASSES.get(chapter_role.role_key)(chapter_role)
