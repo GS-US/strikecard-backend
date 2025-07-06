@@ -71,7 +71,9 @@ class ChapterRole(models.Model):
         editable=False,
     )
     chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='roles')
-    role_key = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    role_key = models.CharField(
+        verbose_name='Role', max_length=20, choices=ROLE_CHOICES
+    )
     title = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -91,10 +93,8 @@ class ChapterRole(models.Model):
     def role(self):
         return get_role_instance(self)
 
-    def __getattr__(self, attr):
-        if attr.startswith('can_'):
-            return getattr(self.role, attr)
-        raise AttributeError(attr)
+    def has_perm(self, perm, obj=None):
+        return self.role.has_perm(perm, obj=obj)
 
 
 class ChapterSocialLink(models.Model):

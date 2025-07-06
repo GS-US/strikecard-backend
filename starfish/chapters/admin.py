@@ -38,6 +38,22 @@ class ChapterRoleInline(TabularInline):
     def get_inline_title(self, obj):
         return ''
 
+    def has_view_permission(self, request, obj=None):
+        return request.user.has_perm('chapters.view_chapterrole', obj=obj)
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.has_perm('chapters.change_chapterrole', obj=obj)
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.has_perm('chapters.delete_chapterrole', obj=obj)
+
+    def get_queryset(self, request):
+        # TODO: how to get chapter obj?
+        queryset = super().get_queryset(request)
+        if not self.has_view_or_change_permission(request):
+            queryset = queryset.none()
+        return queryset
+
 
 class ChapterSocialLinkInline(TabularInline):
     model = ChapterSocialLink
@@ -91,7 +107,7 @@ class ChapterAdmin(SoftDeletableAdminMixin, SimpleHistoryAdmin, ModelAdmin):
         return True
 
     def has_change_permission(self, request, obj=None):
-        return request.user.has_perm('chapters.edit_chapter', obj=obj)
+        return request.user.has_perm('chapters.change_chapter', obj=obj)
 
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)

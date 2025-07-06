@@ -13,8 +13,28 @@ class BaseRole:
         super().__init_subclass__(**kwargs)
         cls.key = camel_case_to_spaces(cls.__name__).replace(' ', '_')
 
+    def has_perm(self, perm, obj=None):
+        try:
+            app_name, perm_name = perm.split('.')
+        except ValueError:
+            return False
+        method_name = f'{app_name}_can_{perm_name}'
+        return getattr(self, method_name, lambda obj: False)(obj=obj)
+
     def chapters_can_view_chapter(self, obj=None):
         return True
+
+    def chapters_can_view_chapterrole(self, obj=None):
+        return True
+
+    def chapters_can_add_chapterrole(self):
+        return False
+
+    def chapters_can_change_chapterrole(self, obj=None):
+        return False
+
+    def chapters_can_delete_chapterrole(self, obj=None):
+        return False
 
     def members_can_view_member(self, obj=None):
         return True
@@ -25,10 +45,10 @@ class BaseRole:
     def members_can_view_phone(self, obj=None):
         return False
 
-    def members_can_edit_member(self, obj=None):
+    def members_can_change_member(self, obj=None):
         return False
 
-    def chapters_can_add_owner(self):
+    def chapters_can_add_owner(self, obj=None):
         return False
 
     def get_permitted_member_fields(self, obj=None):
@@ -64,17 +84,23 @@ class Reporter(ReporterEmail, ReporterPhone):
 class Manager(Reporter):
     label = 'Manager'
 
-    def members_can_edit_member(self, member=None):
+    def members_can_change_member(self, member=None):
         return self.chapter == member.chapter
 
-    def chapters_can_edit_roles(self):
+    def chapters_can_change_chapterrole(self, obj=None):
+        return True
+
+    def chapters_can_add_chapterrole(self, obj=None):
         return True
 
 
 class Owner(Manager):
     label = 'Owner'
 
-    def chapters_can_add_owner(self):
+    def chapters_can_add_owner(self, obj=None):
+        return True
+
+    def chapters_can_delete_chapterrole(self, obj=None):
         return True
 
 
