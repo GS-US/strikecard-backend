@@ -305,6 +305,7 @@ class Dev(Common):
     INTERNAL_IPS = ["127.0.0.1"]
     ALLOWED_HOSTS = values.ListValue(["localhost"])
     STATIC_ROOT = Common.BASE_DIR / 'static/'
+    AUTH_PASSWORD_VALIDATORS = []  # allow any passwords
 
     # Development-specific Allauth settings - allow both OAuth and regular signup
     ACCOUNT_SIGNUP_ENABLED = True  # Re-enable regular signup for development
