@@ -10,7 +10,7 @@
 <p>Other links:</p>
 <ul>
     {% for link in object.links.all %}
-    <li><a class="link-icon-{{ link.link_hostname }}" href="{{ link.url }}">{{ link.title }}</a></li>
+    <li><img src="http://{{ link.link_hostname }}/favicon.ico" height="24px" width="24px" style="margin-right: 4px; vertical-align: bottom;"><a href="{{ link.url }}">{{ link.title|default:link.url }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}

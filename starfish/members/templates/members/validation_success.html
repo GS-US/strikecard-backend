@@ -4,11 +4,12 @@
 <h3>Thank You! Your email has been validated successfully!</h3>
 <h1>Welcome to the {{ object.title }} Chapter, Striker #{{ the_totals.total_str }}!</h1>
 <p>{{ object.description }}</p>
+<p>Organizing hub: <a href="{{ object.organizing_hub_url }}">{{ object.organizing_hub_url }}</a></p>
 
 {% if object.links.exists %}
 <ul>
     {% for link in object.links.all %}
-    <li><a class="link-icon-{{ link.link_hostname }}" href="{{ link.url }}">{{ link.title }}</a></li>
+    <li><img src="http://{{ link.link_hostname }}/favicon.ico" height="24px" width="24px" style="margin-right: 4px; vertical-align: bottom;"><a href="{{ link.url }}">{{ link.title|default:link.url }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
