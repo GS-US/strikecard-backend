@@ -75,6 +75,7 @@ class ChapterAdmin(
         'description',
         'contact_email',
         'website_url',
+        'organizing_hub_url',
     )
 
     inlines = [

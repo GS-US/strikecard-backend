@@ -4,8 +4,10 @@
 <h1>{{ object.title }}</h1>
 <p>{{ chapter.total_members }} members</p>
 <p>{{ object.description }}</p>
+<p>Organizing hub: <a href="{{ object.organizing_hub_url }}">{{ object.organizing_hub_url }}</a></p>
 
 {% if object.links.exists %}
+<p>Other links:</p>
 <ul>
     {% for link in object.links.all %}
     <li><a class="link-icon-{{ link.link_hostname }}" href="{{ link.url }}">{{ link.title }}</a></li>
