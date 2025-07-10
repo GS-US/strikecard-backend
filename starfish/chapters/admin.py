@@ -118,6 +118,9 @@ class ChapterAdmin(
                 obj.submitted_by_user = request.user
             if isinstance(obj, ChapterRole) and not obj.added_by_user_id:
                 obj.added_by_user = request.user
+            if isinstance(obj, ChapterLink):
+                if not obj.title:
+                    obj.get_link_title_from_url()
             obj.save()
         for obj in formset.deleted_objects:
             obj.delete()

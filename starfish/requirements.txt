@@ -8,3 +8,4 @@ rules~=3.5
 django-unfold~=0.59.0
 django-import-export~=4.3
 django-configurations~=2.5
+requests~=2.32.4

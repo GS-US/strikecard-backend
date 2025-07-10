@@ -8,7 +8,7 @@
 {% if object.links.exists %}
 <ul>
     {% for link in object.links.all %}
-    <li><a href="{{ link.url }}">{{ link.platform }}</a></li>
+    <li><a class="link-icon-{{ link.link_hostname }}" href="{{ link.url }}">{{ link.title }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
