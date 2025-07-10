@@ -9,3 +9,6 @@ django-unfold~=0.59.0
 django-import-export~=4.3
 django-configurations~=2.5
 requests~=2.32.4
+django-allauth
+jwt
+django-prometheus~=2.3.1

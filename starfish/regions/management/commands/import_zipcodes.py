@@ -57,6 +57,7 @@ STATE_NAMES = {
     'WY': 'Wyoming',
     'DC': 'District of Columbia',
     'PR': 'Puerto Rico',
+    'VI': 'Virgin Islands',
 }
 
 import csv
@@ -102,5 +103,6 @@ class Command(BaseCommand):
                             ),
                         },
                     )
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
+                    print(row)
