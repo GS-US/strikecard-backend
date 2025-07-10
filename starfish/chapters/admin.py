@@ -1,3 +1,5 @@
+import logging
+
 import rules
 from chapters.models import (
     Chapter,
@@ -14,6 +16,8 @@ from unfold.admin import ModelAdmin, TabularInline
 from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 
 from starfish.admin import SoftDeletableAdminMixin, pretty_button
+
+logger = logging.getLogger(__name__)
 
 
 class ChapterZipInline(TabularInline):
@@ -119,6 +123,7 @@ class ChapterAdmin(
             if isinstance(obj, ChapterRole) and not obj.added_by_user_id:
                 obj.added_by_user = request.user
             if isinstance(obj, ChapterLink):
+                logger.info(f'maybe updating link title from "{obj.title}" to url')
                 if not obj.title:
                     obj.get_link_title_from_url()
             obj.save()

@@ -1,6 +1,9 @@
 import html.parser
+import logging
 
 import requests
+
+logger = logging.getLogger(__name__)
 
 
 class LinkTitleParser(html.parser.HTMLParser):
@@ -12,20 +15,19 @@ class LinkTitleParser(html.parser.HTMLParser):
         self.url = url
         response = requests.get(self.url, allow_redirects=True)
         if 199 < response.status_code < 300:
+            logger.info(f'fetched {len(response.content)} bytes from {self.url}')
             # Got it! go ahead and parse. Hopefully this creates a title
             self.feed(response.text)
         else:
             self.title_content = ''
 
     def handle_starttag(self, tag, attrs):
-        print("Encountered a start tag:", tag)
         self.last_content = ''
 
     def handle_endtag(self, tag):
-        print("Encountered an end tag :", tag)
         if tag == 'title' and self.title_content == '':
             self.title_content = self.last_content
+            logger.info(f'finished parsing and got title {self.title_content}')
 
     def handle_data(self, data):
-        print("Encountered some data  :", data)
         self.last_content += data
