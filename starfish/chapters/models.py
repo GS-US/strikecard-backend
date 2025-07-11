@@ -97,6 +97,7 @@ class ChapterLink(models.Model):
     # Populate from entered URL by resolving HTTP request
     # Allow editing
     title = models.CharField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField('Order', default=0, db_index=True)
 
     history = HistoricalRecords()
 

@@ -6,12 +6,6 @@
 <p>{{ object.description }}</p>
 <p>Organizing hub: <a href="{{ object.organizing_hub_url }}">{{ object.organizing_hub_url }}</a></p>
 
-{% if object.links.exists %}
-<ul>
-    {% for link in object.links.all %}
-    <li><img src="http://{{ link.link_hostname }}/favicon.ico" height="24px" width="24px" style="margin-right: 4px; vertical-align: bottom;"><a href="{{ link.url }}">{{ link.title|default:link.url }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
+{% include "chapters/chapter_link_list.html" %}
 
 {% endblock %}

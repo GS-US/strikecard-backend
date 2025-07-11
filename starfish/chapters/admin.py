@@ -47,6 +47,9 @@ class ChapterLinkInline(TabularInline):
     extra = 1
     tab = True
     verbose_name = 'Link'
+    ordering_field = 'order'
+    ordering = ['order']
+    hide_ordering_field = True
 
 
 class OfflineTotalInline(TabularInline):
