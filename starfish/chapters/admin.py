@@ -1,8 +1,10 @@
+import logging
+
 import rules
 from chapters.models import (
     Chapter,
+    ChapterLink,
     ChapterRole,
-    ChapterSocialLink,
     ChapterZip,
     OfflineTotal,
 )
@@ -14,6 +16,8 @@ from unfold.admin import ModelAdmin, TabularInline
 from unfold.contrib.filters.admin import AutocompleteSelectMultipleFilter
 
 from starfish.admin import SoftDeletableAdminMixin, pretty_button
+
+logger = logging.getLogger(__name__)
 
 
 class ChapterZipInline(TabularInline):
@@ -38,11 +42,14 @@ class ChapterRoleInline(TabularInline):
     verbose_name = 'Role'
 
 
-class ChapterSocialLinkInline(TabularInline):
-    model = ChapterSocialLink
+class ChapterLinkInline(TabularInline):
+    model = ChapterLink
     extra = 1
     tab = True
     verbose_name = 'Link'
+    ordering_field = 'order'
+    ordering = ['order']
+    hide_ordering_field = True
 
 
 class OfflineTotalInline(TabularInline):
@@ -71,11 +78,12 @@ class ChapterAdmin(
         'description',
         'contact_email',
         'website_url',
+        'organizing_hub_url',
     )
 
     inlines = [
         ChapterRoleInline,
-        ChapterSocialLinkInline,
+        ChapterLinkInline,
         OfflineTotalInline,
         ChapterZipInline,
     ]
@@ -118,6 +126,10 @@ class ChapterAdmin(
                 obj.submitted_by_user = request.user
             if isinstance(obj, ChapterRole) and not obj.added_by_user_id:
                 obj.added_by_user = request.user
+            if isinstance(obj, ChapterLink):
+                logger.info(f'maybe updating link title from "{obj.title}" to url')
+                if not obj.title:
+                    obj.get_link_title_from_url()
             obj.save()
         for obj in formset.deleted_objects:
             obj.delete()

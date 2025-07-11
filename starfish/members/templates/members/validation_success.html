@@ -4,13 +4,8 @@
 <h3>Thank You! Your email has been validated successfully!</h3>
 <h1>Welcome to the {{ object.title }} Chapter, Striker #{{ the_totals.total_str }}!</h1>
 <p>{{ object.description }}</p>
+<p>Organizing hub: <a href="{{ object.organizing_hub_url }}">{{ object.organizing_hub_url }}</a></p>
 
-{% if object.social_links.exists %}
-<ul>
-    {% for link in object.social_links.all %}
-    <li><a href="{{ link.url }}">{{ link.platform }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
+{% include "chapters/chapter_link_list.html" %}
 
 {% endblock %}

@@ -1,0 +1,8 @@
+{% if object.links.exists %}
+<p>Other links:</p>
+<ul>
+    {% for link in object.links.all|dictsort:'order' %}
+    <li><img src="http://{{ link.link_hostname }}/favicon.ico" height="24px" width="24px" style="margin-right: 4px; vertical-align: bottom;"><a href="{{ link.url }}">{{ link.title|default:link.url }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}

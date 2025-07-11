@@ -1,3 +1,5 @@
+import urllib.parse
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -6,6 +8,7 @@ from model_utils.models import SoftDeletableModel, TimeStampedModel
 from regions.models import State, Zip
 from simple_history.models import HistoricalRecords
 
+from starfish.helpers.link_title_parser import LinkTitleParser
 from starfish.models import SoftDeletablePermissionManager
 
 
@@ -34,6 +37,7 @@ class Chapter(TimeStampedModel, SoftDeletableModel):
     website_url = models.URLField('Website', blank=True, null=True)
     nearby_chapters = models.ManyToManyField('self', blank=True)
     total_members = models.IntegerField(default=0)
+    organizing_hub_url = models.URLField('Organizing Hub', blank=True, null=True)
 
     objects = SoftDeletablePermissionManager()
     history = HistoricalRecords()
@@ -86,17 +90,29 @@ class ChapterRole(models.Model):
         return ''
 
 
-class ChapterSocialLink(models.Model):
-    chapter = models.ForeignKey(
-        Chapter, on_delete=models.PROTECT, related_name='social_links'
-    )
-    platform = models.CharField(max_length=50)
+class ChapterLink(models.Model):
+    chapter = models.ForeignKey(Chapter, on_delete=models.PROTECT, related_name='links')
     url = models.URLField('URL')
+    # Do not show title on creation
+    # Populate from entered URL by resolving HTTP request
+    # Allow editing
+    title = models.CharField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField('Order', default=0, db_index=True)
 
     history = HistoricalRecords()
 
     def __str__(self):
-        return ''
+        return f'{self.title}: {self.url}'
+
+    @property
+    def link_hostname(self):
+        if self.url is None or len(self.url) == 0:
+            return ''
+        return urllib.parse.urlsplit(self.url).netloc
+
+    def get_link_title_from_url(self):
+        parser = LinkTitleParser(self.url)
+        self.title = parser.title_content
 
 
 class ChapterZip(models.Model):
